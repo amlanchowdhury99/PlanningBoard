@@ -24,6 +24,9 @@ namespace PlanningBoard
         public Dictionary<int, string> SizeList = new Dictionary<int, string>();
         public Dictionary<int, string> PartList = new Dictionary<int, string>();
 
+        DateTimePicker TaskDateDTP = new DateTimePicker();
+        Rectangle rectangle;
+
         public List<int> StyleStore = new List<int>();
         public List<int> SizeStore = new List<int>();
         public List<int> PartStore = new List<int>();
@@ -40,6 +43,8 @@ namespace PlanningBoard
         public int daydiff = 0;
         public int PreVal = -1;
         public int NewVal = -1;
+        public string PreDate = "";
+        public string NewDate = "";
         public int PreIndex = -1;
         public Boolean LCFlag = false;
         public Boolean AutoFlag = false;
@@ -94,13 +99,38 @@ namespace PlanningBoard
             LoadDatePicker();
             if (PlanBoardDisplayForm.EditMode)
             {
+                UpdateButton.Visible = true;
+                AddPlanButton.Enabled = false;
+                AutoPlanButton.Enabled = false;
+                resetButton.Enabled = false;
+                ApplyEffButton.Enabled = false;
+                LCText.Enabled = false;
+                orderWisePlandataGridView.Columns[1].ReadOnly = false;
+
+                orderWisePlandataGridView.Controls.Add(TaskDateDTP);
+                TaskDateDTP.Visible = false;
+                TaskDateDTP.Format = DateTimePickerFormat.Custom;
+                TaskDateDTP.CustomFormat = "dd/MM/yyyy";
+                TaskDateDTP.TextChanged += new EventHandler(TaskDateDTP_TextChange);
+
                 LoadOrderInfoGridOnEditMode();
             }
             else
             {
+                AddPlanButton.Enabled = true;
+                AutoPlanButton.Enabled = true;
+                resetButton.Enabled = true;
+                ApplyEffButton.Enabled = true;
+                LCText.Enabled = true;
+
                 LoadOrderInfoGrid();
             }
             
+        }
+
+        private void TaskDateDTP_TextChange(object sender, EventArgs e)
+        {
+            orderWisePlandataGridView.CurrentCell.Value = TaskDateDTP.Text.ToString();
         }
 
         private void LoadDatePicker()
@@ -1809,90 +1839,234 @@ namespace PlanningBoard
 
         private void orderWisePlandataGridView_CellBeginEdit(object sender, DataGridViewCellCancelEventArgs e)
         {
-            if (MachineComboBox.SelectedIndex > 0 && orderID != 0)
+            if (PlanBoardDisplayForm.EditMode)
             {
-                if (e.RowIndex > -1 && e.RowIndex < orderWisePlandataGridView.Rows.Count - 1 && (e.ColumnIndex == 4 || e.ColumnIndex == 6) && OrderWisePlanGridRowIndex == -1 && PreVal < 0)
+                if (orderID != 0)
                 {
-                    if (orderWisePlandataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value != "")
+                    if (e.RowIndex > -1 && e.RowIndex < orderWisePlandataGridView.Rows.Count - 1 && (e.ColumnIndex == 4 || e.ColumnIndex == 6 || e.ColumnIndex == 1) && OrderWisePlanGridRowIndex == -1 && PreVal < 0)
                     {
-                        PreVal = Convert.ToInt32(orderWisePlandataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value);
-                        PreIndex = e.RowIndex;
+                        if (orderWisePlandataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString() != "")
+                        {
+                            PreIndex = e.RowIndex;
+                            if(e.ColumnIndex != 1)
+                            {
+                                PreVal = Convert.ToInt32(orderWisePlandataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value);
+                            }
+                            else
+                            {
+                                rectangle = orderWisePlandataGridView.GetCellDisplayRectangle(e.ColumnIndex, e.RowIndex, true); //  
+                                TaskDateDTP.Size = new Size(rectangle.Width, rectangle.Height); //  
+                                TaskDateDTP.Location = new Point(rectangle.X, rectangle.Y); //  
+                                TaskDateDTP.Visible = true;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        return;
                     }
                 }
-                else
+            }
+            else
+            {
+                if (MachineComboBox.SelectedIndex > 0 && orderID != 0)
                 {
-                    return;
+                    if (e.RowIndex > -1 && e.RowIndex < orderWisePlandataGridView.Rows.Count - 1 && (e.ColumnIndex == 4 || e.ColumnIndex == 6) && OrderWisePlanGridRowIndex == -1 && PreVal < 0)
+                    {
+                        if (orderWisePlandataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString() != "")
+                        {
+                            PreVal = Convert.ToInt32(orderWisePlandataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value);
+                            PreIndex = e.RowIndex;
+                        }
+                    }
+                    else
+                    {
+                        return;
+                    }
                 }
             }
-            
         }
 
         private void orderWisePlandataGridView_CellEndEdit(object sender, DataGridViewCellEventArgs e)
         {
-            if (MachineComboBox.SelectedIndex > 0 && orderID != 0)
+            if (PlanBoardDisplayForm.EditMode)
             {
-                if (orderWisePlandataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value == null)
+                TaskDateDTP.Visible = false;
+
+                if (orderWisePlandataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value == null || orderWisePlandataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value == "")
                 {
                     MessageBox.Show("Null Value can not used!!!");
                     orderWisePlandataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = PreVal;
                     ResetOrderWidePlanTableParameters();
                     return;
                 }
-                if (Convert.ToInt32(orderWisePlandataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value) == PreVal || e.RowIndex != PreIndex)
+                if (e.RowIndex != PreIndex)
                 {
                     ResetOrderWidePlanTableParameters();
                     return;
                 }
-                
-                if (IsValid()== false)
+                if (IsValid() == false && e.ColumnIndex != 1)
                 {
                     orderWisePlandataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = PreVal;
                     ResetOrderWidePlanTableParameters();
                     labelAlert.Visible = true;
                     return;
                 }
-
                 if (orderWisePlandataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value != null && e.RowIndex > -1 && e.RowIndex < (orderWisePlandataGridView.Rows.Count - 1) && (e.ColumnIndex == 4 || e.ColumnIndex == 6) && OrderWisePlanGridRowIndex == -1 && NewVal < 0)
                 {
-                    if (e.ColumnIndex == 6) // For Efficiency Column
+                    if (e.ColumnIndex == 1) // TaskDate Column
                     {
-                        NewVal = Convert.ToInt32(orderWisePlandataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value);
-                        OrderWisePlanGridRowIndex = e.RowIndex;
-                        LCFlag = true;
-                        int temp = 0;
-                        int rowCount = orderWisePlandataGridView.Rows.Count - 1;
-
-                        string sDate = DateTime.ParseExact(orderWisePlandataGridView.Rows[OrderWisePlanGridRowIndex].Cells[1].Value.ToString(), "dd/MM/yyyy", null).ToString();
-
-                        for (int i = rowCount; i >= 0; i--)
+                        string NewDate = orderWisePlandataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString();
+                        if(CommonFunctions.recordExist("SELECT * FROM WorkingDays WHERE MachineNo = "+MachineNo+" AND WorkDate = '"+NewDate+"'")) // Check if Date is Scheduled on Workding Days
                         {
-                            if (i >= OrderWisePlanGridRowIndex)
+                            if(CommonFunctions.recordExist("SELECT * FROM WorkingDays WHERE MachineNo = "+MachineNo+" AND Active = 1 AND WorkDate = '"+NewDate+"'")) // Check if Date is Active
                             {
-                                if (i != rowCount)
+                                if (CommonFunctions.recordExist("SELECT * FROM PlanTable WHERE MachineNo = " + MachineNo + " AND TaskDate = '" + NewDate + "'")) // Check if Date is already Present on PlanTable
                                 {
-                                    temp = temp + Convert.ToInt32(orderWisePlandataGridView.Rows[i].Cells[4].Value);
+                                    int minute = 0;
+                                    int capacity = 0;
+                                    int TotalPlanQty = 0;
+
+                                    if (CommonFunctions.recordExist("SELECT * FROM PlanTable WHERE MachineNo = " + MachineNo + " AND TaskDate = '" + NewDate + "' AND OrderID = " + orderID)) // Check if same order exists on that day on PlanTable
+                                    {
+                                        string query = "SELECT Capacity, (SELECT SUM(PlanQty) FROM PlanTable WHERE MachineNo = " + MachineNo + " AND TaskDate = '" + NewDate + "') AS TotalPlanQty, Minute FROM PlanTable WHERE MachineNo = " + MachineNo + " AND TaskDate = '" + NewDate + "' AND OrderID = " + orderID;
+                                        SqlDataReader reader = CommonFunctions.GetFromDB(query);
+                                        try
+                                        {
+                                            if (reader.HasRows)
+                                            {
+                                                while (reader.Read())
+                                                {
+                                                    capacity = Convert.ToInt32(reader["Capacity"]);
+                                                    TotalPlanQty = Convert.ToInt32(reader["TotalPlanQty"]);
+                                                    minute = Convert.ToInt32(reader["Minute"]);
+                                                }
+                                            }
+                                            if (capacity != TotalPlanQty)
+                                            {
+                                                int currentPlanQty = Convert.ToInt32(orderWisePlandataGridView.Rows[e.RowIndex].Cells[4].Value);
+                                                int newPlanQty = currentPlanQty + TotalPlanQty > capacity ? capacity - TotalPlanQty : currentPlanQty;
+
+                                                orderWisePlandataGridView.Rows[e.RowIndex].Cells[1].Value = NewDate;
+                                                orderWisePlandataGridView.Rows[e.RowIndex].Cells[2].Value = capacity;
+                                                orderWisePlandataGridView.Rows[e.RowIndex].Cells[4].Value = newPlanQty;
+                                                orderWisePlandataGridView.Rows[e.RowIndex].Cells[5].Value = minute;
+                                            }
+                                            else
+                                            {
+                                                MessageBox.Show("This date has no capacity left to add plan quantity!!!");
+                                                orderWisePlandataGridView.Rows[e.RowIndex].Cells[1].Value = CurrentTaskDate;
+                                            }
+                                        }
+                                        catch (Exception ee)
+                                        {
+                                            MessageBox.Show("" + ee.ToString());
+                                        }
+                                        finally
+                                        {
+                                            if (CommonFunctions.connection.State == ConnectionState.Open)
+                                            {
+                                                CommonFunctions.connection.Close();
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        string query = "SELECT Capacity, (SELECT SUM(PlanQty) FROM PlanTable WHERE MachineNo = " + MachineNo + " AND TaskDate = '" + NewDate + "') As TotalPlanQty FROM PlanTable WHERE MachineNo = " + MachineNo + " AND TaskDate = '" + NewDate + "' order by TaskDate desc, Id asc";
+                                        SqlDataReader reader = CommonFunctions.GetFromDB(query);
+                                        try
+                                        {
+                                            int currentPlanQty = Convert.ToInt32(orderWisePlandataGridView.Rows[e.RowIndex].Cells[4].Value);
+                                            if (reader.HasRows)
+                                            {
+                                                while (reader.Read())
+                                                {
+                                                    capacity = Convert.ToInt32(reader["Capacity"]);
+                                                    TotalPlanQty = Convert.ToInt32(reader["TotalPlanQty"]);
+                                                }
+
+                                                if (capacity > TotalPlanQty || currentPlanQty + TotalPlanQty <= capacity)
+                                                {
+                                                    query = "SELECT (SELECT Count(Id) FROM PlanTable WHERE MachineNo = " + MachineNo + " AND TaskDate = '" + NewDate + "') As RecordCount, SUM(SAM) AS RestTotalSAM, SUM(Efficiency) AS RestTotalEfficiency FROM PlanTable WHERE MachineNo = " + MachineNo + " AND TaskDate = '" + NewDate + "'";
+
+                                                    SqlDataReader reader1 = CommonFunctions.GetFromDB(query);
+
+                                                    int NewCapacity = 0;
+                                                    if (reader1.HasRows)
+                                                    {
+                                                        while (reader1.Read())
+                                                        {
+                                                            double UpdatedSam = (Convert.ToInt32(reader["RestTotalSAM"]) + Convert.ToInt32(samTextBox.Text)) / Convert.ToInt32(reader["RecordCount"]);
+                                                            double UpdatedEfficiency = (Convert.ToInt32(reader["RestTotalEfficiency"]) + NewVal) / Convert.ToInt32(reader["RecordCount"]);
+                                                            NewCapacity = Convert.ToInt32(Math.Floor((double)((Convert.ToInt32(orderWisePlandataGridView.Rows[e.RowIndex].Cells[5].Value) * (UpdatedEfficiency / 100.00)) / UpdatedSam)));
+                                                        }
+                                                        orderWisePlandataGridView.Rows[e.RowIndex].Cells[2].Value = NewCapacity;
+                                                        orderWisePlandataGridView.Rows[e.RowIndex].Cells[3].Value = TotalPlanQty;
+                                                        orderWisePlandataGridView.Rows[e.RowIndex].Cells[4].Value = currentPlanQty;
+                                                    }
+                                                    else
+                                                    {
+                                                        MessageBox.Show("Failed To Update Capacity!!!");
+                                                        orderWisePlandataGridView.Rows[e.RowIndex].Cells[2].Value = NewCapacity;
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    MessageBox.Show("This date has no capacity left to add plan quantity!!!");
+                                                    orderWisePlandataGridView.Rows[e.RowIndex].Cells[1].Value = CurrentTaskDate;
+                                                }
+                                            }
+                                            else
+                                            {
+                                                MessageBox.Show("Failed To Update Capacity!!!");
+                                                orderWisePlandataGridView.Rows[e.RowIndex].Cells[1].Value = CurrentTaskDate;
+                                            }
+                                        }
+                                        catch (Exception ee)
+                                        {
+                                            MessageBox.Show("" + ee.ToString());
+                                        }
+                                        finally
+                                        {
+                                            if (CommonFunctions.connection.State == ConnectionState.Open)
+                                            {
+                                                CommonFunctions.connection.Close();
+                                            }
+                                        }
+                                    }
                                 }
-                                if (i != OrderWisePlanGridRowIndex)
+                                else
                                 {
-                                    orderWisePlandataGridView.Rows.RemoveAt(i);
+                                    int minute = 0;
+                                    int efficiency = Convert.ToInt32(orderWisePlandataGridView.Rows[e.RowIndex].Cells[6].Value);
+                                    double Sam = Convert.ToDouble(samTextBox.Text);
+                                    string query = "SELECT Minute FROM WorkingDays WHERE MachineNo =" + MachineNo + " AND WorkDate = '" + NewDate + "'";
+                                    SqlDataReader reader = CommonFunctions.GetFromDB(query);
+                                    if (reader.HasRows)
+                                    {
+                                        while(reader.Read())
+                                        {
+                                            minute = Convert.ToInt32(reader["Minute"]);
+                                        }
+                                    }
+                                    int capacity = Convert.ToInt32(Math.Floor((double)((minute * (efficiency / 100)) / Sam)));
+                                    orderWisePlandataGridView.Rows[e.RowIndex].Cells[2].Value = capacity;
                                 }
                             }
+                            else
+                            {
+                                MessageBox.Show("Orders can not be placed on Holiday! Please Choose Another Date!!!");
+                                orderWisePlandataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = CurrentTaskDate;
+                            }
                         }
-
-                        LoadOrderWisePlanGrid(temp, sDate);
-
-                    }
-                    else if (e.ColumnIndex == 4) // For Plan Quantity Column
-                    {
-                        OrderWisePlanGridRowIndex = e.RowIndex;
-                        NewVal = Convert.ToInt32(orderWisePlandataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value);
-                        if (Convert.ToInt32(orderWisePlandataGridView.Rows[e.RowIndex].Cells[2].Value) - Convert.ToInt32(orderWisePlandataGridView.Rows[e.RowIndex].Cells[3].Value) < 0)
+                        else
                         {
-                            MessageBox.Show("No Qty is Left!!!");
-                            orderWisePlandataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = PreVal;
-                            ResetOrderWidePlanTableParameters();
-                            return;
+                            MessageBox.Show("This Date has not been scheduled yet for this Machine! Please First Create Schedule this date for this machine!!!");
+                            orderWisePlandataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = CurrentTaskDate;
                         }
+                    }
+                    else if (e.ColumnIndex == 4) // PlanQuantity Column
+                    {
                         if (Convert.ToInt32(orderWisePlandataGridView.Rows[e.RowIndex].Cells[2].Value) - Convert.ToInt32(orderWisePlandataGridView.Rows[e.RowIndex].Cells[3].Value) < NewVal)
                         {
                             MessageBox.Show("Plan Quantity can not be greater than remamining Capacity!!!");
@@ -1900,73 +2074,151 @@ namespace PlanningBoard
                             ResetOrderWidePlanTableParameters();
                             return;
                         }
-                        if (NewVal < 0)
-                        {
-                            MessageBox.Show("Negative Value is not permitted!!!");
-                            orderWisePlandataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = PreVal;
-                            ResetOrderWidePlanTableParameters();
-                            return;
-                        }
-                        int temp = 0;
-                        int sum = 0;
-                        int remainingSum = 0;
-                        int LastRowIndex = orderWisePlandataGridView.Rows.Count - 1;
+                    }
+                    else if (e.ColumnIndex == 6) // For Efficiency Column
+                    {
+                        NewVal = Convert.ToInt32(orderWisePlandataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value);
+                        OrderWisePlanGridRowIndex = e.RowIndex;
 
-                        if (NewVal < 0)
+                        string sDate = orderWisePlandataGridView.Rows[OrderWisePlanGridRowIndex].Cells[1].Value.ToString();
+                        string query = "SELECT (SELECT Count(Id) FROM PlanTable WHERE MachineNo = " + MachineNo + " AND TaskDate = '" + CurrentTaskDate + "') As RecordCount, SUM(SAM) AS RestTotalSAM, SUM(Efficiency) AS RestTotalEfficiency FROM PlanTable WHERE MachineNo = " + MachineNo + " AND TaskDate = '" + sDate + "' AND OrderID != " + orderID;
+                        
+                        SqlDataReader reader = CommonFunctions.GetFromDB(query);
+                        try
                         {
-                            MessageBox.Show("Plan Quantity can not be zero!!!");
-                        }
-
-                        else if (NewVal > PreVal)
-                        {
-                            if (NewVal > (int)orderWisePlandataGridView.Rows[e.RowIndex].Cells[2].Value || e.RowIndex == LastRowIndex - 1)
+                            int NewCapacity = 0;
+                            if (reader.HasRows)
                             {
-                                MessageBox.Show("Plan Quantity can not be greater than capacity!!!");
-                                orderWisePlandataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = PreVal;
-                                ResetOrderWidePlanTableParameters();
+                                while (reader.Read())
+                                {
+                                    double UpdatedSam = (Convert.ToInt32(reader["RestTotalSAM"]) + Convert.ToInt32(samTextBox.Text)) / Convert.ToInt32(reader["RecordCount"]);
+                                    double UpdatedEfficiency = (Convert.ToInt32(reader["RestTotalEfficiency"]) + NewVal) / Convert.ToInt32(reader["RecordCount"]);
+                                    NewCapacity = Convert.ToInt32(Math.Floor((double)((Convert.ToInt32(orderWisePlandataGridView.Rows[e.RowIndex].Cells[5].Value) * (UpdatedEfficiency / 100.00)) / UpdatedSam)));
+                                }
+                                orderWisePlandataGridView.Rows[e.RowIndex].Cells[2].Value = NewCapacity;
                             }
                             else
                             {
-                                temp = NewVal - PreVal;
-                                foreach (DataGridViewRow row in orderWisePlandataGridView.Rows)
-                                {
-                                    if (row.Index > OrderWisePlanGridRowIndex && row.Index != orderWisePlandataGridView.Rows.Count - 1)
-                                    {
-                                        if ((int)row.Cells[2].Value > 0)
-                                        {
-                                            remainingSum = remainingSum + Convert.ToInt32(row.Cells[e.ColumnIndex].Value);
-                                        }
-                                    }
-                                }
-                                if (NewVal > -1)
-                                {
-                                    if (temp > remainingSum)
-                                        temp = temp - remainingSum;
-                                    else
-                                        temp = remainingSum - temp;
-                                    string sDate = DateTime.ParseExact(orderWisePlandataGridView.Rows[OrderWisePlanGridRowIndex].Cells[1].Value.ToString(), "dd/MM/yyyy", null).AddDays(1).ToString();
-                                    Int32 rowCount = orderWisePlandataGridView.Rows.Count - 1;
-                                    for (int i = rowCount; i >= 0; i--)
-                                    {
-                                        if (i > OrderWisePlanGridRowIndex)
-                                        {
-                                            orderWisePlandataGridView.Rows.RemoveAt(i);
-                                        }
-                                    }
-                                    LoadOrderWisePlanGrid(temp, sDate);
-                                }
+                                MessageBox.Show("Failed To Update Capacity!!!");
+                                orderWisePlandataGridView.Rows[e.RowIndex].Cells[2].Value = NewCapacity;
                             }
                         }
-                        else
+                        catch (Exception ee)
                         {
-                            if (OrderWisePlanGridRowIndex == e.RowIndex)
+                            MessageBox.Show("" + ee.ToString());
+                        }
+                        finally
+                        {
+                            if (CommonFunctions.connection.State == ConnectionState.Open)
                             {
-                                temp = PreVal - NewVal;
-                                foreach (DataGridViewRow row in orderWisePlandataGridView.Rows)
+                                CommonFunctions.connection.Close();
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                if (MachineComboBox.SelectedIndex > 0 && orderID != 0)
+                {
+                    if (orderWisePlandataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value == null)
+                    {
+                        MessageBox.Show("Null Value can not used!!!");
+                        orderWisePlandataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = PreVal;
+                        ResetOrderWidePlanTableParameters();
+                        return;
+                    }
+                    if (Convert.ToInt32(orderWisePlandataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value) == PreVal || e.RowIndex != PreIndex)
+                    {
+                        ResetOrderWidePlanTableParameters();
+                        return;
+                    }
+
+                    if (IsValid() == false)
+                    {
+                        orderWisePlandataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = PreVal;
+                        ResetOrderWidePlanTableParameters();
+                        labelAlert.Visible = true;
+                        return;
+                    }
+
+                    if (orderWisePlandataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value != null && e.RowIndex > -1 && e.RowIndex < (orderWisePlandataGridView.Rows.Count - 1) && (e.ColumnIndex == 4 || e.ColumnIndex == 6) && OrderWisePlanGridRowIndex == -1 && NewVal < 0)
+                    {
+                        if (e.ColumnIndex == 6) // For Efficiency Column
+                        {
+                            NewVal = Convert.ToInt32(orderWisePlandataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value);
+                            OrderWisePlanGridRowIndex = e.RowIndex;
+                            LCFlag = true;
+                            int temp = 0;
+                            int rowCount = orderWisePlandataGridView.Rows.Count - 1;
+
+                            string sDate = DateTime.ParseExact(orderWisePlandataGridView.Rows[OrderWisePlanGridRowIndex].Cells[1].Value.ToString(), "dd/MM/yyyy", null).ToString();
+
+                            for (int i = rowCount; i >= 0; i--)
+                            {
+                                if (i >= OrderWisePlanGridRowIndex)
                                 {
-                                    if (row.Index > OrderWisePlanGridRowIndex && row.Index != orderWisePlandataGridView.Rows.Count - 1)
+                                    if (i != rowCount)
                                     {
-                                        if (row.Cells[2].Value != "")
+                                        temp = temp + Convert.ToInt32(orderWisePlandataGridView.Rows[i].Cells[4].Value);
+                                    }
+                                    if (i != OrderWisePlanGridRowIndex)
+                                    {
+                                        orderWisePlandataGridView.Rows.RemoveAt(i);
+                                    }
+                                }
+                            }
+                            LoadOrderWisePlanGrid(temp, sDate);
+                        }
+                        else if (e.ColumnIndex == 4) // For Plan Quantity Column
+                        {
+                            OrderWisePlanGridRowIndex = e.RowIndex;
+                            NewVal = Convert.ToInt32(orderWisePlandataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value);
+                            if (Convert.ToInt32(orderWisePlandataGridView.Rows[e.RowIndex].Cells[2].Value) - Convert.ToInt32(orderWisePlandataGridView.Rows[e.RowIndex].Cells[3].Value) < 0)
+                            {
+                                MessageBox.Show("No Qty is Left!!!");
+                                orderWisePlandataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = PreVal;
+                                ResetOrderWidePlanTableParameters();
+                                return;
+                            }
+                            if (Convert.ToInt32(orderWisePlandataGridView.Rows[e.RowIndex].Cells[2].Value) - Convert.ToInt32(orderWisePlandataGridView.Rows[e.RowIndex].Cells[3].Value) < NewVal)
+                            {
+                                MessageBox.Show("Plan Quantity can not be greater than remamining Capacity!!!");
+                                orderWisePlandataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = PreVal;
+                                ResetOrderWidePlanTableParameters();
+                                return;
+                            }
+                            if (NewVal < 0)
+                            {
+                                MessageBox.Show("Negative Value is not permitted!!!");
+                                orderWisePlandataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = PreVal;
+                                ResetOrderWidePlanTableParameters();
+                                return;
+                            }
+                            int temp = 0;
+                            int sum = 0;
+                            int remainingSum = 0;
+                            int LastRowIndex = orderWisePlandataGridView.Rows.Count - 1;
+
+                            if (NewVal < 0)
+                            {
+                                MessageBox.Show("Plan Quantity can not be zero!!!");
+                            }
+
+                            else if (NewVal > PreVal)
+                            {
+                                if (NewVal > (int)orderWisePlandataGridView.Rows[e.RowIndex].Cells[2].Value || e.RowIndex == LastRowIndex - 1)
+                                {
+                                    MessageBox.Show("Plan Quantity can not be greater than capacity!!!");
+                                    orderWisePlandataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = PreVal;
+                                    ResetOrderWidePlanTableParameters();
+                                }
+                                else
+                                {
+                                    temp = NewVal - PreVal;
+                                    foreach (DataGridViewRow row in orderWisePlandataGridView.Rows)
+                                    {
+                                        if (row.Index > OrderWisePlanGridRowIndex && row.Index != orderWisePlandataGridView.Rows.Count - 1)
                                         {
                                             if ((int)row.Cells[2].Value > 0)
                                             {
@@ -1974,28 +2226,65 @@ namespace PlanningBoard
                                             }
                                         }
                                     }
-                                }
-                                if (NewVal > -1)
-                                {
-                                    temp = temp + remainingSum;
-                                    string sDate = DateTime.ParseExact(orderWisePlandataGridView.Rows[OrderWisePlanGridRowIndex].Cells[1].Value.ToString(), "dd/MM/yyyy", null).AddDays(1).ToString();
-                                    Int32 rowCount = orderWisePlandataGridView.Rows.Count - 1;
-                                    for (int i = rowCount; i >= 0; i--)
+                                    if (NewVal > -1)
                                     {
-                                        if (i > OrderWisePlanGridRowIndex)
+                                        if (temp > remainingSum)
+                                            temp = temp - remainingSum;
+                                        else
+                                            temp = remainingSum - temp;
+                                        string sDate = DateTime.ParseExact(orderWisePlandataGridView.Rows[OrderWisePlanGridRowIndex].Cells[1].Value.ToString(), "dd/MM/yyyy", null).AddDays(1).ToString();
+                                        Int32 rowCount = orderWisePlandataGridView.Rows.Count - 1;
+                                        for (int i = rowCount; i >= 0; i--)
                                         {
-                                            orderWisePlandataGridView.Rows.RemoveAt(i);
+                                            if (i > OrderWisePlanGridRowIndex)
+                                            {
+                                                orderWisePlandataGridView.Rows.RemoveAt(i);
+                                            }
                                         }
+                                        LoadOrderWisePlanGrid(temp, sDate);
                                     }
-                                    LoadOrderWisePlanGrid(temp, sDate);
                                 }
                             }
+                            else
+                            {
+                                if (OrderWisePlanGridRowIndex == e.RowIndex)
+                                {
+                                    temp = PreVal - NewVal;
+                                    foreach (DataGridViewRow row in orderWisePlandataGridView.Rows)
+                                    {
+                                        if (row.Index > OrderWisePlanGridRowIndex && row.Index != orderWisePlandataGridView.Rows.Count - 1)
+                                        {
+                                            if (row.Cells[2].Value != "")
+                                            {
+                                                if ((int)row.Cells[2].Value > 0)
+                                                {
+                                                    remainingSum = remainingSum + Convert.ToInt32(row.Cells[e.ColumnIndex].Value);
+                                                }
+                                            }
+                                        }
+                                    }
+                                    if (NewVal > -1)
+                                    {
+                                        temp = temp + remainingSum;
+                                        string sDate = DateTime.ParseExact(orderWisePlandataGridView.Rows[OrderWisePlanGridRowIndex].Cells[1].Value.ToString(), "dd/MM/yyyy", null).AddDays(1).ToString();
+                                        Int32 rowCount = orderWisePlandataGridView.Rows.Count - 1;
+                                        for (int i = rowCount; i >= 0; i--)
+                                        {
+                                            if (i > OrderWisePlanGridRowIndex)
+                                            {
+                                                orderWisePlandataGridView.Rows.RemoveAt(i);
+                                            }
+                                        }
+                                        LoadOrderWisePlanGrid(temp, sDate);
+                                    }
+                                }
+                            }
+                            temp = 0;
+                            remainingSum = 0;
                         }
-                        temp = 0;
-                        remainingSum = 0;
                     }
+                    ResetOrderWidePlanTableParameters();
                 }
-                ResetOrderWidePlanTableParameters();
             }
         }
 
@@ -2005,11 +2294,6 @@ namespace PlanningBoard
             NewVal = -1;
             PreIndex = -1;
             OrderWisePlanGridRowIndex = -1;
-        }
-
-        private void orderWisePlandataGridView_CellValueChanged(object sender, DataGridViewCellEventArgs e)
-        {
-            
         }
 
         private void button1_Click(object sender, System.EventArgs e)
@@ -2173,6 +2457,21 @@ namespace PlanningBoard
                     OrderInfoPBcontextMenuStrip.Show(Cursor.Position);
                 }
             }
+        }
+
+        private void orderWisePlandataGridView_Scroll(object sender, ScrollEventArgs e)
+        {
+            TaskDateDTP.Visible = false;
+        }
+
+        private void orderWisePlandataGridView_ColumnWidthChanged(object sender, DataGridViewColumnEventArgs e)
+        {
+            TaskDateDTP.Visible = false;
+        }
+
+        private void UpdateButton_Click(object sender, System.EventArgs e)
+        {
+
         }
     }
 }

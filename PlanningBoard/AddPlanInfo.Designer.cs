@@ -91,14 +91,6 @@
             this.label13 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.orderWisePlandataGridView = new System.Windows.Forms.DataGridView();
-            this.dataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.TaskDate = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Capacity = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.BookedQty = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.PlanQty = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Minute = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Eff = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.ReadMode = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.panel2 = new System.Windows.Forms.Panel();
             this.label10 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
@@ -115,6 +107,15 @@
             this.labelAlert = new System.Windows.Forms.Label();
             this.OrderInfoPBcontextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.dataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.TaskDate = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Capacity = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.BookedQty = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.PlanQty = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Minute = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Eff = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ReadMode = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.UpdateButton = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.orderInfoDetailsdataGridView)).BeginInit();
             this.panel1.SuspendLayout();
@@ -443,6 +444,7 @@
             // entryGroupBox
             // 
             this.entryGroupBox.BackColor = System.Drawing.Color.SlateGray;
+            this.entryGroupBox.Controls.Add(this.UpdateButton);
             this.entryGroupBox.Controls.Add(this.labelShow);
             this.entryGroupBox.Controls.Add(this.daysInHandTextBox);
             this.entryGroupBox.Controls.Add(this.hiddenTextBox);
@@ -783,63 +785,10 @@
             this.orderWisePlandataGridView.CellBeginEdit += new System.Windows.Forms.DataGridViewCellCancelEventHandler(this.orderWisePlandataGridView_CellBeginEdit);
             this.orderWisePlandataGridView.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.orderWisePlandataGridView_CellClick);
             this.orderWisePlandataGridView.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.orderWisePlandataGridView_CellEndEdit);
-            this.orderWisePlandataGridView.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.orderWisePlandataGridView_CellValueChanged);
+            this.orderWisePlandataGridView.ColumnWidthChanged += new System.Windows.Forms.DataGridViewColumnEventHandler(this.orderWisePlandataGridView_ColumnWidthChanged);
             this.orderWisePlandataGridView.EditingControlShowing += new System.Windows.Forms.DataGridViewEditingControlShowingEventHandler(this.orderWisePlandataGridView_EditingControlShowing);
             this.orderWisePlandataGridView.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.orderWisePlandataGridView_RowsAdded);
-            // 
-            // dataGridViewTextBoxColumn2
-            // 
-            this.dataGridViewTextBoxColumn2.HeaderText = "SL";
-            this.dataGridViewTextBoxColumn2.Name = "dataGridViewTextBoxColumn2";
-            this.dataGridViewTextBoxColumn2.ReadOnly = true;
-            this.dataGridViewTextBoxColumn2.Width = 50;
-            // 
-            // TaskDate
-            // 
-            this.TaskDate.HeaderText = "TaskDate";
-            this.TaskDate.Name = "TaskDate";
-            this.TaskDate.ReadOnly = true;
-            this.TaskDate.Width = 90;
-            // 
-            // Capacity
-            // 
-            this.Capacity.HeaderText = "Capacity";
-            this.Capacity.Name = "Capacity";
-            this.Capacity.ReadOnly = true;
-            this.Capacity.Width = 75;
-            // 
-            // BookedQty
-            // 
-            this.BookedQty.HeaderText = "Booked Qty";
-            this.BookedQty.Name = "BookedQty";
-            this.BookedQty.ReadOnly = true;
-            this.BookedQty.Width = 110;
-            // 
-            // PlanQty
-            // 
-            this.PlanQty.HeaderText = "PlanQty";
-            this.PlanQty.Name = "PlanQty";
-            this.PlanQty.Width = 85;
-            // 
-            // Minute
-            // 
-            this.Minute.HeaderText = "Minute";
-            this.Minute.Name = "Minute";
-            this.Minute.ReadOnly = true;
-            this.Minute.Width = 60;
-            // 
-            // Eff
-            // 
-            this.Eff.HeaderText = "Efficiency";
-            this.Eff.Name = "Eff";
-            this.Eff.Width = 80;
-            // 
-            // ReadMode
-            // 
-            this.ReadMode.HeaderText = "ReadMode";
-            this.ReadMode.Name = "ReadMode";
-            this.ReadMode.ReadOnly = true;
-            this.ReadMode.Visible = false;
+            this.orderWisePlandataGridView.Scroll += new System.Windows.Forms.ScrollEventHandler(this.orderWisePlandataGridView_Scroll);
             // 
             // panel2
             // 
@@ -1003,9 +952,76 @@
             // deleteToolStripMenuItem
             // 
             this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
-            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
             this.deleteToolStripMenuItem.Text = "Delete";
             this.deleteToolStripMenuItem.Click += new System.EventHandler(this.deleteToolStripMenuItem_Click);
+            // 
+            // dataGridViewTextBoxColumn2
+            // 
+            this.dataGridViewTextBoxColumn2.HeaderText = "SL";
+            this.dataGridViewTextBoxColumn2.Name = "dataGridViewTextBoxColumn2";
+            this.dataGridViewTextBoxColumn2.ReadOnly = true;
+            this.dataGridViewTextBoxColumn2.Width = 50;
+            // 
+            // TaskDate
+            // 
+            this.TaskDate.HeaderText = "TaskDate";
+            this.TaskDate.Name = "TaskDate";
+            this.TaskDate.ReadOnly = true;
+            this.TaskDate.Width = 95;
+            // 
+            // Capacity
+            // 
+            this.Capacity.HeaderText = "Capacity";
+            this.Capacity.Name = "Capacity";
+            this.Capacity.ReadOnly = true;
+            this.Capacity.Width = 75;
+            // 
+            // BookedQty
+            // 
+            this.BookedQty.HeaderText = "Booked Qty";
+            this.BookedQty.Name = "BookedQty";
+            this.BookedQty.ReadOnly = true;
+            this.BookedQty.Width = 110;
+            // 
+            // PlanQty
+            // 
+            this.PlanQty.HeaderText = "PlanQty";
+            this.PlanQty.Name = "PlanQty";
+            this.PlanQty.Width = 80;
+            // 
+            // Minute
+            // 
+            this.Minute.HeaderText = "Minute";
+            this.Minute.Name = "Minute";
+            this.Minute.ReadOnly = true;
+            this.Minute.Width = 60;
+            // 
+            // Eff
+            // 
+            this.Eff.HeaderText = "Efficiency";
+            this.Eff.Name = "Eff";
+            this.Eff.Width = 80;
+            // 
+            // ReadMode
+            // 
+            this.ReadMode.HeaderText = "ReadMode";
+            this.ReadMode.Name = "ReadMode";
+            this.ReadMode.ReadOnly = true;
+            this.ReadMode.Visible = false;
+            // 
+            // UpdateButton
+            // 
+            this.UpdateButton.BackColor = System.Drawing.Color.RosyBrown;
+            this.UpdateButton.Font = new System.Drawing.Font("Microsoft Tai Le", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.UpdateButton.Location = new System.Drawing.Point(895, 233);
+            this.UpdateButton.Name = "UpdateButton";
+            this.UpdateButton.Size = new System.Drawing.Size(89, 32);
+            this.UpdateButton.TabIndex = 40;
+            this.UpdateButton.Text = "Update";
+            this.UpdateButton.UseVisualStyleBackColor = false;
+            this.UpdateButton.Visible = false;
+            this.UpdateButton.Click += new System.EventHandler(this.UpdateButton_Click);
             // 
             // ViewOrderInfo
             // 
@@ -1117,6 +1133,10 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Efficiency;
         private System.Windows.Forms.DataGridViewTextBoxColumn Status;
         private System.Windows.Forms.DataGridViewTextBoxColumn ID;
+        private System.Windows.Forms.Label labelShow;
+        private System.Windows.Forms.Label labelAlert;
+        private System.Windows.Forms.ContextMenuStrip OrderInfoPBcontextMenuStrip;
+        private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn2;
         private System.Windows.Forms.DataGridViewTextBoxColumn TaskDate;
         private System.Windows.Forms.DataGridViewTextBoxColumn Capacity;
@@ -1125,9 +1145,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Minute;
         private System.Windows.Forms.DataGridViewTextBoxColumn Eff;
         private System.Windows.Forms.DataGridViewTextBoxColumn ReadMode;
-        private System.Windows.Forms.Label labelShow;
-        private System.Windows.Forms.Label labelAlert;
-        private System.Windows.Forms.ContextMenuStrip OrderInfoPBcontextMenuStrip;
-        private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;
+        private System.Windows.Forms.Button UpdateButton;
     }
 }

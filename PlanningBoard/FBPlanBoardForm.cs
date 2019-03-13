@@ -64,86 +64,95 @@ namespace PlanningBoard
             else
             {
                 DateTime TaskDate = FBPlanDateDateTimePicker.Value;
-                if (CommonFunctions.recordExist("SELECT * FROM WorkingDays WHERE MachineNo = " + MachineNo + " and Active = 1 and WorkDate = '" + TaskDate + "'"))
+                if (CommonFunctions.recordExist("SELECT * FROM WorkingDays WHERE MachineNo = " + MachineNo + " AND WorkDate = '" + TaskDate + "'"))
                 {
-                    if (!CommonFunctions.recordExist("SELECT * FROM PlanTable WHERE MachineNo = " + MachineNo + " and TaskDate = '" + TaskDate + "'"))
+                    if (CommonFunctions.recordExist("SELECT * FROM WorkingDays WHERE MachineNo = " + MachineNo + " and Active = 1 and WorkDate = '" + TaskDate + "'"))
                     {
-
-                        try
+                        if (!CommonFunctions.recordExist("SELECT * FROM PlanTable WHERE MachineNo = " + MachineNo + " and TaskDate = '" + TaskDate + "'"))
                         {
 
-                            int Capacity = 0;
-                            int PlanQty = 0;
-                            string GetDate = "";
-                            int Efficiency = 0;
-                            double SAM = 0;
-                            int GetCount = 1;
-                            int TotalPlanQty = 0;
-                            string query = "select Count(Id) as RecordCount, Id, MachineNo, TaskDate, OrderID, Capacity, PlanQty, RemainingQty, OrderQty, ColIndex, Efficiency, Minute, Status,(select SAM from Order_Info where Id=OrderID) as SAM from PlanTable where TaskDate = '" + planDate.ToString() + "' and MachineNo='" + MachineNo + "' order by TaskDate,Id asc";
-                            string connectionStr = ConnectionManager.connectionString;
-                            SqlCommand cm = new SqlCommand();
-                            SqlConnection cn = new SqlConnection(connectionStr);
-                            SqlCommand cm1 = new SqlCommand();
-                            SqlConnection cn1 = new SqlConnection(connectionStr);
-                            SqlCommand cm2 = new SqlCommand();
-                            SqlConnection cn2 = new SqlConnection(connectionStr);
-                            SqlDataReader reader, reader1;
-                            cn.Open();
-                            cm.Connection = cn;
-
-                            cm.CommandText = query;
-                            reader = cm.ExecuteReader();
-                            while (reader.Read())
+                            try
                             {
-                                int GetMinute = 0;
-                                cn1.Open();
-                                cm1.Connection = cn1;
-                                cm1.CommandText = "SELECT Minute FROM WorkingDays where MachineNo='" + MachineNo + "' and Active = 1 and WorkDate='" + TaskDate + "'";
-                                reader1 = cm1.ExecuteReader();
-                                while (reader1.Read())
+
+                                int Capacity = 0;
+                                int PlanQty = 0;
+                                string GetDate = "";
+                                int Efficiency = 0;
+                                double SAM = 0;
+                                int GetCount = 1;
+                                int TotalPlanQty = 0;
+                                string query = "select Count(Id) as RecordCount, Id, MachineNo, TaskDate, OrderID, Capacity, PlanQty, RemainingQty, OrderQty, ColIndex, Efficiency, Minute, Status,(select SAM from Order_Info where Id=OrderID) as SAM from PlanTable where TaskDate = '" + planDate.ToString() + "' and MachineNo='" + MachineNo + "' order by TaskDate,Id asc";
+                                string connectionStr = ConnectionManager.connectionString;
+                                SqlCommand cm = new SqlCommand();
+                                SqlConnection cn = new SqlConnection(connectionStr);
+                                SqlCommand cm1 = new SqlCommand();
+                                SqlConnection cn1 = new SqlConnection(connectionStr);
+                                SqlCommand cm2 = new SqlCommand();
+                                SqlConnection cn2 = new SqlConnection(connectionStr);
+                                SqlDataReader reader, reader1;
+                                cn.Open();
+                                cm.Connection = cn;
+
+                                cm.CommandText = query;
+                                reader = cm.ExecuteReader();
+                                while (reader.Read())
                                 {
-                                    GetMinute = Convert.ToInt16(reader1["Minute"]);
+                                    int GetMinute = 0;
+                                    cn1.Open();
+                                    cm1.Connection = cn1;
+                                    cm1.CommandText = "SELECT Minute FROM WorkingDays where MachineNo='" + MachineNo + "' and Active = 1 and WorkDate='" + TaskDate + "'";
+                                    reader1 = cm1.ExecuteReader();
+                                    while (reader1.Read())
+                                    {
+                                        GetMinute = Convert.ToInt16(reader1["Minute"]);
+                                    }
+                                    cn1.Close();
+
+                                    SAM = SAM + Convert.ToDouble(reader["SAM"]);
+                                    Efficiency = Efficiency + Convert.ToInt16(reader["Efficiency"]);
+                                    SAM = SAM / GetCount;
+                                    Efficiency = Convert.ToInt32(Math.Floor((Double)(Efficiency / GetCount)));
+                                    Capacity = (int)(Math.Floor((GetMinute * Efficiency / 100) / SAM));
+                                    PlanQty = Convert.ToInt16(reader["PlanQty"]);
+                                    TotalPlanQty = TotalPlanQty + PlanQty;
+                                    PlanQty = Convert.ToInt32(reader["RecordCount"]) - 1 == GetCount ? TotalPlanQty > Capacity ? PlanQty - (TotalPlanQty - Capacity) : PlanQty : PlanQty;
+
+                                    cn2.Open();
+                                    cm2.Connection = cn2;
+                                    cm2.CommandText = "UPDATE PlanTable SET TaskDate='" + TaskDate + "',Capacity='" + Capacity + "',RemainingQty='" + (Capacity - PlanQty) + "',Status=1 where Id='" + Convert.ToInt16(reader["Id"]) + "'";
+                                    cm2.ExecuteReader();
+                                    cn2.Close();
+
+                                    GetCount++;
                                 }
-                                cn1.Close();
-
-                                SAM = SAM + Convert.ToDouble(reader["SAM"]);
-                                Efficiency = Efficiency + Convert.ToInt16(reader["Efficiency"]);
-                                SAM = SAM / GetCount;
-                                Efficiency = Convert.ToInt32(Math.Floor((Double)(Efficiency / GetCount)));
-                                Capacity = (int)(Math.Floor((GetMinute * Efficiency / 100) / SAM));
-                                PlanQty = Convert.ToInt16(reader["PlanQty"]);
-                                TotalPlanQty = TotalPlanQty + PlanQty;
-                                PlanQty = Convert.ToInt32(reader["RecordCount"]) - 1 == GetCount ? TotalPlanQty > Capacity ? PlanQty - (TotalPlanQty - Capacity) : PlanQty : PlanQty;
-
-                                cn2.Open();
-                                cm2.Connection = cn2;
-                                cm2.CommandText = "UPDATE PlanTable SET TaskDate='" + TaskDate + "',Capacity='" + Capacity + "',RemainingQty='" + (Capacity - PlanQty) + "',Status=1 where Id='" + Convert.ToInt16(reader["Id"]) + "'";
-                                cm2.ExecuteReader();
-                                cn2.Close();
-
-                                GetCount++;
+                                cn.Close();
                             }
-                            cn.Close();
+                            catch (Exception ex)
+                            {
+                                MessageBox.Show(ex.Message);
+                            }
+                            finally
+                            {
+                                this.Close();
+                            }
                         }
-                        catch (Exception ex)
+                        else
                         {
-                            MessageBox.Show(ex.Message);
-                        }
-                        finally
-                        {
-                            this.Close();
+                            MessageBox.Show("Orders exist in that date! Please Choose Another Date!!!");
+                            FBPlanDateDateTimePicker.Value = planDate;
+                            return;
                         }
                     }
                     else
                     {
-                        MessageBox.Show("Orders exist in that date! Please Choose Another Date!!!");
+                        MessageBox.Show("Orders can not be placed on Holiday! Please Choose Another Date!!!");
                         FBPlanDateDateTimePicker.Value = planDate;
                         return;
                     }
                 }
                 else
                 {
-                    MessageBox.Show("Orders can not be placed on Holiday! Please Choose Another Date!!!");
+                    MessageBox.Show("This Date has not been scheduled yet for this Machine! Please First Create Schedule this date for this machine!!!");
                     FBPlanDateDateTimePicker.Value = planDate;
                     return;
                 }

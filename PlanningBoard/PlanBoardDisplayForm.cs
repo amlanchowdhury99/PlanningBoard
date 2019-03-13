@@ -726,6 +726,7 @@ namespace PlanningBoard
             DateTime taskDate = DateTime.ParseExact(planBoardDataGridView.Rows[1].Cells[colIndex].Value.ToString(), "dd/MM/yyyy", System.Globalization.CultureInfo.InvariantCulture);
             orderIDs = planBoardDataGridView.Rows[rowIndex + OrderFactorsCount - 1].Cells[colIndex].Value.ToString();
             int mcNo = Convert.ToInt32(planBoardDataGridView.Rows[rowIndex].Cells[0].Value);
+
             FBPlanBoardForm fbplanform = new FBPlanBoardForm(true, mcNo, taskDate, orderIDs, false);
             fbplanform.ShowDialog();
             Generate_Plan_Board();
