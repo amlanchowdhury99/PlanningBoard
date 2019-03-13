@@ -118,7 +118,7 @@ namespace PlanningBoard
                 }
                 else
                 {
-                    MessageBox.Show("Orders Exist in that date! Please Choose Another Date!!!");
+                    MessageBox.Show("Orders exist in that date! Please Choose Another Date!!!");
                     FBPlanDateDateTimePicker.Value = DateTime.Now;
                     return;
                 }
