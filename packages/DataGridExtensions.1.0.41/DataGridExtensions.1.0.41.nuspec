@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+  <metadata>
+    <id>DataGridExtensions</id>
+    <version>1.0.41</version>
+    <title>Data Grid Extensions</title>
+    <authors>Tom Englert</authors>
+    <owners>Tom Englert</owners>
+    <licenseUrl>https://www.nuget.org/packages/DataGridExtensions/1.0.41/license</licenseUrl>
+    <projectUrl>https://github.com/tom-englert/DataGridExtensions</projectUrl>
+    <iconUrl>https://raw.githubusercontent.com/tom-englert/DataGridExtensions/master/Icon.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>This package contains useful extensions for the MS DataGrid (System.Windows.Controls.DataGrid).
+The current version supports the following features:
+- Add filtering capabilities to the DataGrid.
+- Correctly apply initial sorting criteria.
+- Easy to use\r\n- Easy to customize
+- Attaches to the existing DataGrid</description>
+    <summary />
+    <releaseNotes>https://raw.githubusercontent.com/tom-englert/DataGridExtensions/master/ReleaseNotes.md</releaseNotes>
+    <copyright>© 2012-2019 tom-englert.de</copyright>
+    <tags>DGX DataGrid Filter</tags>
+    <dependencies>
+      <group targetFramework=".NETFramework4.0-Client">
+        <dependency id="Expression.Blend.Sdk" version="1.0.2" />
+      </group>
+      <group targetFramework=".NETFramework4.5">
+        <dependency id="Expression.Blend.Sdk" version="1.0.2" />
+      </group>
+    </dependencies>
+    <frameworkAssemblies>
+      <frameworkAssembly assemblyName="PresentationCore" targetFramework=".NETFramework4.0-Client, .NETFramework4.5" />
+      <frameworkAssembly assemblyName="PresentationFramework" targetFramework=".NETFramework4.0-Client, .NETFramework4.5" />
+      <frameworkAssembly assemblyName="System.Xaml" targetFramework=".NETFramework4.0-Client, .NETFramework4.5" />
+      <frameworkAssembly assemblyName="WindowsBase" targetFramework=".NETFramework4.0-Client, .NETFramework4.5" />
+    </frameworkAssemblies>
+  </metadata>
+</package>

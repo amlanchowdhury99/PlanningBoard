@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>AutomaterRu.DataGridViewTweaks.dll</id>
+    <version>1.0.0.1</version>
+    <title>AutomaterRu.DataGridViewTweaks.dll</title>
+    <authors>magnitudo</authors>
+    <owners>magnitudo</owners>
+    <licenseUrl>http://automater.ru</licenseUrl>
+    <projectUrl>http://automater.ru</projectUrl>
+    <iconUrl>http://automater.ru</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Multiolumn sort support for Winforms DataGridView</description>
+    <summary />
+    <releaseNotes />
+    <copyright>Copyright 2012</copyright>
+    <tags>DataGridView</tags>
+  </metadata>
+</package>

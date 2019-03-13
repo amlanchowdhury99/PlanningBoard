@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>SourceGrid</id>
+    <version>4.4.0</version>
+    <title>SourceGrid WinForm Control</title>
+    <authors>Davide Icardi; Darius Damalakas</authors>
+    <owners>Davide Icardi; Darius Damalakas</owners>
+    <licenseUrl>http://sourcegrid.codeplex.com/license</licenseUrl>
+    <projectUrl>https://bitbucket.org/dariusdamalakas/sourcegrid/</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>SourceGrid is a .NET Windows Forms grid control written entirely in C# with managed code. SourceGrid can be used to visualize or to change data in a table format.</description>
+    <summary>Grid control for .NET Windows Forms.</summary>
+    <copyright>Copyright 2002-2012</copyright>
+    <language>en-US</language>
+    <tags>WinForms Grids Table</tags>
+  </metadata>
+</package>
