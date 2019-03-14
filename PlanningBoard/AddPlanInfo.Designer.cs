@@ -61,6 +61,7 @@
             this.label5 = new System.Windows.Forms.Label();
             this.label12 = new System.Windows.Forms.Label();
             this.entryGroupBox = new System.Windows.Forms.GroupBox();
+            this.UpdateButton = new System.Windows.Forms.Button();
             this.labelShow = new System.Windows.Forms.Label();
             this.daysInHandTextBox = new System.Windows.Forms.TextBox();
             this.hiddenTextBox = new System.Windows.Forms.TextBox();
@@ -115,7 +116,6 @@
             this.Minute = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Eff = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ReadMode = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.UpdateButton = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.orderInfoDetailsdataGridView)).BeginInit();
             this.panel1.SuspendLayout();
@@ -463,6 +463,19 @@
             this.entryGroupBox.Size = new System.Drawing.Size(1194, 508);
             this.entryGroupBox.TabIndex = 2;
             this.entryGroupBox.TabStop = false;
+            // 
+            // UpdateButton
+            // 
+            this.UpdateButton.BackColor = System.Drawing.Color.RosyBrown;
+            this.UpdateButton.Font = new System.Drawing.Font("Microsoft Tai Le", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.UpdateButton.Location = new System.Drawing.Point(895, 233);
+            this.UpdateButton.Name = "UpdateButton";
+            this.UpdateButton.Size = new System.Drawing.Size(89, 32);
+            this.UpdateButton.TabIndex = 40;
+            this.UpdateButton.Text = "Update";
+            this.UpdateButton.UseVisualStyleBackColor = false;
+            this.UpdateButton.Visible = false;
+            this.UpdateButton.Click += new System.EventHandler(this.UpdateButton_Click);
             // 
             // labelShow
             // 
@@ -935,9 +948,9 @@
             this.labelAlert.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
             this.labelAlert.Font = new System.Drawing.Font("Microsoft Tai Le", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.labelAlert.ForeColor = System.Drawing.Color.DarkRed;
-            this.labelAlert.Location = new System.Drawing.Point(205, 10);
+            this.labelAlert.Location = new System.Drawing.Point(416, 9);
             this.labelAlert.Name = "labelAlert";
-            this.labelAlert.Size = new System.Drawing.Size(746, 22);
+            this.labelAlert.Size = new System.Drawing.Size(293, 22);
             this.labelAlert.TabIndex = 40;
             this.labelAlert.Text = "label24";
             this.labelAlert.Visible = false;
@@ -961,6 +974,7 @@
             this.dataGridViewTextBoxColumn2.HeaderText = "SL";
             this.dataGridViewTextBoxColumn2.Name = "dataGridViewTextBoxColumn2";
             this.dataGridViewTextBoxColumn2.ReadOnly = true;
+            this.dataGridViewTextBoxColumn2.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             this.dataGridViewTextBoxColumn2.Width = 50;
             // 
             // TaskDate
@@ -968,6 +982,7 @@
             this.TaskDate.HeaderText = "TaskDate";
             this.TaskDate.Name = "TaskDate";
             this.TaskDate.ReadOnly = true;
+            this.TaskDate.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             this.TaskDate.Width = 95;
             // 
             // Capacity
@@ -975,6 +990,7 @@
             this.Capacity.HeaderText = "Capacity";
             this.Capacity.Name = "Capacity";
             this.Capacity.ReadOnly = true;
+            this.Capacity.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             this.Capacity.Width = 75;
             // 
             // BookedQty
@@ -982,12 +998,14 @@
             this.BookedQty.HeaderText = "Booked Qty";
             this.BookedQty.Name = "BookedQty";
             this.BookedQty.ReadOnly = true;
+            this.BookedQty.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             this.BookedQty.Width = 110;
             // 
             // PlanQty
             // 
             this.PlanQty.HeaderText = "PlanQty";
             this.PlanQty.Name = "PlanQty";
+            this.PlanQty.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             this.PlanQty.Width = 80;
             // 
             // Minute
@@ -995,12 +1013,14 @@
             this.Minute.HeaderText = "Minute";
             this.Minute.Name = "Minute";
             this.Minute.ReadOnly = true;
+            this.Minute.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             this.Minute.Width = 60;
             // 
             // Eff
             // 
             this.Eff.HeaderText = "Efficiency";
             this.Eff.Name = "Eff";
+            this.Eff.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             this.Eff.Width = 80;
             // 
             // ReadMode
@@ -1008,20 +1028,8 @@
             this.ReadMode.HeaderText = "ReadMode";
             this.ReadMode.Name = "ReadMode";
             this.ReadMode.ReadOnly = true;
+            this.ReadMode.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             this.ReadMode.Visible = false;
-            // 
-            // UpdateButton
-            // 
-            this.UpdateButton.BackColor = System.Drawing.Color.RosyBrown;
-            this.UpdateButton.Font = new System.Drawing.Font("Microsoft Tai Le", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.UpdateButton.Location = new System.Drawing.Point(895, 233);
-            this.UpdateButton.Name = "UpdateButton";
-            this.UpdateButton.Size = new System.Drawing.Size(89, 32);
-            this.UpdateButton.TabIndex = 40;
-            this.UpdateButton.Text = "Update";
-            this.UpdateButton.UseVisualStyleBackColor = false;
-            this.UpdateButton.Visible = false;
-            this.UpdateButton.Click += new System.EventHandler(this.UpdateButton_Click);
             // 
             // ViewOrderInfo
             // 
@@ -1137,6 +1145,7 @@
         private System.Windows.Forms.Label labelAlert;
         private System.Windows.Forms.ContextMenuStrip OrderInfoPBcontextMenuStrip;
         private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;
+        private System.Windows.Forms.Button UpdateButton;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn2;
         private System.Windows.Forms.DataGridViewTextBoxColumn TaskDate;
         private System.Windows.Forms.DataGridViewTextBoxColumn Capacity;
@@ -1145,6 +1154,5 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Minute;
         private System.Windows.Forms.DataGridViewTextBoxColumn Eff;
         private System.Windows.Forms.DataGridViewTextBoxColumn ReadMode;
-        private System.Windows.Forms.Button UpdateButton;
     }
 }
