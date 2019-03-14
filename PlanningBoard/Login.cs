@@ -24,7 +24,7 @@ namespace PlanningBoard
         {
             if (txtID.Text.Trim() == "")
             {
-                MessageBox.Show("Please Enter User Name", VariableDecleration_Class.sMSGBOX);
+                MessageBox.Show("Please Enter  User Name", VariableDecleration_Class.sMSGBOX);
                 txtID.Focus();
                 return;
             }
@@ -35,7 +35,7 @@ namespace PlanningBoard
                 txtPass.Focus();
                 return;
             }
-            if (CommonFunctions.recordExist("select * from Employee_Info where UserName='" + txtID.Text.Trim() + "' and Password='" + txtPass.Text + "'"))
+            if (CommonFunctions.recordExist("SELECT * from Employee_Info where UserName='" + txtID.Text.Trim() + "' and Password='" + txtPass.Text + "'"))
             {
                 VariableDecleration_Class.sLoginStatus = 1;
 

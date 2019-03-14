@@ -64,16 +64,14 @@ namespace PlanningBoard
             else
             {
                 DateTime TaskDate = FBPlanDateDateTimePicker.Value;
-                if (CommonFunctions.recordExist("SELECT * FROM WorkingDays WHERE MachineNo = " + MachineNo + " AND WorkDate = '" + TaskDate + "'"))
+                if (CommonFunctions.recordExist("SELECT * FROM WorkingDays WHERE MachineNo = " + MachineNo + " and WorkDate = '" + TaskDate + "'"))
                 {
-                    if (CommonFunctions.recordExist("SELECT * FROM WorkingDays WHERE MachineNo = " + MachineNo + " and Active = 1 and WorkDate = '" + TaskDate + "'"))
+                    if (CommonFunctions.recordExist("SELECT * FROM WorkingDays WHERE MachineNo = " + MachineNo + " AND Active = 1 AND WorkDate = '" + TaskDate + "'"))
                     {
-                        if (!CommonFunctions.recordExist("SELECT * FROM PlanTable WHERE MachineNo = " + MachineNo + " and TaskDate = '" + TaskDate + "'"))
+                         if (!CommonFunctions.recordExist("SELECT * FROM PlanTable WHERE MachineNo = " + MachineNo + " AND TaskDate = '" + TaskDate + "'"))
                         {
-
                             try
                             {
-
                                 int Capacity = 0;
                                 int PlanQty = 0;
                                 string GetDate = "";
@@ -81,7 +79,7 @@ namespace PlanningBoard
                                 double SAM = 0;
                                 int GetCount = 1;
                                 int TotalPlanQty = 0;
-                                string query = "select Count(Id) as RecordCount, Id, MachineNo, TaskDate, OrderID, Capacity, PlanQty, RemainingQty, OrderQty, ColIndex, Efficiency, Minute, Status,(select SAM from Order_Info where Id=OrderID) as SAM from PlanTable where TaskDate = '" + planDate.ToString() + "' and MachineNo='" + MachineNo + "' order by TaskDate,Id asc";
+                                string query = "select (SELECT COUNT (Id) from PlanTable where TaskDate = '" + planDate.ToString() + "' and MachineNo='" + MachineNo + "') as RecordCount, Id, MachineNo, TaskDate, OrderID, Capacity, PlanQty, RemainingQty, OrderQty, ColIndex, Efficiency, Minute, Status,(select SAM from Order_Info where Id=OrderID) as SAM from PlanTable where TaskDate = '" + planDate.ToString() + "' and MachineNo='" + MachineNo + "' order by TaskDate,Id asc";
                                 string connectionStr = ConnectionManager.connectionString;
                                 SqlCommand cm = new SqlCommand();
                                 SqlConnection cn = new SqlConnection(connectionStr);
