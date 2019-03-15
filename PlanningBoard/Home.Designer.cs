@@ -39,6 +39,10 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.machineInfoDataGridView = new System.Windows.Forms.DataGridView();
+            this.SL = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.MachineNumber = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.MachineDia = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.MachineStatus = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.label1 = new System.Windows.Forms.Label();
             this.UpdateMachineInfo = new System.Windows.Forms.Button();
@@ -54,68 +58,64 @@
             this.checkAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.unCheckAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStrip3 = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.SL = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.MachineNumber = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.MachineDia = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.MachineStatus = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.entryGroupBox = new System.Windows.Forms.GroupBox();
-            this.label12 = new System.Windows.Forms.Label();
-            this.label10 = new System.Windows.Forms.Label();
-            this.label9 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
-            this.label7 = new System.Windows.Forms.Label();
-            this.label8 = new System.Windows.Forms.Label();
-            this.label11 = new System.Windows.Forms.Label();
-            this.buyerComboBox = new System.Windows.Forms.ComboBox();
-            this.partComboBox = new System.Windows.Forms.ComboBox();
-            this.styleComboBox = new System.Windows.Forms.ComboBox();
-            this.sizeComboBox = new System.Windows.Forms.ComboBox();
-            this.diaComboBox = new System.Windows.Forms.ComboBox();
-            this.AddBuyer = new System.Windows.Forms.Button();
-            this.AddPart = new System.Windows.Forms.Button();
-            this.AddStyle = new System.Windows.Forms.Button();
-            this.AddSize = new System.Windows.Forms.Button();
-            this.AddDia = new System.Windows.Forms.Button();
-            this.shipDatePicker = new System.Windows.Forms.DateTimePicker();
-            this.qtyTextBox = new System.Windows.Forms.TextBox();
-            this.effTextBox = new System.Windows.Forms.TextBox();
             this.samTextBox = new System.Windows.Forms.TextBox();
+            this.effTextBox = new System.Windows.Forms.TextBox();
+            this.qtyTextBox = new System.Windows.Forms.TextBox();
+            this.shipDatePicker = new System.Windows.Forms.DateTimePicker();
+            this.AddDia = new System.Windows.Forms.Button();
+            this.AddSize = new System.Windows.Forms.Button();
+            this.AddStyle = new System.Windows.Forms.Button();
+            this.AddPart = new System.Windows.Forms.Button();
+            this.AddBuyer = new System.Windows.Forms.Button();
+            this.diaComboBox = new System.Windows.Forms.ComboBox();
+            this.sizeComboBox = new System.Windows.Forms.ComboBox();
+            this.styleComboBox = new System.Windows.Forms.ComboBox();
+            this.partComboBox = new System.Windows.Forms.ComboBox();
+            this.buyerComboBox = new System.Windows.Forms.ComboBox();
+            this.label11 = new System.Windows.Forms.Label();
+            this.label8 = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
+            this.label10 = new System.Windows.Forms.Label();
+            this.label12 = new System.Windows.Forms.Label();
             this.orderInfoDetailsGroupBox = new System.Windows.Forms.GroupBox();
             this.orderInfoDetailsdataGridView = new System.Windows.Forms.DataGridView();
-            this.ID = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Status = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Efficiency = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.SAM = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Date = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Qty = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Part = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Dia = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Size = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Style = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Buyer = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn1 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Buyer = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Style = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Size = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Dia = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Part = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Qty = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Date = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.SAM = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Efficiency = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Status = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ID = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.SaveOrderInfo = new System.Windows.Forms.Button();
             this.UpdateOrderInfo = new System.Windows.Forms.Button();
             this.hiddenIDtextBox = new System.Windows.Forms.TextBox();
             this.panel4 = new System.Windows.Forms.Panel();
-            this.BtnUpdate = new System.Windows.Forms.Button();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.label16 = new System.Windows.Forms.Label();
-            this.label15 = new System.Windows.Forms.Label();
-            this.fromDateTimePicker = new System.Windows.Forms.DateTimePicker();
-            this.label14 = new System.Windows.Forms.Label();
-            this.toDateTimePicker = new System.Windows.Forms.DateTimePicker();
-            this.BtnGenerate = new System.Windows.Forms.Button();
-            this.label13 = new System.Windows.Forms.Label();
-            this.machineNoComboBox = new System.Windows.Forms.ComboBox();
-            this.resetButton = new System.Windows.Forms.Button();
-            this.Grid_WorkDays_Info = new System.Windows.Forms.DataGridView();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.labelAlert = new System.Windows.Forms.Label();
-            this.panel3 = new System.Windows.Forms.Panel();
             this.SaveWorkDays = new System.Windows.Forms.Button();
+            this.labelAlert = new System.Windows.Forms.Label();
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.Grid_WorkDays_Info = new System.Windows.Forms.DataGridView();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.resetButton = new System.Windows.Forms.Button();
+            this.machineNoComboBox = new System.Windows.Forms.ComboBox();
+            this.label13 = new System.Windows.Forms.Label();
+            this.BtnGenerate = new System.Windows.Forms.Button();
+            this.toDateTimePicker = new System.Windows.Forms.DateTimePicker();
+            this.label14 = new System.Windows.Forms.Label();
+            this.fromDateTimePicker = new System.Windows.Forms.DateTimePicker();
+            this.label15 = new System.Windows.Forms.Label();
+            this.label16 = new System.Windows.Forms.Label();
+            this.BtnUpdate = new System.Windows.Forms.Button();
+            this.panel3 = new System.Windows.Forms.Panel();
             this.panel2.SuspendLayout();
             this.panel1.SuspendLayout();
             this.groupBox4.SuspendLayout();
@@ -127,8 +127,8 @@
             this.orderInfoDetailsGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.orderInfoDetailsdataGridView)).BeginInit();
             this.panel4.SuspendLayout();
-            this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Grid_WorkDays_Info)).BeginInit();
+            this.groupBox2.SuspendLayout();
             this.panel3.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -274,6 +274,38 @@
             this.machineInfoDataGridView.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.machineInfoDataGridView_CellClick);
             this.machineInfoDataGridView.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.machineInfoDataGridView_CellDoubleClick);
             // 
+            // SL
+            // 
+            this.SL.FillWeight = 54.21687F;
+            this.SL.HeaderText = "SL";
+            this.SL.Name = "SL";
+            this.SL.ReadOnly = true;
+            this.SL.Width = 40;
+            // 
+            // MachineNumber
+            // 
+            this.MachineNumber.FillWeight = 155.1753F;
+            this.MachineNumber.HeaderText = "Machine Number";
+            this.MachineNumber.Name = "MachineNumber";
+            this.MachineNumber.ReadOnly = true;
+            this.MachineNumber.Width = 230;
+            // 
+            // MachineDia
+            // 
+            this.MachineDia.FillWeight = 101.1321F;
+            this.MachineDia.HeaderText = "Machine Dia";
+            this.MachineDia.Name = "MachineDia";
+            this.MachineDia.ReadOnly = true;
+            this.MachineDia.Width = 157;
+            // 
+            // MachineStatus
+            // 
+            this.MachineStatus.FillWeight = 89.47573F;
+            this.MachineStatus.HeaderText = "Status";
+            this.MachineStatus.Name = "MachineStatus";
+            this.MachineStatus.ReadOnly = true;
+            this.MachineStatus.Width = 120;
+            // 
             // groupBox3
             // 
             this.groupBox3.BackColor = System.Drawing.Color.SlateGray;
@@ -412,38 +444,6 @@
             this.contextMenuStrip3.Name = "contextMenuStrip3";
             this.contextMenuStrip3.Size = new System.Drawing.Size(61, 4);
             // 
-            // SL
-            // 
-            this.SL.FillWeight = 54.21687F;
-            this.SL.HeaderText = "SL";
-            this.SL.Name = "SL";
-            this.SL.ReadOnly = true;
-            this.SL.Width = 40;
-            // 
-            // MachineNumber
-            // 
-            this.MachineNumber.FillWeight = 155.1753F;
-            this.MachineNumber.HeaderText = "Machine Number";
-            this.MachineNumber.Name = "MachineNumber";
-            this.MachineNumber.ReadOnly = true;
-            this.MachineNumber.Width = 230;
-            // 
-            // MachineDia
-            // 
-            this.MachineDia.FillWeight = 101.1321F;
-            this.MachineDia.HeaderText = "Machine Dia";
-            this.MachineDia.Name = "MachineDia";
-            this.MachineDia.ReadOnly = true;
-            this.MachineDia.Width = 157;
-            // 
-            // MachineStatus
-            // 
-            this.MachineStatus.FillWeight = 89.47573F;
-            this.MachineStatus.HeaderText = "Status";
-            this.MachineStatus.Name = "MachineStatus";
-            this.MachineStatus.ReadOnly = true;
-            this.MachineStatus.Width = 120;
-            // 
             // entryGroupBox
             // 
             this.entryGroupBox.BackColor = System.Drawing.Color.SlateGray;
@@ -479,195 +479,29 @@
             this.entryGroupBox.Text = "Order Info";
             this.entryGroupBox.Enter += new System.EventHandler(this.entryGroupBox_Enter);
             // 
-            // label12
+            // samTextBox
             // 
-            this.label12.AutoSize = true;
-            this.label12.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label12.Location = new System.Drawing.Point(30, 37);
-            this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(38, 15);
-            this.label12.TabIndex = 0;
-            this.label12.Text = "Buyer";
+            this.samTextBox.Location = new System.Drawing.Point(476, 79);
+            this.samTextBox.Name = "samTextBox";
+            this.samTextBox.Size = new System.Drawing.Size(141, 21);
+            this.samTextBox.TabIndex = 29;
+            this.samTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.samTextBox_KeyPress);
             // 
-            // label10
+            // effTextBox
             // 
-            this.label10.AutoSize = true;
-            this.label10.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label10.Location = new System.Drawing.Point(15, 82);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(51, 15);
-            this.label10.TabIndex = 1;
-            this.label10.Text = "Quantity";
+            this.effTextBox.Location = new System.Drawing.Point(687, 78);
+            this.effTextBox.Name = "effTextBox";
+            this.effTextBox.Size = new System.Drawing.Size(141, 21);
+            this.effTextBox.TabIndex = 28;
+            this.effTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.effTextBox_KeyPress);
             // 
-            // label9
+            // qtyTextBox
             // 
-            this.label9.AutoSize = true;
-            this.label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label9.Location = new System.Drawing.Point(834, 33);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(59, 15);
-            this.label9.TabIndex = 2;
-            this.label9.Text = "Body Part";
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label4.Location = new System.Drawing.Point(623, 36);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(26, 15);
-            this.label4.TabIndex = 3;
-            this.label4.Text = "Dia";
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.Location = new System.Drawing.Point(439, 35);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(31, 15);
-            this.label5.TabIndex = 4;
-            this.label5.Text = "Size";
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label6.Location = new System.Drawing.Point(221, 36);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(33, 15);
-            this.label6.TabIndex = 5;
-            this.label6.Text = "Style";
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label7.Location = new System.Drawing.Point(220, 81);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(58, 15);
-            this.label7.TabIndex = 6;
-            this.label7.Text = "ShipDate";
-            // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label8.Location = new System.Drawing.Point(439, 82);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(33, 15);
-            this.label8.TabIndex = 7;
-            this.label8.Text = "SAM";
-            // 
-            // label11
-            // 
-            this.label11.AutoSize = true;
-            this.label11.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label11.Location = new System.Drawing.Point(623, 79);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(58, 15);
-            this.label11.TabIndex = 10;
-            this.label11.Text = "Efficiency";
-            // 
-            // buyerComboBox
-            // 
-            this.buyerComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.buyerComboBox.FormattingEnabled = true;
-            this.buyerComboBox.Location = new System.Drawing.Point(74, 33);
-            this.buyerComboBox.Name = "buyerComboBox";
-            this.buyerComboBox.Size = new System.Drawing.Size(121, 23);
-            this.buyerComboBox.TabIndex = 11;
-            this.buyerComboBox.SelectedIndexChanged += new System.EventHandler(this.buyerComboBox_SelectedIndexChanged);
-            // 
-            // partComboBox
-            // 
-            this.partComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.partComboBox.FormattingEnabled = true;
-            this.partComboBox.Location = new System.Drawing.Point(899, 30);
-            this.partComboBox.Name = "partComboBox";
-            this.partComboBox.Size = new System.Drawing.Size(121, 23);
-            this.partComboBox.TabIndex = 12;
-            this.partComboBox.SelectedIndexChanged += new System.EventHandler(this.partComboBox_SelectedIndexChanged);
-            // 
-            // styleComboBox
-            // 
-            this.styleComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.styleComboBox.FormattingEnabled = true;
-            this.styleComboBox.Location = new System.Drawing.Point(284, 32);
-            this.styleComboBox.Name = "styleComboBox";
-            this.styleComboBox.Size = new System.Drawing.Size(121, 23);
-            this.styleComboBox.TabIndex = 13;
-            this.styleComboBox.SelectedIndexChanged += new System.EventHandler(this.styleComboBox_SelectedIndexChanged);
-            // 
-            // sizeComboBox
-            // 
-            this.sizeComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.sizeComboBox.FormattingEnabled = true;
-            this.sizeComboBox.Location = new System.Drawing.Point(476, 32);
-            this.sizeComboBox.Name = "sizeComboBox";
-            this.sizeComboBox.Size = new System.Drawing.Size(120, 23);
-            this.sizeComboBox.TabIndex = 15;
-            this.sizeComboBox.SelectedIndexChanged += new System.EventHandler(this.sizeComboBox_SelectedIndexChanged);
-            // 
-            // diaComboBox
-            // 
-            this.diaComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.diaComboBox.FormattingEnabled = true;
-            this.diaComboBox.Location = new System.Drawing.Point(687, 32);
-            this.diaComboBox.Name = "diaComboBox";
-            this.diaComboBox.Size = new System.Drawing.Size(121, 23);
-            this.diaComboBox.TabIndex = 17;
-            this.diaComboBox.SelectedIndexChanged += new System.EventHandler(this.diaComboBox_SelectedIndexChanged);
-            // 
-            // AddBuyer
-            // 
-            this.AddBuyer.Location = new System.Drawing.Point(191, 32);
-            this.AddBuyer.Name = "AddBuyer";
-            this.AddBuyer.Size = new System.Drawing.Size(24, 25);
-            this.AddBuyer.TabIndex = 1;
-            this.AddBuyer.Text = ">";
-            this.AddBuyer.UseVisualStyleBackColor = true;
-            this.AddBuyer.Click += new System.EventHandler(this.AddBuyer_Click);
-            // 
-            // AddPart
-            // 
-            this.AddPart.Location = new System.Drawing.Point(1017, 29);
-            this.AddPart.Name = "AddPart";
-            this.AddPart.Size = new System.Drawing.Size(24, 24);
-            this.AddPart.TabIndex = 20;
-            this.AddPart.Text = ">";
-            this.AddPart.UseVisualStyleBackColor = true;
-            this.AddPart.Click += new System.EventHandler(this.AddPart_Click);
-            // 
-            // AddStyle
-            // 
-            this.AddStyle.Location = new System.Drawing.Point(401, 30);
-            this.AddStyle.Name = "AddStyle";
-            this.AddStyle.Size = new System.Drawing.Size(24, 27);
-            this.AddStyle.TabIndex = 2;
-            this.AddStyle.Text = ">";
-            this.AddStyle.UseVisualStyleBackColor = true;
-            this.AddStyle.Click += new System.EventHandler(this.AddStyle_Click);
-            // 
-            // AddSize
-            // 
-            this.AddSize.Location = new System.Drawing.Point(594, 30);
-            this.AddSize.Name = "AddSize";
-            this.AddSize.Size = new System.Drawing.Size(23, 27);
-            this.AddSize.TabIndex = 22;
-            this.AddSize.Text = ">";
-            this.AddSize.UseVisualStyleBackColor = true;
-            this.AddSize.Click += new System.EventHandler(this.AddSize_Click);
-            // 
-            // AddDia
-            // 
-            this.AddDia.Location = new System.Drawing.Point(804, 31);
-            this.AddDia.Name = "AddDia";
-            this.AddDia.Size = new System.Drawing.Size(24, 24);
-            this.AddDia.TabIndex = 24;
-            this.AddDia.Text = ">";
-            this.AddDia.UseVisualStyleBackColor = true;
-            this.AddDia.Click += new System.EventHandler(this.AddDia_Click);
+            this.qtyTextBox.Location = new System.Drawing.Point(74, 79);
+            this.qtyTextBox.Name = "qtyTextBox";
+            this.qtyTextBox.Size = new System.Drawing.Size(141, 21);
+            this.qtyTextBox.TabIndex = 27;
+            this.qtyTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.qtyTextBox_KeyPress);
             // 
             // shipDatePicker
             // 
@@ -681,29 +515,195 @@
             this.shipDatePicker.TabIndex = 9;
             this.shipDatePicker.Value = new System.DateTime(2019, 2, 17, 0, 0, 0, 0);
             // 
-            // qtyTextBox
+            // AddDia
             // 
-            this.qtyTextBox.Location = new System.Drawing.Point(74, 79);
-            this.qtyTextBox.Name = "qtyTextBox";
-            this.qtyTextBox.Size = new System.Drawing.Size(141, 21);
-            this.qtyTextBox.TabIndex = 27;
-            this.qtyTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.qtyTextBox_KeyPress);
+            this.AddDia.Location = new System.Drawing.Point(804, 31);
+            this.AddDia.Name = "AddDia";
+            this.AddDia.Size = new System.Drawing.Size(24, 24);
+            this.AddDia.TabIndex = 24;
+            this.AddDia.Text = ">";
+            this.AddDia.UseVisualStyleBackColor = true;
+            this.AddDia.Click += new System.EventHandler(this.AddDia_Click);
             // 
-            // effTextBox
+            // AddSize
             // 
-            this.effTextBox.Location = new System.Drawing.Point(687, 78);
-            this.effTextBox.Name = "effTextBox";
-            this.effTextBox.Size = new System.Drawing.Size(141, 21);
-            this.effTextBox.TabIndex = 28;
-            this.effTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.effTextBox_KeyPress);
+            this.AddSize.Location = new System.Drawing.Point(594, 30);
+            this.AddSize.Name = "AddSize";
+            this.AddSize.Size = new System.Drawing.Size(23, 27);
+            this.AddSize.TabIndex = 22;
+            this.AddSize.Text = ">";
+            this.AddSize.UseVisualStyleBackColor = true;
+            this.AddSize.Click += new System.EventHandler(this.AddSize_Click);
             // 
-            // samTextBox
+            // AddStyle
             // 
-            this.samTextBox.Location = new System.Drawing.Point(476, 79);
-            this.samTextBox.Name = "samTextBox";
-            this.samTextBox.Size = new System.Drawing.Size(141, 21);
-            this.samTextBox.TabIndex = 29;
-            this.samTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.samTextBox_KeyPress);
+            this.AddStyle.Location = new System.Drawing.Point(401, 30);
+            this.AddStyle.Name = "AddStyle";
+            this.AddStyle.Size = new System.Drawing.Size(24, 27);
+            this.AddStyle.TabIndex = 2;
+            this.AddStyle.Text = ">";
+            this.AddStyle.UseVisualStyleBackColor = true;
+            this.AddStyle.Click += new System.EventHandler(this.AddStyle_Click);
+            // 
+            // AddPart
+            // 
+            this.AddPart.Location = new System.Drawing.Point(1017, 29);
+            this.AddPart.Name = "AddPart";
+            this.AddPart.Size = new System.Drawing.Size(24, 24);
+            this.AddPart.TabIndex = 20;
+            this.AddPart.Text = ">";
+            this.AddPart.UseVisualStyleBackColor = true;
+            this.AddPart.Click += new System.EventHandler(this.AddPart_Click);
+            // 
+            // AddBuyer
+            // 
+            this.AddBuyer.Location = new System.Drawing.Point(191, 32);
+            this.AddBuyer.Name = "AddBuyer";
+            this.AddBuyer.Size = new System.Drawing.Size(24, 25);
+            this.AddBuyer.TabIndex = 1;
+            this.AddBuyer.Text = ">";
+            this.AddBuyer.UseVisualStyleBackColor = true;
+            this.AddBuyer.Click += new System.EventHandler(this.AddBuyer_Click);
+            // 
+            // diaComboBox
+            // 
+            this.diaComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.diaComboBox.FormattingEnabled = true;
+            this.diaComboBox.Location = new System.Drawing.Point(687, 32);
+            this.diaComboBox.Name = "diaComboBox";
+            this.diaComboBox.Size = new System.Drawing.Size(121, 23);
+            this.diaComboBox.TabIndex = 17;
+            this.diaComboBox.SelectedIndexChanged += new System.EventHandler(this.diaComboBox_SelectedIndexChanged);
+            // 
+            // sizeComboBox
+            // 
+            this.sizeComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.sizeComboBox.FormattingEnabled = true;
+            this.sizeComboBox.Location = new System.Drawing.Point(476, 32);
+            this.sizeComboBox.Name = "sizeComboBox";
+            this.sizeComboBox.Size = new System.Drawing.Size(120, 23);
+            this.sizeComboBox.TabIndex = 15;
+            this.sizeComboBox.SelectedIndexChanged += new System.EventHandler(this.sizeComboBox_SelectedIndexChanged);
+            // 
+            // styleComboBox
+            // 
+            this.styleComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.styleComboBox.FormattingEnabled = true;
+            this.styleComboBox.Location = new System.Drawing.Point(284, 32);
+            this.styleComboBox.Name = "styleComboBox";
+            this.styleComboBox.Size = new System.Drawing.Size(121, 23);
+            this.styleComboBox.TabIndex = 13;
+            this.styleComboBox.SelectedIndexChanged += new System.EventHandler(this.styleComboBox_SelectedIndexChanged);
+            // 
+            // partComboBox
+            // 
+            this.partComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.partComboBox.FormattingEnabled = true;
+            this.partComboBox.Location = new System.Drawing.Point(899, 30);
+            this.partComboBox.Name = "partComboBox";
+            this.partComboBox.Size = new System.Drawing.Size(121, 23);
+            this.partComboBox.TabIndex = 12;
+            this.partComboBox.SelectedIndexChanged += new System.EventHandler(this.partComboBox_SelectedIndexChanged);
+            // 
+            // buyerComboBox
+            // 
+            this.buyerComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.buyerComboBox.FormattingEnabled = true;
+            this.buyerComboBox.Location = new System.Drawing.Point(74, 33);
+            this.buyerComboBox.Name = "buyerComboBox";
+            this.buyerComboBox.Size = new System.Drawing.Size(121, 23);
+            this.buyerComboBox.TabIndex = 11;
+            this.buyerComboBox.SelectedIndexChanged += new System.EventHandler(this.buyerComboBox_SelectedIndexChanged);
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label11.Location = new System.Drawing.Point(623, 79);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(58, 15);
+            this.label11.TabIndex = 10;
+            this.label11.Text = "Efficiency";
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label8.Location = new System.Drawing.Point(439, 82);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(33, 15);
+            this.label8.TabIndex = 7;
+            this.label8.Text = "SAM";
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label7.Location = new System.Drawing.Point(220, 81);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(58, 15);
+            this.label7.TabIndex = 6;
+            this.label7.Text = "ShipDate";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label6.Location = new System.Drawing.Point(221, 36);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(33, 15);
+            this.label6.TabIndex = 5;
+            this.label6.Text = "Style";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label5.Location = new System.Drawing.Point(439, 35);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(31, 15);
+            this.label5.TabIndex = 4;
+            this.label5.Text = "Size";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label4.Location = new System.Drawing.Point(623, 36);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(26, 15);
+            this.label4.TabIndex = 3;
+            this.label4.Text = "Dia";
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label9.Location = new System.Drawing.Point(834, 33);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(59, 15);
+            this.label9.TabIndex = 2;
+            this.label9.Text = "Body Part";
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label10.Location = new System.Drawing.Point(15, 82);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(51, 15);
+            this.label10.TabIndex = 1;
+            this.label10.Text = "Quantity";
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label12.Location = new System.Drawing.Point(30, 37);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(38, 15);
+            this.label12.TabIndex = 0;
+            this.label12.Text = "Buyer";
             // 
             // orderInfoDetailsGroupBox
             // 
@@ -747,71 +747,13 @@
             this.orderInfoDetailsdataGridView.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.orderInfoDetailsdataGridView_CellDoubleClick);
             this.orderInfoDetailsdataGridView.CellMouseUp += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.orderInfoDetailsdataGridView_CellMouseUp);
             // 
-            // ID
+            // dataGridViewTextBoxColumn1
             // 
-            this.ID.HeaderText = "ID";
-            this.ID.Name = "ID";
-            this.ID.ReadOnly = true;
-            this.ID.Visible = false;
-            // 
-            // Status
-            // 
-            this.Status.HeaderText = "Status";
-            this.Status.Name = "Status";
-            this.Status.ReadOnly = true;
-            this.Status.Width = 90;
-            // 
-            // Efficiency
-            // 
-            this.Efficiency.HeaderText = "Efficiency";
-            this.Efficiency.Name = "Efficiency";
-            this.Efficiency.ReadOnly = true;
-            this.Efficiency.Width = 70;
-            // 
-            // SAM
-            // 
-            this.SAM.HeaderText = "SAM";
-            this.SAM.Name = "SAM";
-            this.SAM.ReadOnly = true;
-            this.SAM.Width = 50;
-            // 
-            // Date
-            // 
-            this.Date.HeaderText = "Date";
-            this.Date.Name = "Date";
-            this.Date.ReadOnly = true;
-            // 
-            // Qty
-            // 
-            this.Qty.HeaderText = "Qty";
-            this.Qty.Name = "Qty";
-            this.Qty.ReadOnly = true;
-            // 
-            // Part
-            // 
-            this.Part.HeaderText = "Part";
-            this.Part.Name = "Part";
-            this.Part.ReadOnly = true;
-            this.Part.Width = 80;
-            // 
-            // Dia
-            // 
-            this.Dia.HeaderText = "Dia";
-            this.Dia.Name = "Dia";
-            this.Dia.ReadOnly = true;
-            // 
-            // Size
-            // 
-            this.Size.HeaderText = "Size";
-            this.Size.Name = "Size";
-            this.Size.ReadOnly = true;
-            this.Size.Width = 90;
-            // 
-            // Style
-            // 
-            this.Style.HeaderText = "Style";
-            this.Style.Name = "Style";
-            this.Style.ReadOnly = true;
+            this.dataGridViewTextBoxColumn1.FillWeight = 90F;
+            this.dataGridViewTextBoxColumn1.HeaderText = "SL";
+            this.dataGridViewTextBoxColumn1.Name = "dataGridViewTextBoxColumn1";
+            this.dataGridViewTextBoxColumn1.ReadOnly = true;
+            this.dataGridViewTextBoxColumn1.Width = 40;
             // 
             // Buyer
             // 
@@ -820,13 +762,71 @@
             this.Buyer.ReadOnly = true;
             this.Buyer.Width = 200;
             // 
-            // dataGridViewTextBoxColumn1
+            // Style
             // 
-            this.dataGridViewTextBoxColumn1.FillWeight = 90F;
-            this.dataGridViewTextBoxColumn1.HeaderText = "SL";
-            this.dataGridViewTextBoxColumn1.Name = "dataGridViewTextBoxColumn1";
-            this.dataGridViewTextBoxColumn1.ReadOnly = true;
-            this.dataGridViewTextBoxColumn1.Width = 40;
+            this.Style.HeaderText = "Style";
+            this.Style.Name = "Style";
+            this.Style.ReadOnly = true;
+            // 
+            // Size
+            // 
+            this.Size.HeaderText = "Size";
+            this.Size.Name = "Size";
+            this.Size.ReadOnly = true;
+            this.Size.Width = 90;
+            // 
+            // Dia
+            // 
+            this.Dia.HeaderText = "Dia";
+            this.Dia.Name = "Dia";
+            this.Dia.ReadOnly = true;
+            // 
+            // Part
+            // 
+            this.Part.HeaderText = "Part";
+            this.Part.Name = "Part";
+            this.Part.ReadOnly = true;
+            this.Part.Width = 80;
+            // 
+            // Qty
+            // 
+            this.Qty.HeaderText = "Qty";
+            this.Qty.Name = "Qty";
+            this.Qty.ReadOnly = true;
+            // 
+            // Date
+            // 
+            this.Date.HeaderText = "Date";
+            this.Date.Name = "Date";
+            this.Date.ReadOnly = true;
+            // 
+            // SAM
+            // 
+            this.SAM.HeaderText = "SAM";
+            this.SAM.Name = "SAM";
+            this.SAM.ReadOnly = true;
+            this.SAM.Width = 50;
+            // 
+            // Efficiency
+            // 
+            this.Efficiency.HeaderText = "Efficiency";
+            this.Efficiency.Name = "Efficiency";
+            this.Efficiency.ReadOnly = true;
+            this.Efficiency.Width = 70;
+            // 
+            // Status
+            // 
+            this.Status.HeaderText = "Status";
+            this.Status.Name = "Status";
+            this.Status.ReadOnly = true;
+            this.Status.Width = 90;
+            // 
+            // ID
+            // 
+            this.ID.HeaderText = "ID";
+            this.ID.Name = "ID";
+            this.ID.ReadOnly = true;
+            this.ID.Visible = false;
             // 
             // SaveOrderInfo
             // 
@@ -880,17 +880,55 @@
             this.panel4.Paint += new System.Windows.Forms.PaintEventHandler(this.panel4_Paint);
             this.panel4.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.panel4_PreviewKeyDown);
             // 
-            // BtnUpdate
+            // SaveWorkDays
             // 
-            this.BtnUpdate.BackColor = System.Drawing.Color.RosyBrown;
-            this.BtnUpdate.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.BtnUpdate.Location = new System.Drawing.Point(972, 611);
-            this.BtnUpdate.Name = "BtnUpdate";
-            this.BtnUpdate.Size = new System.Drawing.Size(96, 34);
-            this.BtnUpdate.TabIndex = 5;
-            this.BtnUpdate.Text = "Save";
-            this.BtnUpdate.UseVisualStyleBackColor = false;
-            this.BtnUpdate.Click += new System.EventHandler(this.BtnUpdate_Click);
+            this.SaveWorkDays.BackColor = System.Drawing.Color.RosyBrown;
+            this.SaveWorkDays.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.SaveWorkDays.Location = new System.Drawing.Point(978, 536);
+            this.SaveWorkDays.Name = "SaveWorkDays";
+            this.SaveWorkDays.Size = new System.Drawing.Size(90, 31);
+            this.SaveWorkDays.TabIndex = 15;
+            this.SaveWorkDays.Text = "Save";
+            this.SaveWorkDays.UseVisualStyleBackColor = false;
+            this.SaveWorkDays.Click += new System.EventHandler(this.SaveWorkDays_Click);
+            // 
+            // labelAlert
+            // 
+            this.labelAlert.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
+            this.labelAlert.Font = new System.Drawing.Font("Microsoft Tai Le", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelAlert.ForeColor = System.Drawing.Color.DarkRed;
+            this.labelAlert.Location = new System.Drawing.Point(25, 344);
+            this.labelAlert.Name = "labelAlert";
+            this.labelAlert.Size = new System.Drawing.Size(309, 65);
+            this.labelAlert.TabIndex = 41;
+            this.labelAlert.Text = "This Row can not be edited! It has already been used in PlanBoard! For Editing De" +
+    "lete from PlanBoard First!!!";
+            this.labelAlert.Visible = false;
+            // 
+            // textBox1
+            // 
+            this.textBox1.BackColor = System.Drawing.Color.DarkKhaki;
+            this.textBox1.Location = new System.Drawing.Point(171, 467);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(100, 20);
+            this.textBox1.TabIndex = 15;
+            this.textBox1.Visible = false;
+            // 
+            // Grid_WorkDays_Info
+            // 
+            this.Grid_WorkDays_Info.AllowUserToAddRows = false;
+            this.Grid_WorkDays_Info.AllowUserToDeleteRows = false;
+            this.Grid_WorkDays_Info.BackgroundColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.Grid_WorkDays_Info.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.Grid_WorkDays_Info.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter;
+            this.Grid_WorkDays_Info.Location = new System.Drawing.Point(340, 22);
+            this.Grid_WorkDays_Info.Name = "Grid_WorkDays_Info";
+            this.Grid_WorkDays_Info.RowHeadersWidth = 4;
+            this.Grid_WorkDays_Info.Size = new System.Drawing.Size(728, 508);
+            this.Grid_WorkDays_Info.TabIndex = 14;
+            this.Grid_WorkDays_Info.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.Grid_WorkDays_Info_CellClick_1);
+            this.Grid_WorkDays_Info.CellMouseDown += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.Grid_WorkDays_Info_CellMouseDown);
+            this.Grid_WorkDays_Info.EditingControlShowing += new System.Windows.Forms.DataGridViewEditingControlShowingEventHandler(this.Grid_WorkDays_Info_EditingControlShowing);
             // 
             // groupBox2
             // 
@@ -910,57 +948,36 @@
             this.groupBox2.TabIndex = 14;
             this.groupBox2.TabStop = false;
             // 
-            // label16
+            // resetButton
             // 
-            this.label16.AutoSize = true;
-            this.label16.Font = new System.Drawing.Font("Arial Black", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label16.Location = new System.Drawing.Point(126, 0);
-            this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(121, 23);
-            this.label16.TabIndex = 1;
-            this.label16.Text = "Working Day";
-            this.label16.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.resetButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.resetButton.Location = new System.Drawing.Point(114, 141);
+            this.resetButton.Name = "resetButton";
+            this.resetButton.Size = new System.Drawing.Size(78, 26);
+            this.resetButton.TabIndex = 14;
+            this.resetButton.Text = "Reset";
+            this.resetButton.UseVisualStyleBackColor = true;
+            this.resetButton.Click += new System.EventHandler(this.resetButton_Click);
             // 
-            // label15
+            // machineNoComboBox
             // 
-            this.label15.AutoSize = true;
-            this.label15.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label15.Location = new System.Drawing.Point(22, 58);
-            this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(36, 15);
-            this.label15.TabIndex = 7;
-            this.label15.Text = "From";
+            this.machineNoComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.machineNoComboBox.FormattingEnabled = true;
+            this.machineNoComboBox.Location = new System.Drawing.Point(114, 112);
+            this.machineNoComboBox.Name = "machineNoComboBox";
+            this.machineNoComboBox.Size = new System.Drawing.Size(156, 21);
+            this.machineNoComboBox.TabIndex = 12;
+            this.machineNoComboBox.SelectedIndexChanged += new System.EventHandler(this.machineNoComboBox_SelectedIndexChanged);
             // 
-            // fromDateTimePicker
+            // label13
             // 
-            this.fromDateTimePicker.CustomFormat = "dd/MM/yyyy";
-            this.fromDateTimePicker.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.fromDateTimePicker.Location = new System.Drawing.Point(113, 61);
-            this.fromDateTimePicker.Name = "fromDateTimePicker";
-            this.fromDateTimePicker.Size = new System.Drawing.Size(158, 20);
-            this.fromDateTimePicker.TabIndex = 8;
-            this.fromDateTimePicker.Value = new System.DateTime(2019, 3, 3, 0, 0, 0, 0);
-            this.fromDateTimePicker.ValueChanged += new System.EventHandler(this.fromDateTimePicker_ValueChanged);
-            // 
-            // label14
-            // 
-            this.label14.AutoSize = true;
-            this.label14.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label14.Location = new System.Drawing.Point(22, 86);
-            this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(21, 15);
-            this.label14.TabIndex = 9;
-            this.label14.Text = "To";
-            // 
-            // toDateTimePicker
-            // 
-            this.toDateTimePicker.CustomFormat = "dd/MM/yyyy";
-            this.toDateTimePicker.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.toDateTimePicker.Location = new System.Drawing.Point(114, 86);
-            this.toDateTimePicker.Name = "toDateTimePicker";
-            this.toDateTimePicker.Size = new System.Drawing.Size(157, 20);
-            this.toDateTimePicker.TabIndex = 10;
-            this.toDateTimePicker.ValueChanged += new System.EventHandler(this.toDateTimePicker_ValueChanged);
+            this.label13.AutoSize = true;
+            this.label13.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label13.Location = new System.Drawing.Point(22, 113);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(74, 15);
+            this.label13.TabIndex = 11;
+            this.label13.Text = "Machine No";
             // 
             // BtnGenerate
             // 
@@ -973,74 +990,69 @@
             this.BtnGenerate.UseVisualStyleBackColor = true;
             this.BtnGenerate.Click += new System.EventHandler(this.BtnGenerate_Click);
             // 
-            // label13
+            // toDateTimePicker
             // 
-            this.label13.AutoSize = true;
-            this.label13.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label13.Location = new System.Drawing.Point(22, 113);
-            this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(74, 15);
-            this.label13.TabIndex = 11;
-            this.label13.Text = "Machine No";
+            this.toDateTimePicker.CustomFormat = "dd/MM/yyyy";
+            this.toDateTimePicker.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+            this.toDateTimePicker.Location = new System.Drawing.Point(114, 86);
+            this.toDateTimePicker.Name = "toDateTimePicker";
+            this.toDateTimePicker.Size = new System.Drawing.Size(157, 20);
+            this.toDateTimePicker.TabIndex = 10;
+            this.toDateTimePicker.ValueChanged += new System.EventHandler(this.toDateTimePicker_ValueChanged);
             // 
-            // machineNoComboBox
+            // label14
             // 
-            this.machineNoComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.machineNoComboBox.FormattingEnabled = true;
-            this.machineNoComboBox.Location = new System.Drawing.Point(114, 112);
-            this.machineNoComboBox.Name = "machineNoComboBox";
-            this.machineNoComboBox.Size = new System.Drawing.Size(156, 21);
-            this.machineNoComboBox.TabIndex = 12;
-            this.machineNoComboBox.SelectedIndexChanged += new System.EventHandler(this.machineNoComboBox_SelectedIndexChanged);
+            this.label14.AutoSize = true;
+            this.label14.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label14.Location = new System.Drawing.Point(22, 86);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(21, 15);
+            this.label14.TabIndex = 9;
+            this.label14.Text = "To";
             // 
-            // resetButton
+            // fromDateTimePicker
             // 
-            this.resetButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.resetButton.Location = new System.Drawing.Point(114, 141);
-            this.resetButton.Name = "resetButton";
-            this.resetButton.Size = new System.Drawing.Size(78, 26);
-            this.resetButton.TabIndex = 14;
-            this.resetButton.Text = "Reset";
-            this.resetButton.UseVisualStyleBackColor = true;
-            this.resetButton.Click += new System.EventHandler(this.resetButton_Click);
+            this.fromDateTimePicker.CustomFormat = "dd/MM/yyyy";
+            this.fromDateTimePicker.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+            this.fromDateTimePicker.Location = new System.Drawing.Point(113, 61);
+            this.fromDateTimePicker.Name = "fromDateTimePicker";
+            this.fromDateTimePicker.Size = new System.Drawing.Size(158, 20);
+            this.fromDateTimePicker.TabIndex = 8;
+            this.fromDateTimePicker.Value = new System.DateTime(2019, 3, 3, 0, 0, 0, 0);
+            this.fromDateTimePicker.ValueChanged += new System.EventHandler(this.fromDateTimePicker_ValueChanged);
             // 
-            // Grid_WorkDays_Info
+            // label15
             // 
-            this.Grid_WorkDays_Info.AllowUserToAddRows = false;
-            this.Grid_WorkDays_Info.AllowUserToDeleteRows = false;
-            this.Grid_WorkDays_Info.BackgroundColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.Grid_WorkDays_Info.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.Grid_WorkDays_Info.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter;
-            this.Grid_WorkDays_Info.Location = new System.Drawing.Point(340, 22);
-            this.Grid_WorkDays_Info.Name = "Grid_WorkDays_Info";
-            this.Grid_WorkDays_Info.RowHeadersWidth = 4;
-            this.Grid_WorkDays_Info.Size = new System.Drawing.Size(728, 508);
-            this.Grid_WorkDays_Info.TabIndex = 14;
-            this.Grid_WorkDays_Info.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.Grid_WorkDays_Info_CellClick_1);
-            this.Grid_WorkDays_Info.CellMouseDown += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.Grid_WorkDays_Info_CellMouseDown);
-            this.Grid_WorkDays_Info.EditingControlShowing += new System.Windows.Forms.DataGridViewEditingControlShowingEventHandler(this.Grid_WorkDays_Info_EditingControlShowing);
+            this.label15.AutoSize = true;
+            this.label15.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label15.Location = new System.Drawing.Point(22, 58);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(36, 15);
+            this.label15.TabIndex = 7;
+            this.label15.Text = "From";
             // 
-            // textBox1
+            // label16
             // 
-            this.textBox1.BackColor = System.Drawing.Color.DarkKhaki;
-            this.textBox1.Location = new System.Drawing.Point(171, 467);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(100, 20);
-            this.textBox1.TabIndex = 15;
-            this.textBox1.Visible = false;
+            this.label16.AutoSize = true;
+            this.label16.Font = new System.Drawing.Font("Arial Black", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label16.Location = new System.Drawing.Point(126, 0);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(121, 23);
+            this.label16.TabIndex = 1;
+            this.label16.Text = "Working Day";
+            this.label16.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
-            // labelAlert
+            // BtnUpdate
             // 
-            this.labelAlert.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
-            this.labelAlert.Font = new System.Drawing.Font("Microsoft Tai Le", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelAlert.ForeColor = System.Drawing.Color.DarkRed;
-            this.labelAlert.Location = new System.Drawing.Point(25, 344);
-            this.labelAlert.Name = "labelAlert";
-            this.labelAlert.Size = new System.Drawing.Size(309, 65);
-            this.labelAlert.TabIndex = 41;
-            this.labelAlert.Text = "This Row can not be edited! It has already been used in PlanBoard! For Editing De" +
-    "lete from PlanBoard First!!!";
-            this.labelAlert.Visible = false;
+            this.BtnUpdate.BackColor = System.Drawing.Color.RosyBrown;
+            this.BtnUpdate.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.BtnUpdate.Location = new System.Drawing.Point(972, 611);
+            this.BtnUpdate.Name = "BtnUpdate";
+            this.BtnUpdate.Size = new System.Drawing.Size(96, 34);
+            this.BtnUpdate.TabIndex = 5;
+            this.BtnUpdate.Text = "Save";
+            this.BtnUpdate.UseVisualStyleBackColor = false;
+            this.BtnUpdate.Click += new System.EventHandler(this.BtnUpdate_Click);
             // 
             // panel3
             // 
@@ -1059,18 +1071,6 @@
             this.panel3.Visible = false;
             this.panel3.MouseDown += new System.Windows.Forms.MouseEventHandler(this.panel3_MouseDown);
             this.panel3.MouseMove += new System.Windows.Forms.MouseEventHandler(this.panel3_MouseMove);
-            // 
-            // SaveWorkDays
-            // 
-            this.SaveWorkDays.BackColor = System.Drawing.Color.RosyBrown;
-            this.SaveWorkDays.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.SaveWorkDays.Location = new System.Drawing.Point(978, 536);
-            this.SaveWorkDays.Name = "SaveWorkDays";
-            this.SaveWorkDays.Size = new System.Drawing.Size(90, 31);
-            this.SaveWorkDays.TabIndex = 15;
-            this.SaveWorkDays.Text = "Save";
-            this.SaveWorkDays.UseVisualStyleBackColor = false;
-            this.SaveWorkDays.Click += new System.EventHandler(this.SaveWorkDays_Click);
             // 
             // Home
             // 
@@ -1106,9 +1106,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.orderInfoDetailsdataGridView)).EndInit();
             this.panel4.ResumeLayout(false);
             this.panel4.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.Grid_WorkDays_Info)).EndInit();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.Grid_WorkDays_Info)).EndInit();
             this.panel3.ResumeLayout(false);
             this.panel3.PerformLayout();
             this.ResumeLayout(false);

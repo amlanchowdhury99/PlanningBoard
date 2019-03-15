@@ -92,6 +92,14 @@
             this.label13 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.orderWisePlandataGridView = new System.Windows.Forms.DataGridView();
+            this.dataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.TaskDate = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Capacity = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.BookedQty = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.PlanQty = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Minute = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Eff = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.ReadMode = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.panel2 = new System.Windows.Forms.Panel();
             this.label10 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
@@ -108,14 +116,6 @@
             this.labelAlert = new System.Windows.Forms.Label();
             this.OrderInfoPBcontextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.dataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.TaskDate = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Capacity = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.BookedQty = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.PlanQty = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Minute = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Eff = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.ReadMode = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.orderInfoDetailsdataGridView)).BeginInit();
             this.panel1.SuspendLayout();
@@ -143,7 +143,7 @@
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.orderInfoDetailsdataGridView);
-            this.groupBox1.Font = new System.Drawing.Font("Microsoft Tai Le", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.groupBox1.Font = new System.Drawing.Font("Microsoft Tai Le", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBox1.Location = new System.Drawing.Point(18, 271);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(578, 222);
@@ -171,13 +171,13 @@
             this.Status,
             this.ID});
             this.orderInfoDetailsdataGridView.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.orderInfoDetailsdataGridView.Location = new System.Drawing.Point(3, 23);
+            this.orderInfoDetailsdataGridView.Location = new System.Drawing.Point(3, 19);
             this.orderInfoDetailsdataGridView.MultiSelect = false;
             this.orderInfoDetailsdataGridView.Name = "orderInfoDetailsdataGridView";
             this.orderInfoDetailsdataGridView.ReadOnly = true;
             this.orderInfoDetailsdataGridView.RowHeadersWidth = 4;
             this.orderInfoDetailsdataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.orderInfoDetailsdataGridView.Size = new System.Drawing.Size(572, 196);
+            this.orderInfoDetailsdataGridView.Size = new System.Drawing.Size(572, 200);
             this.orderInfoDetailsdataGridView.TabIndex = 0;
             this.orderInfoDetailsdataGridView.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.orderInfoDetailsdataGridView_CellDoubleClick_1);
             this.orderInfoDetailsdataGridView.CellMouseDown += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.orderInfoDetailsdataGridView_CellMouseDown);
@@ -271,7 +271,7 @@
             this.qtyTextBox.Location = new System.Drawing.Point(92, 6);
             this.qtyTextBox.Name = "qtyTextBox";
             this.qtyTextBox.ReadOnly = true;
-            this.qtyTextBox.Size = new System.Drawing.Size(121, 27);
+            this.qtyTextBox.Size = new System.Drawing.Size(121, 23);
             this.qtyTextBox.TabIndex = 23;
             this.qtyTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.qtyTextBox_KeyPress);
             // 
@@ -334,7 +334,7 @@
             this.panel1.Controls.Add(this.label9);
             this.panel1.Controls.Add(this.label5);
             this.panel1.Controls.Add(this.label12);
-            this.panel1.Font = new System.Drawing.Font("Microsoft Tai Le", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.panel1.Font = new System.Drawing.Font("Microsoft Tai Le", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.panel1.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.panel1.Location = new System.Drawing.Point(18, 26);
             this.panel1.Name = "panel1";
@@ -347,7 +347,7 @@
             this.styleComboBox.FormattingEnabled = true;
             this.styleComboBox.Location = new System.Drawing.Point(82, 47);
             this.styleComboBox.Name = "styleComboBox";
-            this.styleComboBox.Size = new System.Drawing.Size(121, 27);
+            this.styleComboBox.Size = new System.Drawing.Size(121, 24);
             this.styleComboBox.TabIndex = 25;
             this.styleComboBox.SelectedIndexChanged += new System.EventHandler(this.styleComboBox_SelectedIndexChanged);
             // 
@@ -367,7 +367,7 @@
             this.diaComboBox.FormattingEnabled = true;
             this.diaComboBox.Location = new System.Drawing.Point(82, 113);
             this.diaComboBox.Name = "diaComboBox";
-            this.diaComboBox.Size = new System.Drawing.Size(121, 27);
+            this.diaComboBox.Size = new System.Drawing.Size(121, 24);
             this.diaComboBox.TabIndex = 27;
             this.diaComboBox.SelectedIndexChanged += new System.EventHandler(this.diaComboBox_SelectedIndexChanged);
             // 
@@ -377,7 +377,7 @@
             this.sizeComboBox.FormattingEnabled = true;
             this.sizeComboBox.Location = new System.Drawing.Point(82, 80);
             this.sizeComboBox.Name = "sizeComboBox";
-            this.sizeComboBox.Size = new System.Drawing.Size(121, 27);
+            this.sizeComboBox.Size = new System.Drawing.Size(121, 24);
             this.sizeComboBox.TabIndex = 26;
             this.sizeComboBox.SelectedIndexChanged += new System.EventHandler(this.sizeComboBox_SelectedIndexChanged_1);
             // 
@@ -387,7 +387,7 @@
             this.partComboBox.FormattingEnabled = true;
             this.partComboBox.Location = new System.Drawing.Point(82, 146);
             this.partComboBox.Name = "partComboBox";
-            this.partComboBox.Size = new System.Drawing.Size(121, 27);
+            this.partComboBox.Size = new System.Drawing.Size(121, 24);
             this.partComboBox.TabIndex = 24;
             this.partComboBox.SelectedIndexChanged += new System.EventHandler(this.partComboBox_SelectedIndexChanged);
             // 
@@ -397,7 +397,7 @@
             this.buyerComboBox.FormattingEnabled = true;
             this.buyerComboBox.Location = new System.Drawing.Point(82, 15);
             this.buyerComboBox.Name = "buyerComboBox";
-            this.buyerComboBox.Size = new System.Drawing.Size(121, 27);
+            this.buyerComboBox.Size = new System.Drawing.Size(121, 24);
             this.buyerComboBox.TabIndex = 23;
             this.buyerComboBox.SelectedIndexChanged += new System.EventHandler(this.buyerComboBox_SelectedIndexChanged);
             // 
@@ -515,6 +515,7 @@
             this.panel4.Controls.Add(this.label21);
             this.panel4.Controls.Add(this.newOrderQtyTextBox);
             this.panel4.Controls.Add(this.label20);
+            this.panel4.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.panel4.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.panel4.Location = new System.Drawing.Point(523, 140);
             this.panel4.Name = "panel4";
@@ -525,7 +526,7 @@
             // 
             this.LCText.Location = new System.Drawing.Point(322, 25);
             this.LCText.Name = "LCText";
-            this.LCText.Size = new System.Drawing.Size(121, 24);
+            this.LCText.Size = new System.Drawing.Size(121, 21);
             this.LCText.TabIndex = 44;
             this.LCText.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.LCText_KeyPress_1);
             // 
@@ -556,7 +557,7 @@
             this.newDaysTextBox.Location = new System.Drawing.Point(90, 40);
             this.newDaysTextBox.Name = "newDaysTextBox";
             this.newDaysTextBox.ReadOnly = true;
-            this.newDaysTextBox.Size = new System.Drawing.Size(121, 24);
+            this.newDaysTextBox.Size = new System.Drawing.Size(121, 21);
             this.newDaysTextBox.TabIndex = 37;
             // 
             // label21
@@ -573,7 +574,7 @@
             // 
             this.newOrderQtyTextBox.Location = new System.Drawing.Point(90, 5);
             this.newOrderQtyTextBox.Name = "newOrderQtyTextBox";
-            this.newOrderQtyTextBox.Size = new System.Drawing.Size(123, 24);
+            this.newOrderQtyTextBox.Size = new System.Drawing.Size(123, 21);
             this.newOrderQtyTextBox.TabIndex = 37;
             this.newOrderQtyTextBox.TextChanged += new System.EventHandler(this.newOrderQtyTextBox_TextChanged);
             this.newOrderQtyTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.newOrderQtyTextBox_KeyPress);
@@ -609,7 +610,7 @@
             this.panel3.Controls.Add(this.label13);
             this.panel3.Controls.Add(this.label3);
             this.panel3.Controls.Add(this.qtyTextBox);
-            this.panel3.Font = new System.Drawing.Font("Microsoft Tai Le", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.panel3.Font = new System.Drawing.Font("Microsoft Tai Le", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.panel3.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.panel3.Location = new System.Drawing.Point(523, 26);
             this.panel3.Name = "panel3";
@@ -631,7 +632,7 @@
             this.shipDateTextBox.Location = new System.Drawing.Point(519, 67);
             this.shipDateTextBox.Name = "shipDateTextBox";
             this.shipDateTextBox.ReadOnly = true;
-            this.shipDateTextBox.Size = new System.Drawing.Size(121, 27);
+            this.shipDateTextBox.Size = new System.Drawing.Size(121, 23);
             this.shipDateTextBox.TabIndex = 39;
             // 
             // calculatedDaysNeedTextBox
@@ -639,7 +640,7 @@
             this.calculatedDaysNeedTextBox.Location = new System.Drawing.Point(322, 67);
             this.calculatedDaysNeedTextBox.Name = "calculatedDaysNeedTextBox";
             this.calculatedDaysNeedTextBox.ReadOnly = true;
-            this.calculatedDaysNeedTextBox.Size = new System.Drawing.Size(121, 27);
+            this.calculatedDaysNeedTextBox.Size = new System.Drawing.Size(121, 23);
             this.calculatedDaysNeedTextBox.TabIndex = 36;
             // 
             // label19
@@ -657,7 +658,7 @@
             this.avgCapcityTextBox.Location = new System.Drawing.Point(92, 66);
             this.avgCapcityTextBox.Name = "avgCapcityTextBox";
             this.avgCapcityTextBox.ReadOnly = true;
-            this.avgCapcityTextBox.Size = new System.Drawing.Size(121, 27);
+            this.avgCapcityTextBox.Size = new System.Drawing.Size(121, 23);
             this.avgCapcityTextBox.TabIndex = 36;
             // 
             // label18
@@ -675,7 +676,7 @@
             this.effTextBox.Location = new System.Drawing.Point(519, 37);
             this.effTextBox.Name = "effTextBox";
             this.effTextBox.ReadOnly = true;
-            this.effTextBox.Size = new System.Drawing.Size(121, 27);
+            this.effTextBox.Size = new System.Drawing.Size(121, 23);
             this.effTextBox.TabIndex = 34;
             // 
             // label17
@@ -693,7 +694,7 @@
             this.samTextBox.Location = new System.Drawing.Point(322, 36);
             this.samTextBox.Name = "samTextBox";
             this.samTextBox.ReadOnly = true;
-            this.samTextBox.Size = new System.Drawing.Size(121, 27);
+            this.samTextBox.Size = new System.Drawing.Size(121, 23);
             this.samTextBox.TabIndex = 32;
             // 
             // label16
@@ -711,7 +712,7 @@
             this.ttlMinuteTextBox.Location = new System.Drawing.Point(92, 36);
             this.ttlMinuteTextBox.Name = "ttlMinuteTextBox";
             this.ttlMinuteTextBox.ReadOnly = true;
-            this.ttlMinuteTextBox.Size = new System.Drawing.Size(121, 27);
+            this.ttlMinuteTextBox.Size = new System.Drawing.Size(121, 23);
             this.ttlMinuteTextBox.TabIndex = 30;
             // 
             // label15
@@ -729,7 +730,7 @@
             this.leftQtyTextBox.Location = new System.Drawing.Point(519, 7);
             this.leftQtyTextBox.Name = "leftQtyTextBox";
             this.leftQtyTextBox.ReadOnly = true;
-            this.leftQtyTextBox.Size = new System.Drawing.Size(121, 27);
+            this.leftQtyTextBox.Size = new System.Drawing.Size(121, 23);
             this.leftQtyTextBox.TabIndex = 28;
             this.leftQtyTextBox.TextChanged += new System.EventHandler(this.leftQtyTextBox_TextChanged);
             // 
@@ -748,7 +749,7 @@
             this.prevPlnQtyTextBox.Location = new System.Drawing.Point(322, 5);
             this.prevPlnQtyTextBox.Name = "prevPlnQtyTextBox";
             this.prevPlnQtyTextBox.ReadOnly = true;
-            this.prevPlnQtyTextBox.Size = new System.Drawing.Size(121, 27);
+            this.prevPlnQtyTextBox.Size = new System.Drawing.Size(121, 23);
             this.prevPlnQtyTextBox.TabIndex = 26;
             // 
             // label13
@@ -764,7 +765,7 @@
             // groupBox2
             // 
             this.groupBox2.Controls.Add(this.orderWisePlandataGridView);
-            this.groupBox2.Font = new System.Drawing.Font("Microsoft Tai Le", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.groupBox2.Font = new System.Drawing.Font("Microsoft Tai Le", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBox2.Location = new System.Drawing.Point(602, 271);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(575, 222);
@@ -788,12 +789,12 @@
             this.Eff,
             this.ReadMode});
             this.orderWisePlandataGridView.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.orderWisePlandataGridView.Location = new System.Drawing.Point(3, 23);
+            this.orderWisePlandataGridView.Location = new System.Drawing.Point(3, 19);
             this.orderWisePlandataGridView.MultiSelect = false;
             this.orderWisePlandataGridView.Name = "orderWisePlandataGridView";
             this.orderWisePlandataGridView.RowHeadersWidth = 4;
             this.orderWisePlandataGridView.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.orderWisePlandataGridView.Size = new System.Drawing.Size(569, 196);
+            this.orderWisePlandataGridView.Size = new System.Drawing.Size(569, 200);
             this.orderWisePlandataGridView.TabIndex = 0;
             this.orderWisePlandataGridView.CellBeginEdit += new System.Windows.Forms.DataGridViewCellCancelEventHandler(this.orderWisePlandataGridView_CellBeginEdit);
             this.orderWisePlandataGridView.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.orderWisePlandataGridView_CellClick);
@@ -802,172 +803,6 @@
             this.orderWisePlandataGridView.EditingControlShowing += new System.Windows.Forms.DataGridViewEditingControlShowingEventHandler(this.orderWisePlandataGridView_EditingControlShowing);
             this.orderWisePlandataGridView.RowsAdded += new System.Windows.Forms.DataGridViewRowsAddedEventHandler(this.orderWisePlandataGridView_RowsAdded);
             this.orderWisePlandataGridView.Scroll += new System.Windows.Forms.ScrollEventHandler(this.orderWisePlandataGridView_Scroll);
-            // 
-            // panel2
-            // 
-            this.panel2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.panel2.Controls.Add(this.label10);
-            this.panel2.Controls.Add(this.label11);
-            this.panel2.Controls.Add(this.remarkTextBox);
-            this.panel2.Controls.Add(this.dayDiffTextBox);
-            this.panel2.Controls.Add(this.MachineComboBox);
-            this.panel2.Controls.Add(this.label1);
-            this.panel2.Controls.Add(this.planDateTimePicker);
-            this.panel2.Controls.Add(this.label2);
-            this.panel2.Controls.Add(this.label7);
-            this.panel2.Controls.Add(this.label8);
-            this.panel2.Controls.Add(this.fromDateTimePicker);
-            this.panel2.Controls.Add(this.toDateTimePicker);
-            this.panel2.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.panel2.Location = new System.Drawing.Point(261, 26);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(244, 194);
-            this.panel2.TabIndex = 36;
-            // 
-            // label10
-            // 
-            this.label10.AutoSize = true;
-            this.label10.Font = new System.Drawing.Font("Microsoft Tai Le", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label10.Location = new System.Drawing.Point(25, 15);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(61, 19);
-            this.label10.TabIndex = 33;
-            this.label10.Text = "M/C No";
-            // 
-            // label11
-            // 
-            this.label11.AutoSize = true;
-            this.label11.Font = new System.Drawing.Font("Microsoft Tai Le", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label11.Location = new System.Drawing.Point(7, 127);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(79, 19);
-            this.label11.TabIndex = 22;
-            this.label11.Text = "Total Days";
-            // 
-            // remarkTextBox
-            // 
-            this.remarkTextBox.Location = new System.Drawing.Point(92, 150);
-            this.remarkTextBox.Name = "remarkTextBox";
-            this.remarkTextBox.Size = new System.Drawing.Size(121, 24);
-            this.remarkTextBox.TabIndex = 25;
-            this.remarkTextBox.TextChanged += new System.EventHandler(this.textBox2_TextChanged);
-            // 
-            // dayDiffTextBox
-            // 
-            this.dayDiffTextBox.Location = new System.Drawing.Point(92, 122);
-            this.dayDiffTextBox.Name = "dayDiffTextBox";
-            this.dayDiffTextBox.ReadOnly = true;
-            this.dayDiffTextBox.Size = new System.Drawing.Size(121, 24);
-            this.dayDiffTextBox.TabIndex = 37;
-            // 
-            // MachineComboBox
-            // 
-            this.MachineComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.MachineComboBox.FormattingEnabled = true;
-            this.MachineComboBox.Location = new System.Drawing.Point(92, 8);
-            this.MachineComboBox.Name = "MachineComboBox";
-            this.MachineComboBox.Size = new System.Drawing.Size(121, 26);
-            this.MachineComboBox.TabIndex = 34;
-            this.MachineComboBox.SelectedIndexChanged += new System.EventHandler(this.MachineComboBox_SelectedIndexChanged);
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Microsoft Tai Le", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(13, 43);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(73, 19);
-            this.label1.TabIndex = 21;
-            this.label1.Text = "Plan Date";
-            // 
-            // planDateTimePicker
-            // 
-            this.planDateTimePicker.CustomFormat = "dd/MM/yyyy";
-            this.planDateTimePicker.Enabled = false;
-            this.planDateTimePicker.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.planDateTimePicker.Location = new System.Drawing.Point(92, 38);
-            this.planDateTimePicker.Name = "planDateTimePicker";
-            this.planDateTimePicker.Size = new System.Drawing.Size(121, 24);
-            this.planDateTimePicker.TabIndex = 20;
-            this.planDateTimePicker.Value = new System.DateTime(2019, 2, 5, 11, 53, 30, 0);
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("Microsoft Tai Le", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(10, 71);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(76, 19);
-            this.label2.TabIndex = 22;
-            this.label2.Text = "Start Date";
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Font = new System.Drawing.Font("Microsoft Tai Le", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label7.Location = new System.Drawing.Point(21, 154);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(65, 19);
-            this.label7.TabIndex = 26;
-            this.label7.Text = "Remarks";
-            // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Font = new System.Drawing.Font("Microsoft Tai Le", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label8.Location = new System.Drawing.Point(16, 99);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(70, 19);
-            this.label8.TabIndex = 27;
-            this.label8.Text = "End Date";
-            // 
-            // fromDateTimePicker
-            // 
-            this.fromDateTimePicker.CustomFormat = "dd/MM/yyyy";
-            this.fromDateTimePicker.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.fromDateTimePicker.Location = new System.Drawing.Point(92, 66);
-            this.fromDateTimePicker.Name = "fromDateTimePicker";
-            this.fromDateTimePicker.Size = new System.Drawing.Size(121, 24);
-            this.fromDateTimePicker.TabIndex = 18;
-            this.fromDateTimePicker.Value = new System.DateTime(2019, 2, 5, 11, 53, 30, 0);
-            this.fromDateTimePicker.ValueChanged += new System.EventHandler(this.fromDateTimePicker_ValueChanged);
-            // 
-            // toDateTimePicker
-            // 
-            this.toDateTimePicker.CustomFormat = "dd/MM/yyyy";
-            this.toDateTimePicker.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.toDateTimePicker.Location = new System.Drawing.Point(92, 94);
-            this.toDateTimePicker.Name = "toDateTimePicker";
-            this.toDateTimePicker.Size = new System.Drawing.Size(121, 24);
-            this.toDateTimePicker.TabIndex = 19;
-            this.toDateTimePicker.Value = new System.DateTime(2019, 2, 5, 11, 53, 30, 0);
-            this.toDateTimePicker.ValueChanged += new System.EventHandler(this.toDateTimePicker_ValueChanged);
-            // 
-            // labelAlert
-            // 
-            this.labelAlert.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
-            this.labelAlert.Font = new System.Drawing.Font("Microsoft Tai Le", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelAlert.ForeColor = System.Drawing.Color.DarkRed;
-            this.labelAlert.Location = new System.Drawing.Point(416, 9);
-            this.labelAlert.Name = "labelAlert";
-            this.labelAlert.Size = new System.Drawing.Size(293, 22);
-            this.labelAlert.TabIndex = 40;
-            this.labelAlert.Text = "label24";
-            this.labelAlert.Visible = false;
-            // 
-            // OrderInfoPBcontextMenuStrip
-            // 
-            this.OrderInfoPBcontextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.deleteToolStripMenuItem});
-            this.OrderInfoPBcontextMenuStrip.Name = "OrderInfoPBcontextMenuStrip";
-            this.OrderInfoPBcontextMenuStrip.Size = new System.Drawing.Size(108, 26);
-            // 
-            // deleteToolStripMenuItem
-            // 
-            this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
-            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
-            this.deleteToolStripMenuItem.Text = "Delete";
-            this.deleteToolStripMenuItem.Click += new System.EventHandler(this.deleteToolStripMenuItem_Click);
             // 
             // dataGridViewTextBoxColumn2
             // 
@@ -1030,6 +865,173 @@
             this.ReadMode.ReadOnly = true;
             this.ReadMode.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             this.ReadMode.Visible = false;
+            // 
+            // panel2
+            // 
+            this.panel2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel2.Controls.Add(this.label10);
+            this.panel2.Controls.Add(this.label11);
+            this.panel2.Controls.Add(this.remarkTextBox);
+            this.panel2.Controls.Add(this.dayDiffTextBox);
+            this.panel2.Controls.Add(this.MachineComboBox);
+            this.panel2.Controls.Add(this.label1);
+            this.panel2.Controls.Add(this.planDateTimePicker);
+            this.panel2.Controls.Add(this.label2);
+            this.panel2.Controls.Add(this.label7);
+            this.panel2.Controls.Add(this.label8);
+            this.panel2.Controls.Add(this.fromDateTimePicker);
+            this.panel2.Controls.Add(this.toDateTimePicker);
+            this.panel2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.panel2.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.panel2.Location = new System.Drawing.Point(261, 26);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(244, 194);
+            this.panel2.TabIndex = 36;
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Font = new System.Drawing.Font("Microsoft Tai Le", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label10.Location = new System.Drawing.Point(25, 15);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(61, 19);
+            this.label10.TabIndex = 33;
+            this.label10.Text = "M/C No";
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Font = new System.Drawing.Font("Microsoft Tai Le", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label11.Location = new System.Drawing.Point(7, 127);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(79, 19);
+            this.label11.TabIndex = 22;
+            this.label11.Text = "Total Days";
+            // 
+            // remarkTextBox
+            // 
+            this.remarkTextBox.Location = new System.Drawing.Point(92, 150);
+            this.remarkTextBox.Name = "remarkTextBox";
+            this.remarkTextBox.Size = new System.Drawing.Size(121, 21);
+            this.remarkTextBox.TabIndex = 25;
+            this.remarkTextBox.TextChanged += new System.EventHandler(this.textBox2_TextChanged);
+            // 
+            // dayDiffTextBox
+            // 
+            this.dayDiffTextBox.Location = new System.Drawing.Point(92, 122);
+            this.dayDiffTextBox.Name = "dayDiffTextBox";
+            this.dayDiffTextBox.ReadOnly = true;
+            this.dayDiffTextBox.Size = new System.Drawing.Size(121, 21);
+            this.dayDiffTextBox.TabIndex = 37;
+            // 
+            // MachineComboBox
+            // 
+            this.MachineComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.MachineComboBox.FormattingEnabled = true;
+            this.MachineComboBox.Location = new System.Drawing.Point(92, 8);
+            this.MachineComboBox.Name = "MachineComboBox";
+            this.MachineComboBox.Size = new System.Drawing.Size(121, 23);
+            this.MachineComboBox.TabIndex = 34;
+            this.MachineComboBox.SelectedIndexChanged += new System.EventHandler(this.MachineComboBox_SelectedIndexChanged);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Microsoft Tai Le", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Location = new System.Drawing.Point(13, 43);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(73, 19);
+            this.label1.TabIndex = 21;
+            this.label1.Text = "Plan Date";
+            // 
+            // planDateTimePicker
+            // 
+            this.planDateTimePicker.CustomFormat = "dd/MM/yyyy";
+            this.planDateTimePicker.Enabled = false;
+            this.planDateTimePicker.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+            this.planDateTimePicker.Location = new System.Drawing.Point(92, 38);
+            this.planDateTimePicker.Name = "planDateTimePicker";
+            this.planDateTimePicker.Size = new System.Drawing.Size(121, 21);
+            this.planDateTimePicker.TabIndex = 20;
+            this.planDateTimePicker.Value = new System.DateTime(2019, 2, 5, 11, 53, 30, 0);
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Font = new System.Drawing.Font("Microsoft Tai Le", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.Location = new System.Drawing.Point(10, 71);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(76, 19);
+            this.label2.TabIndex = 22;
+            this.label2.Text = "Start Date";
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Font = new System.Drawing.Font("Microsoft Tai Le", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label7.Location = new System.Drawing.Point(21, 154);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(65, 19);
+            this.label7.TabIndex = 26;
+            this.label7.Text = "Remarks";
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Font = new System.Drawing.Font("Microsoft Tai Le", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label8.Location = new System.Drawing.Point(16, 99);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(70, 19);
+            this.label8.TabIndex = 27;
+            this.label8.Text = "End Date";
+            // 
+            // fromDateTimePicker
+            // 
+            this.fromDateTimePicker.CustomFormat = "dd/MM/yyyy";
+            this.fromDateTimePicker.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+            this.fromDateTimePicker.Location = new System.Drawing.Point(92, 66);
+            this.fromDateTimePicker.Name = "fromDateTimePicker";
+            this.fromDateTimePicker.Size = new System.Drawing.Size(121, 21);
+            this.fromDateTimePicker.TabIndex = 18;
+            this.fromDateTimePicker.Value = new System.DateTime(2019, 2, 5, 11, 53, 30, 0);
+            this.fromDateTimePicker.ValueChanged += new System.EventHandler(this.fromDateTimePicker_ValueChanged);
+            // 
+            // toDateTimePicker
+            // 
+            this.toDateTimePicker.CustomFormat = "dd/MM/yyyy";
+            this.toDateTimePicker.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+            this.toDateTimePicker.Location = new System.Drawing.Point(92, 94);
+            this.toDateTimePicker.Name = "toDateTimePicker";
+            this.toDateTimePicker.Size = new System.Drawing.Size(121, 21);
+            this.toDateTimePicker.TabIndex = 19;
+            this.toDateTimePicker.Value = new System.DateTime(2019, 2, 5, 11, 53, 30, 0);
+            this.toDateTimePicker.ValueChanged += new System.EventHandler(this.toDateTimePicker_ValueChanged);
+            // 
+            // labelAlert
+            // 
+            this.labelAlert.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
+            this.labelAlert.Font = new System.Drawing.Font("Microsoft Tai Le", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelAlert.ForeColor = System.Drawing.Color.DarkRed;
+            this.labelAlert.Location = new System.Drawing.Point(416, 9);
+            this.labelAlert.Name = "labelAlert";
+            this.labelAlert.Size = new System.Drawing.Size(293, 22);
+            this.labelAlert.TabIndex = 40;
+            this.labelAlert.Text = "label24";
+            this.labelAlert.Visible = false;
+            // 
+            // OrderInfoPBcontextMenuStrip
+            // 
+            this.OrderInfoPBcontextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.deleteToolStripMenuItem});
+            this.OrderInfoPBcontextMenuStrip.Name = "OrderInfoPBcontextMenuStrip";
+            this.OrderInfoPBcontextMenuStrip.Size = new System.Drawing.Size(108, 26);
+            // 
+            // deleteToolStripMenuItem
+            // 
+            this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
+            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
+            this.deleteToolStripMenuItem.Text = "Delete";
+            this.deleteToolStripMenuItem.Click += new System.EventHandler(this.deleteToolStripMenuItem_Click);
             // 
             // ViewOrderInfo
             // 

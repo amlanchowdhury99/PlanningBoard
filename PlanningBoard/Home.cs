@@ -1219,83 +1219,7 @@ namespace PlanningBoard
 
         private void BtnUpdate_Click(object sender, EventArgs e)
         {
-            try
-            {
-
-                if (Grid_WorkDays_Info.Rows.Count == 0)
-                {
-                    MessageBox.Show("Table has no rows to save!!!");
-                    return;
-                }
-
-                DataTable dt = loadDataTable();
-
-                string fromDate = fromDateTimePicker.Value.Date.ToString();
-                string toDate = toDateTimePicker.Value.Date.ToString();
-
-                //int mcNo = Convert.ToInt32(machineNoComboBox.Text);
-
-                Boolean result = false;
-                
-                if (dt.Rows.Count > 0)
-                {
-                    foreach (DataRow row in dt.Rows)
-                    {
-                        if (row[0].ToString() != "")
-                        {
-
-                            DateTime currentDate = DateTime.ParseExact(row[1].ToString(), "dd/MM/yyyy", null);
-                            int minute = Convert.ToInt32(row[3]);
-                            string currentDay = row[4].ToString();
-                            int currentWorkDay = Convert.ToBoolean(row[5]) == true ?  1 : 0;
-                            int currentActiveStatus = Convert.ToInt32(row[6]);
-                            int mcNo = Convert.ToInt32(row[2]);
-
-                            string query = " IF EXISTS (SELECT * FROM WorkingDays WHERE WorkDate = '" + currentDate + "' AND MachineNo = " + mcNo + ") UPDATE WorkingDays SET Minute = " + minute + ", WorkDay = " + currentWorkDay + ", Active = " + currentActiveStatus + " WHERE WorkDate = '" + currentDate + "'" + " AND MachineNo = " + mcNo +
-                                " ELSE INSERT INTO WorkingDays(WorkDate, MachineNo, Minute, DayName, WorkDay, Active) VALUES ('" + currentDate + "'," + mcNo + "," + minute + ",'" + currentDay + "'," + currentWorkDay + "," + currentActiveStatus + ") ";
-
-                            result = (CommonFunctions.ExecutionToDB(query, 3));
-
-                        }
-                    }
-                    MessageBox.Show("Saved To DataBase Successfully!!!");
-                }
-
-                if (result == true)
-                {
-                    if (machineNoComboBox.SelectedIndex != 0)
-                    {
-                        int mcNo = Convert.ToInt32(machineNoComboBox.Text);
-                        LoadWorkingDaysGrid(fromDate, toDate, mcNo);
-                    }
-                    else
-                    {
-                        LoadWorkingDaysGrid(fromDate, toDate, -1);
-                    }
-
-                    
-                }
-                    
-            }
-
-            catch (Exception ee)
-            {
-                MessageBox.Show("" + ee.ToString());
-            }
-
-            finally
-            {
-                if (CommonFunctions.connection.State == ConnectionState.Open)
-                {
-                    CommonFunctions.connection.Close();
-                }
-                fromDateTimePicker.Value = DateTime.Now.Date;
-                toDateTimePicker.Value = DateTime.Now.Date;
-                fromDateTimePicker.Enabled = true;
-                toDateTimePicker.Enabled = true;
-                machineNoComboBox.Enabled = true;
-                Load_WorkingDays_ComboBox();
-            }
+            
         }
 
         private void Minute_KeyPress(object sender, KeyPressEventArgs e)
@@ -1543,6 +1467,87 @@ namespace PlanningBoard
                 {
                     labelAlert.Visible = false;
                 }
+            }
+        }
+
+        private void SaveWorkDays_Click(object sender, EventArgs e)
+        {
+            try
+            {
+
+                if (Grid_WorkDays_Info.Rows.Count == 0)
+                {
+                    MessageBox.Show("Table has no rows to save!!!");
+                    return;
+                }
+
+                DataTable dt = loadDataTable();
+
+                string fromDate = fromDateTimePicker.Value.Date.ToString();
+                string toDate = toDateTimePicker.Value.Date.ToString();
+
+                //int mcNo = Convert.ToInt32(machineNoComboBox.Text);
+
+                Boolean result = false;
+
+                if (dt.Rows.Count > 0)
+                {
+                    foreach (DataRow row in dt.Rows)
+                    {
+                        if (row[0].ToString() != "")
+                        {
+
+                            DateTime currentDate = DateTime.ParseExact(row[1].ToString(), "dd/MM/yyyy", null);
+                            int minute = Convert.ToInt32(row[3]);
+                            string currentDay = row[4].ToString();
+                            int currentWorkDay = Convert.ToBoolean(row[5]) == true ? 1 : 0;
+                            int currentActiveStatus = Convert.ToInt32(row[6]);
+                            int mcNo = Convert.ToInt32(row[2]);
+
+                            string query = " IF EXISTS (SELECT * FROM WorkingDays WHERE WorkDate = '" + currentDate + "' AND MachineNo = " + mcNo + ") UPDATE WorkingDays SET Minute = " + minute + ", WorkDay = " + currentWorkDay + ", Active = " + currentActiveStatus + " WHERE WorkDate = '" + currentDate + "'" + " AND MachineNo = " + mcNo +
+                                " ELSE INSERT INTO WorkingDays(WorkDate, MachineNo, Minute, DayName, WorkDay, Active) VALUES ('" + currentDate + "'," + mcNo + "," + minute + ",'" + currentDay + "'," + currentWorkDay + "," + currentActiveStatus + ") ";
+
+                            result = (CommonFunctions.ExecutionToDB(query, 3));
+
+                        }
+                    }
+                    MessageBox.Show("Saved To DataBase Successfully!!!");
+                }
+
+                if (result == true)
+                {
+                    if (machineNoComboBox.SelectedIndex != 0)
+                    {
+                        int mcNo = Convert.ToInt32(machineNoComboBox.Text);
+                        LoadWorkingDaysGrid(fromDate, toDate, mcNo);
+                    }
+                    else
+                    {
+                        LoadWorkingDaysGrid(fromDate, toDate, -1);
+                    }
+
+
+                }
+
+            }
+
+            catch (Exception ee)
+            {
+                MessageBox.Show("" + ee.ToString());
+            }
+
+            finally
+            {
+                if (CommonFunctions.connection.State == ConnectionState.Open)
+                {
+                    CommonFunctions.connection.Close();
+                }
+                fromDateTimePicker.Value = DateTime.Now.Date;
+                toDateTimePicker.Value = DateTime.Now.Date;
+                fromDateTimePicker.Enabled = true;
+                toDateTimePicker.Enabled = true;
+                machineNoComboBox.Enabled = true;
+                Load_WorkingDays_ComboBox();
             }
         }
     }

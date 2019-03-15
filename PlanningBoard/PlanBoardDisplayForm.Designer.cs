@@ -61,7 +61,7 @@
             this.planBoardDataGridView.ReadOnly = true;
             this.planBoardDataGridView.RowHeadersVisible = false;
             this.planBoardDataGridView.RowHeadersWidth = 4;
-            this.planBoardDataGridView.Size = new System.Drawing.Size(1563, 556);
+            this.planBoardDataGridView.Size = new System.Drawing.Size(1258, 468);
             this.planBoardDataGridView.TabIndex = 0;
             this.planBoardDataGridView.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.planBoardDataGridView_CellClick);
             this.planBoardDataGridView.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.planBoardDataGridView_CellDoubleClick);
@@ -76,8 +76,8 @@
             // groupBox1
             // 
             this.groupBox1.BackColor = System.Drawing.Color.SlateGray;
-            this.groupBox1.Controls.Add(this.textBox1);
             this.groupBox1.Controls.Add(this.GenerateExcelBtn);
+            this.groupBox1.Controls.Add(this.textBox1);
             this.groupBox1.Controls.Add(this.BtnAddPlan);
             this.groupBox1.Controls.Add(this.BtnGeneratePlan);
             this.groupBox1.Controls.Add(this.toDateTimePicker);
@@ -87,7 +87,7 @@
             this.groupBox1.Font = new System.Drawing.Font("Microsoft Tai Le", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBox1.Location = new System.Drawing.Point(12, 12);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(1563, 103);
+            this.groupBox1.Size = new System.Drawing.Size(1258, 103);
             this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Planning Board Parameter";
@@ -96,18 +96,18 @@
             // textBox1
             // 
             this.textBox1.BackColor = System.Drawing.Color.RosyBrown;
-            this.textBox1.Location = new System.Drawing.Point(1277, 37);
+            this.textBox1.Location = new System.Drawing.Point(1026, 38);
             this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(100, 27);
+            this.textBox1.Size = new System.Drawing.Size(35, 27);
             this.textBox1.TabIndex = 19;
             this.textBox1.Visible = false;
             // 
             // GenerateExcelBtn
             // 
             this.GenerateExcelBtn.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.GenerateExcelBtn.Location = new System.Drawing.Point(1010, 40);
+            this.GenerateExcelBtn.Location = new System.Drawing.Point(814, 40);
             this.GenerateExcelBtn.Name = "GenerateExcelBtn";
-            this.GenerateExcelBtn.Size = new System.Drawing.Size(129, 31);
+            this.GenerateExcelBtn.Size = new System.Drawing.Size(107, 31);
             this.GenerateExcelBtn.TabIndex = 18;
             this.GenerateExcelBtn.Text = "Export To Excel";
             this.GenerateExcelBtn.UseVisualStyleBackColor = true;
@@ -116,9 +116,9 @@
             // BtnAddPlan
             // 
             this.BtnAddPlan.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.BtnAddPlan.Location = new System.Drawing.Point(883, 40);
+            this.BtnAddPlan.Location = new System.Drawing.Point(701, 40);
             this.BtnAddPlan.Name = "BtnAddPlan";
-            this.BtnAddPlan.Size = new System.Drawing.Size(99, 31);
+            this.BtnAddPlan.Size = new System.Drawing.Size(107, 31);
             this.BtnAddPlan.TabIndex = 16;
             this.BtnAddPlan.Text = "Add Plan";
             this.BtnAddPlan.UseVisualStyleBackColor = true;
@@ -127,9 +127,9 @@
             // BtnGeneratePlan
             // 
             this.BtnGeneratePlan.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.BtnGeneratePlan.Location = new System.Drawing.Point(754, 40);
+            this.BtnGeneratePlan.Location = new System.Drawing.Point(588, 40);
             this.BtnGeneratePlan.Name = "BtnGeneratePlan";
-            this.BtnGeneratePlan.Size = new System.Drawing.Size(99, 31);
+            this.BtnGeneratePlan.Size = new System.Drawing.Size(107, 31);
             this.BtnGeneratePlan.TabIndex = 15;
             this.BtnGeneratePlan.Text = "Generate";
             this.BtnGeneratePlan.UseVisualStyleBackColor = true;
@@ -139,16 +139,16 @@
             // 
             this.toDateTimePicker.CustomFormat = "dd/MM/yyyy";
             this.toDateTimePicker.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.toDateTimePicker.Location = new System.Drawing.Point(517, 40);
+            this.toDateTimePicker.Location = new System.Drawing.Point(424, 40);
             this.toDateTimePicker.Name = "toDateTimePicker";
-            this.toDateTimePicker.Size = new System.Drawing.Size(204, 27);
+            this.toDateTimePicker.Size = new System.Drawing.Size(127, 27);
             this.toDateTimePicker.TabIndex = 14;
             // 
             // label14
             // 
             this.label14.AutoSize = true;
             this.label14.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label14.Location = new System.Drawing.Point(485, 40);
+            this.label14.Location = new System.Drawing.Point(392, 40);
             this.label14.Name = "label14";
             this.label14.Size = new System.Drawing.Size(26, 18);
             this.label14.TabIndex = 13;
@@ -160,7 +160,7 @@
             this.fromDateTimePicker.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
             this.fromDateTimePicker.Location = new System.Drawing.Point(242, 40);
             this.fromDateTimePicker.Name = "fromDateTimePicker";
-            this.fromDateTimePicker.Size = new System.Drawing.Size(204, 27);
+            this.fromDateTimePicker.Size = new System.Drawing.Size(127, 27);
             this.fromDateTimePicker.TabIndex = 12;
             this.fromDateTimePicker.Value = new System.DateTime(2019, 2, 5, 11, 53, 30, 0);
             // 
@@ -181,7 +181,7 @@
             this.backwardToolStripMenuItem,
             this.changeWorkDateToolStripMenuItem});
             this.pBContextMenuStrip.Name = "pBContextMenuStrip";
-            this.pBContextMenuStrip.Size = new System.Drawing.Size(168, 92);
+            this.pBContextMenuStrip.Size = new System.Drawing.Size(168, 70);
             // 
             // forwardToolStripMenuItem
             // 
@@ -209,7 +209,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ButtonShadow;
-            this.ClientSize = new System.Drawing.Size(1587, 689);
+            this.ClientSize = new System.Drawing.Size(1282, 599);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.planBoardDataGridView);
             this.Name = "PlanBoardDisplayForm";
