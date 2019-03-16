@@ -22,6 +22,7 @@ namespace PlanningBoard
     public partial class PlanBoardDisplayForm : Form
     {
         public Dictionary<int, string> MachineDiaList = new Dictionary<int, string>();
+        ArrayList MachineList = new ArrayList();
         public static DateTime fromDate = DateTime.Now.Date;
         public static DateTime toDate = DateTime.Now.Date;
 
@@ -57,9 +58,9 @@ namespace PlanningBoard
             InitializeComponent();
             fromDateTimePicker.Value = DateTime.Now.Date;
             toDateTimePicker.Value = DateTime.Now.Date;
+            LoadComboBox();
             planBoardDataGridView.AutoGenerateColumns = false;
             planBoardDataGridView.ClearSelection();
-            LoadMachine();
         }
 
         private void PlanBoardDisplayForm_Load(object sender, EventArgs e)
@@ -94,11 +95,57 @@ namespace PlanningBoard
             }
         }
 
-        private void LoadMachine()
+        private void LoadComboBox()
+        {
+            MStatuscomboBox.DisplayMember = "Description";
+            MStatuscomboBox.ValueMember = "Value";
+            MStatuscomboBox.DataSource = Enum.GetValues(typeof(VariableDecleration_Class.Status)).Cast<VariableDecleration_Class.Status>().Where(e => e != VariableDecleration_Class.Status.Pending && e != VariableDecleration_Class.Status.Complete).Cast<Enum>().Select(value => new { (Attribute.GetCustomAttribute(value.GetType().GetField(value.ToString()), typeof(DescriptionAttribute)) as DescriptionAttribute).Description, value }).OrderBy(item => item.value).ToList();
+            MStatuscomboBox.SelectedIndex = 1;
+        }
+
+        private void LoadMachineStatusWise()
         {
             try
             {
-                string query = "SELECT * FROM Machine_Info WHERE Status != " + 0 + " order by MachineNo asc";
+                string query = "SELECT * FROM Machine_Info WHERE Status = " + MStatuscomboBox.SelectedIndex + " order by MachineNo asc";
+
+                SqlDataReader reader = CommonFunctions.GetFromDB(query);
+                MachineComboBox.DataSource = null;
+                MachineComboBox.Items.Clear();
+                MachineList.Clear();
+                MachineList.Add("ALL");
+                if (reader.HasRows)
+                {
+                    while (reader.Read())
+                    {
+                        MachineList.Add(Convert.ToInt32(reader["MachineNo"]));
+                    }
+                }
+                MachineComboBox.DataSource = MachineList;
+                MachineComboBox.SelectedIndex = 0;
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("" + e.ToString());
+            }
+
+            finally
+            {
+                CommonFunctions.connection.Close();
+
+            }
+        }
+
+        private void LoadMachineOnPlanBoard()
+        {
+            try
+            {
+                var temp = MachineList;
+                temp.RemoveAt(0);
+                MachineDiaList.Clear();
+                string MachineNoList = MachineComboBox.SelectedIndex == 0 ? string.Join(",", temp.ToArray()) : MachineComboBox.Items[MachineComboBox.SelectedIndex].ToString();
+
+                string query = "SELECT * FROM Machine_Info WHERE MachineNo IN (" + MachineNoList + ") order by MachineNo asc";
 
                 SqlDataReader reader = CommonFunctions.GetFromDB(query);
                 if (reader.HasRows)
@@ -123,8 +170,10 @@ namespace PlanningBoard
 
             finally
             {
-                CommonFunctions.connection.Close();
-
+                if (CommonFunctions.connection.State == ConnectionState.Open)
+                {
+                    CommonFunctions.connection.Close();
+                }
             }
         }
 
@@ -179,6 +228,9 @@ namespace PlanningBoard
             SqlConnection cn = new SqlConnection(connectionStr);
             cn.Open();
             cm.Connection = cn;
+            var temp = MachineList;
+            temp.RemoveAt(0);
+            var MachineNoList = MachineComboBox.SelectedIndex == 0 ? string.Join(",", temp.ToArray()) : MachineComboBox.Items[MachineComboBox.SelectedIndex];
 
             try
             {
@@ -203,8 +255,8 @@ namespace PlanningBoard
                             string ActualQty = "";
                             string Style1 = "";
                             string OrderIDList = "";
-                            
-                            cm.CommandText = "select * from Planing_Board_Details where TaskDate='" + GetDate + "' and MachineNo='" + Convert.ToInt16(planBoardDataGridView.Rows[x].Cells[0].Value.ToString()) + "'";
+
+                            cm.CommandText = "select * from Planing_Board_Details where TaskDate='" + GetDate + "' and MachineNo IN (" + MachineNoList + ")";
 
                             SqlDataReader reader;
                             reader = cm.ExecuteReader();
@@ -592,6 +644,13 @@ namespace PlanningBoard
 
         private void BtnGeneratePlan_Click(object sender, EventArgs e)
         {
+
+            if (MachineList.Count < 2)
+            {
+                planBoardDataGridView.Rows.Clear();
+                return;
+            }
+
             if (fromDateTimePicker.Text.Trim() == "")
             {
                 MessageBox.Show("Please Enter FROM Date Information", VariableDecleration_Class.sMSGBOX);
@@ -612,6 +671,7 @@ namespace PlanningBoard
                 toDateTimePicker.Focus();
                 return;
             }
+            LoadMachineOnPlanBoard();
             fromDate = fromDateTimePicker.Value;
             toDate = toDateTimePicker.Value;
             GridInitialize();
@@ -1006,6 +1066,11 @@ namespace PlanningBoard
             FBPlanBoardForm fbplanform = new FBPlanBoardForm(true, mcNo, taskDate, orderIDs, true);
             fbplanform.ShowDialog();
             Generate_Plan_Board();
+        }
+
+        private void MStatuscomboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            LoadMachineStatusWise();
         }
 
     }

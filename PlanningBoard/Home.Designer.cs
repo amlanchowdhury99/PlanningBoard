@@ -116,6 +116,9 @@
             this.label16 = new System.Windows.Forms.Label();
             this.BtnUpdate = new System.Windows.Forms.Button();
             this.panel3 = new System.Windows.Forms.Panel();
+            this.HomePanel = new System.Windows.Forms.Panel();
+            this.button5 = new System.Windows.Forms.Button();
+            this.label17 = new System.Windows.Forms.Label();
             this.panel2.SuspendLayout();
             this.panel1.SuspendLayout();
             this.groupBox4.SuspendLayout();
@@ -130,6 +133,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.Grid_WorkDays_Info)).BeginInit();
             this.groupBox2.SuspendLayout();
             this.panel3.SuspendLayout();
+            this.HomePanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel2
@@ -1072,6 +1076,40 @@
             this.panel3.MouseDown += new System.Windows.Forms.MouseEventHandler(this.panel3_MouseDown);
             this.panel3.MouseMove += new System.Windows.Forms.MouseEventHandler(this.panel3_MouseMove);
             // 
+            // HomePanel
+            // 
+            this.HomePanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.HomePanel.BackColor = System.Drawing.Color.SlateGray;
+            this.HomePanel.Controls.Add(this.label17);
+            this.HomePanel.Controls.Add(this.button5);
+            this.HomePanel.Location = new System.Drawing.Point(128, 3);
+            this.HomePanel.Name = "HomePanel";
+            this.HomePanel.Size = new System.Drawing.Size(1111, 582);
+            this.HomePanel.TabIndex = 42;
+            // 
+            // button5
+            // 
+            this.button5.BackColor = System.Drawing.Color.RosyBrown;
+            this.button5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button5.Location = new System.Drawing.Point(972, 611);
+            this.button5.Name = "button5";
+            this.button5.Size = new System.Drawing.Size(96, 34);
+            this.button5.TabIndex = 5;
+            this.button5.Text = "Save";
+            this.button5.UseVisualStyleBackColor = false;
+            // 
+            // label17
+            // 
+            this.label17.AutoSize = true;
+            this.label17.Font = new System.Drawing.Font("Monotype Corsiva", 48F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label17.Location = new System.Drawing.Point(204, 231);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(705, 79);
+            this.label17.TabIndex = 6;
+            this.label17.Text = "Welcome To Planning Board";
+            // 
             // Home
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1080,6 +1118,7 @@
             this.AutoValidate = System.Windows.Forms.AutoValidate.EnableAllowFocusChange;
             this.BackColor = System.Drawing.SystemColors.ControlDarkDark;
             this.ClientSize = new System.Drawing.Size(1238, 597);
+            this.Controls.Add(this.HomePanel);
             this.Controls.Add(this.panel4);
             this.Controls.Add(this.panel3);
             this.Controls.Add(this.panel1);
@@ -1111,6 +1150,8 @@
             this.groupBox2.PerformLayout();
             this.panel3.ResumeLayout(false);
             this.panel3.PerformLayout();
+            this.HomePanel.ResumeLayout(false);
+            this.HomePanel.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -1203,6 +1244,9 @@
         private System.Windows.Forms.Button BtnUpdate;
         private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.Button SaveWorkDays;
+        private System.Windows.Forms.Panel HomePanel;
+        private System.Windows.Forms.Label label17;
+        private System.Windows.Forms.Button button5;
         //private FirstCustomControl firstCustomControl1;
         //private MySecondCustmControl mySecondCustmControl1;
     }

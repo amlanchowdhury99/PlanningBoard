@@ -79,7 +79,7 @@ namespace PlanningBoard
                                 double SAM = 0;
                                 int GetCount = 1;
                                 int TotalPlanQty = 0;
-                                string query = "select (SELECT COUNT (Id) from PlanTable where TaskDate = '" + planDate.ToString() + "' and MachineNo='" + MachineNo + "') as RecordCount, Id, MachineNo, TaskDate, OrderID, Capacity, PlanQty, RemainingQty, OrderQty, ColIndex, Efficiency, Minute, Status,(select SAM from Order_Info where Id=OrderID) as SAM from PlanTable where TaskDate = '" + planDate.ToString() + "' and MachineNo='" + MachineNo + "' order by TaskDate,Id asc";
+                                string query = "select (SELECT COUNT (Id) from PlanTable where TaskDate = '" + planDate.ToString() + "' and MachineNo='" + MachineNo + "') as RecordCount, Id, MachineNo, TaskDate, OrderID, Capacity, PlanQty, RemainingQty, OrderQty, ColIndex, Efficiency, Minute, Status, SAM from PlanTable where TaskDate = '" + planDate.ToString() + "' and MachineNo='" + MachineNo + "' order by TaskDate,Id asc";
                                 string connectionStr = ConnectionManager.connectionString;
                                 SqlCommand cm = new SqlCommand();
                                 SqlConnection cn = new SqlConnection(connectionStr);
@@ -131,6 +131,7 @@ namespace PlanningBoard
                             }
                             finally
                             {
+                                ResetStatus();
                                 this.Close();
                             }
                         }
@@ -248,7 +249,7 @@ namespace PlanningBoard
                 DateTime PrevOldDate = DateTime.MinValue;
                 Boolean DateDifference = false;
 
-                query = Flag == true ? "SELECT Id, MachineNo, TaskDate, OrderID, Capacity, PlanQty, RemainingQty, OrderQty, ColIndex, Efficiency, Minute, Status,(select SAM from Order_Info where Id=OrderID) as SAM from PlanTable where TaskDate between '" + planDate.ToString() + "' and '" + TargateDate.ToString() + "' and MachineNo='"+MachineNo+"' and Status=0 order by TaskDate,Id asc" : "select Id, MachineNo, TaskDate, OrderID, Capacity, PlanQty, RemainingQty, OrderQty, ColIndex, Efficiency, Minute, Status,(select SAM from Order_Info where Id=OrderID) as SAM from PlanTable where TaskDate between '" + TargateDate.ToString() + "' and '" + planDate.ToString() + "' and MachineNo='"+MachineNo+"' and Status=0 order by TaskDate desc, Id asc";
+                query = Flag == true ? "SELECT Id, MachineNo, TaskDate, OrderID, Capacity, PlanQty, RemainingQty, OrderQty, ColIndex, Efficiency, Minute, Status, SAM from PlanTable where TaskDate between '" + planDate.ToString() + "' and '" + TargateDate.ToString() + "' and MachineNo='"+MachineNo+"' and Status=0 order by TaskDate,Id asc" : "select Id, MachineNo, TaskDate, OrderID, Capacity, PlanQty, RemainingQty, OrderQty, ColIndex, Efficiency, Minute, Status, SAM from PlanTable where TaskDate between '" + TargateDate.ToString() + "' and '" + planDate.ToString() + "' and MachineNo='"+MachineNo+"' and Status=0 order by TaskDate desc, Id asc";
                 cm2.CommandText = query;
                 SqlDataReader reader2;
                 reader2 = cm2.ExecuteReader();

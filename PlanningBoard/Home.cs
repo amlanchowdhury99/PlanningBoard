@@ -35,22 +35,24 @@ namespace PlanningBoard
             p.Add(panel1);
             p.Add(panel3);
             p.Add(panel4);
+            p.Add(HomePanel);
             
         }
 
         private void Home_Load(object sender, EventArgs e)
         {
-            //GenerateWorkingDay frm = new GenerateWorkingDay();
-            //frm.MdiParent = this;
-            //frm.Dock = DockStyle.Fill;
-            //frm.Show();
-            fromDateTimePicker.Value = DateTime.Now;
-            toDateTimePicker.Value = DateTime.Now;
-            fromDateTimePicker.Enabled = true;
-            toDateTimePicker.Enabled = true;
-            machineNoComboBox.Enabled = true;
-            GridInitialize();
-            Load_WorkingDays_ComboBox();
+            p[0].Hide();
+            p[1].Hide();
+            p[2].Hide();
+            p[3].Show();
+            p[3].BringToFront();
+            //fromDateTimePicker.Value = DateTime.Now;
+            //toDateTimePicker.Value = DateTime.Now;
+            //fromDateTimePicker.Enabled = true;
+            //toDateTimePicker.Enabled = true;
+            //machineNoComboBox.Enabled = true;
+            //GridInitialize();
+            //Load_WorkingDays_ComboBox();
         }
 
         private void button13_Click(object sender, EventArgs e)
@@ -64,6 +66,7 @@ namespace PlanningBoard
             p[0].BringToFront();
             p[1].Hide();
             p[2].Hide();
+            p[3].Hide();
 
             LoadMachineInfoGrid();
 
@@ -75,6 +78,7 @@ namespace PlanningBoard
             p[1].BringToFront();
             p[0].Hide();
             p[2].Hide();
+            p[3].Hide();
             shipDatePicker.CustomFormat = "dd/MM/yyyy";
             shipDatePicker.Value = DateTime.Now.Date;
             LoadComboBox();
@@ -137,6 +141,7 @@ namespace PlanningBoard
             p[2].BringToFront();
             p[0].Hide();
             p[1].Hide();
+            p[3].Hide();
             ResetWorkingDays();
             Load_WorkingDays_ComboBox();
             labelAlert.Visible = false;
@@ -161,16 +166,37 @@ namespace PlanningBoard
 
             MNotextBox.Text = row.Cells[1].Value.ToString();
             MDiatextBox.Text = row.Cells[2].Value.ToString();
-            if (row.Cells[3].Value == VariableDecleration_Class.Status.Active.ToString())
+
+            Boolean result = true;
+            String query = "SELECT SUM(PlanQty) AS TotalPlanQty, SUM(ActualQty) AS TotalActualQty PlanTable WHERE TaskDate >= '"+DateTime.Now.AddDays(-7)+"' AND MachineNo = "+Convert.ToInt32(MNotextBox.Text);
+            SqlDataReader reader = CommonFunctions.GetFromDB(query);
+            if(reader.HasRows)
             {
-                MStatuscomboBox.SelectedIndex = 1; 
+                while(reader.Read())
+                {
+                    int TotalPlanQty = reader.IsDBNull(reader.GetOrdinal("TotalPlanQty")) == true ? 0 : Convert.ToInt32(reader["TotalPlanQty"]);
+                    int TotalActualQty = reader.IsDBNull(reader.GetOrdinal("TotalActualQty")) == true ? 0 : Convert.ToInt32(reader["TotalActualQty"]);
+                    result = TotalActualQty == TotalPlanQty ? true : false;
+                }
+            }
+
+            if(result)
+            {
+                if (row.Cells[3].Value == VariableDecleration_Class.Status.Active.ToString())
+                {
+                    MStatuscomboBox.SelectedIndex = 1; 
+                }
+                else
+                {
+                    MStatuscomboBox.SelectedIndex = 0; 
+                }
+                MNotextBox.ReadOnly = true;
             }
             else
             {
-                MStatuscomboBox.SelectedIndex = 0; 
+                MessageBox.Show("This Machine can not be edited! It has already been used in PlanBoard! For Editing Delete from PlanBoard First!!!");
+                return;
             }
-
-            MNotextBox.ReadOnly = true;
         }
 
         private void SaveMachineInfo_Click(object sender, EventArgs e)
@@ -693,8 +719,16 @@ namespace PlanningBoard
                         query = "UPDATE Order_Info SET Buyer = " + buyerName + ", Style = " + styleName + ", Size = " + sizeNo + ", Dia = " + dia + ", BodyPart = " + bodyPart + ", Quantity = " + qty + ", ShipmentDate = '" + shipdate + "', SAM = " + SAMNo + ", Efficiency = " + eff + ", Status = " + status + " WHERE Id = " + Convert.ToInt32(hiddenIDtextBox.Text);
                         if (CommonFunctions.ExecutionToDB(query, 2))
                         {
-                            LoadOrderInfoGrid();
-                            ResetOrderInfo();
+
+                            if (CommonFunctions.recordExist("SELECT * FROM PlanTable WHERE OrderID = " + Convert.ToInt32(hiddenIDtextBox.Text)))
+                            {
+                                query = "UPDATE PlanTable SET OrderQty = " + qty + ", SAM = " + SAMNo + " WHERE OrderID = " + Convert.ToInt32(hiddenIDtextBox.Text);
+                                if (CommonFunctions.ExecutionToDB(query, 3))
+                                {
+                                    LoadOrderInfoGrid();
+                                    ResetOrderInfo();
+                                }
+                            }
                         }
                     }
                     else
@@ -752,6 +786,11 @@ namespace PlanningBoard
             {
                 buyerComboBox.Enabled = true;
                 styleComboBox.Enabled = true;
+                sizeComboBox.Enabled = true;
+                diaComboBox.Enabled = true;
+                partComboBox.Enabled = true;
+                effTextBox.ReadOnly = false;
+                
                 AddBuyer.Enabled = true;
                 AddStyle.Enabled = true;
                 qtyTextBox.Text = "";
@@ -763,7 +802,7 @@ namespace PlanningBoard
             }
         }
 
-        private void SetValue_orderInfo(int rowIndex)
+        private void SetValue_orderInfo(int rowIndex, bool OrderUsed)
         {
             DataGridViewRow row = orderInfoDetailsdataGridView.Rows[rowIndex];
 
@@ -782,6 +821,25 @@ namespace PlanningBoard
             int sizeNo = ((KeyValuePair<int, string>)sizeComboBox.SelectedItem).Key;
             int dia = ((KeyValuePair<int, string>)diaComboBox.SelectedItem).Key;
             int bodyPart = ((KeyValuePair<int, string>)partComboBox.SelectedItem).Key;
+
+            if (OrderUsed)
+            {
+                buyerComboBox.Enabled = false;
+                styleComboBox.Enabled = false;
+                sizeComboBox.Enabled = false;
+                diaComboBox.Enabled = false;
+                partComboBox.Enabled = false;
+                effTextBox.ReadOnly = true;
+            }
+            else
+            {
+                buyerComboBox.Enabled = true;
+                styleComboBox.Enabled = true;
+                sizeComboBox.Enabled = true;
+                diaComboBox.Enabled = true;
+                partComboBox.Enabled = true;
+                effTextBox.ReadOnly = false;
+            }
 
             try
             {
@@ -1300,12 +1358,13 @@ namespace PlanningBoard
 
                 if (!CommonFunctions.recordExist("SELECT * FROM PlanTable WHERE OrderID = " + rowID))
                 {
-                    SetValue_orderInfo(e.RowIndex);
+                    SetValue_orderInfo(e.RowIndex, false);
                 }
                 else
                 {
-                    MessageBox.Show("This Order has already been used in PlanBoard!!! To Delete Delete from PlanBoard!!!");
-                    ResetOrderInfo();
+                    SetValue_orderInfo(e.RowIndex, true);
+                    //MessageBox.Show("This Order has already been used in PlanBoard!!! To Delete Delete from PlanBoard!!!");
+                    //ResetOrderInfo();
                     return;
                 }
             }
@@ -1424,7 +1483,11 @@ namespace PlanningBoard
         {
             for (int i = 0; i < Grid_WorkDays_Info.Rows.Count; i++)
             {
-                Grid_WorkDays_Info.Rows[i].Cells[5].Value = true;
+                if (Convert.ToBoolean(Grid_WorkDays_Info.Rows[i].Cells[7].Value) == false)
+                {
+                    Grid_WorkDays_Info.Rows[i].Cells[5].Value = true;
+                    Grid_WorkDays_Info.Rows[i].Cells[6].Value = (int)VariableDecleration_Class.Status.Active;
+                }
             }
         }
 
@@ -1432,7 +1495,11 @@ namespace PlanningBoard
         {
             for (int i = 0; i < Grid_WorkDays_Info.Rows.Count; i++)
             {
-                Grid_WorkDays_Info.Rows[i].Cells[5].Value = false;
+                if (Convert.ToBoolean(Grid_WorkDays_Info.Rows[i].Cells[7].Value) == false)
+                {
+                    Grid_WorkDays_Info.Rows[i].Cells[5].Value = false;
+                    Grid_WorkDays_Info.Rows[i].Cells[6].Value = (int)VariableDecleration_Class.Status.InActive;
+                }
             }
         }
 
