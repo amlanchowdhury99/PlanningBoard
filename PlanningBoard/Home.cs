@@ -67,8 +67,8 @@ namespace PlanningBoard
             p[1].Hide();
             p[2].Hide();
             p[3].Hide();
-
             LoadMachineInfoGrid();
+            ResetMachineInfo();
 
         }
 
@@ -164,11 +164,11 @@ namespace PlanningBoard
         {
             DataGridViewRow row = machineInfoDataGridView.Rows[rowIndex];
 
-            MNotextBox.Text = row.Cells[1].Value.ToString();
-            MDiatextBox.Text = row.Cells[2].Value.ToString();
+            string mcNo = row.Cells[1].Value.ToString();
 
             Boolean result = true;
-            String query = "SELECT SUM(PlanQty) AS TotalPlanQty, SUM(ActualQty) AS TotalActualQty PlanTable WHERE TaskDate >= '"+DateTime.Now.AddDays(-7)+"' AND MachineNo = "+Convert.ToInt32(MNotextBox.Text);
+            
+            String query = "SELECT SUM(PlanQty) AS TotalPlanQty, (SELECT SUM(OrderQty) FROM (SELECT DISTINCT OrderID, OrderQty FROM PlanTable WHERE TaskDate >= '" + DateTime.Now.AddDays(-7) + "' AND MachineNo = " + Convert.ToInt32(mcNo) + " GROUP BY OrderID,OrderQty) as e ) AS TotalOrderQty, SUM(ActualQty) AS TotalActualQty FROM PlanTable WHERE TaskDate >= '" + DateTime.Now.AddDays(-7) + "' AND MachineNo = " + Convert.ToInt32(mcNo);
             SqlDataReader reader = CommonFunctions.GetFromDB(query);
             if(reader.HasRows)
             {
@@ -176,12 +176,16 @@ namespace PlanningBoard
                 {
                     int TotalPlanQty = reader.IsDBNull(reader.GetOrdinal("TotalPlanQty")) == true ? 0 : Convert.ToInt32(reader["TotalPlanQty"]);
                     int TotalActualQty = reader.IsDBNull(reader.GetOrdinal("TotalActualQty")) == true ? 0 : Convert.ToInt32(reader["TotalActualQty"]);
-                    result = TotalActualQty == TotalPlanQty ? true : false;
+                    int TotalOrderQty = reader.IsDBNull(reader.GetOrdinal("TotalOrderQty")) == true ? 0 : Convert.ToInt32(reader["TotalOrderQty"]);
+                    result = TotalOrderQty == TotalPlanQty ? true : false;
                 }
             }
 
             if(result)
             {
+                MNotextBox.Text = row.Cells[1].Value.ToString();
+                MDiatextBox.Text = row.Cells[2].Value.ToString();
+
                 if (row.Cells[3].Value == VariableDecleration_Class.Status.Active.ToString())
                 {
                     MStatuscomboBox.SelectedIndex = 1; 
@@ -307,7 +311,6 @@ namespace PlanningBoard
                 {
                     CommonFunctions.connection.Close();
                 }
-
             }
 
         }
@@ -902,17 +905,16 @@ namespace PlanningBoard
             LoadPart();
         }
 
-        private void DeleteOrderInfoGridRow(int rowIndex)
+        private void ChangeOrderStatus(int rowIndex, int Action)
         {
             try
             {
                 DataGridViewRow row = orderInfoDetailsdataGridView.Rows[rowIndex];
-
                 int rowID = (int)row.Cells[11].Value;
 
                 if (!CommonFunctions.recordExist("SELECT * FROM PlanTable WHERE OrderID = " + rowID))
                 {
-                    string query = " IF EXISTS (SELECT * FROM Order_Info WHERE Id = " + rowID + ") UPDATE Order_Info SET Status = " + 0 + " WHERE Id = " + rowID;
+                    string query = " IF EXISTS (SELECT * FROM Order_Info WHERE Id = " + rowID + ") UPDATE Order_Info SET Status = " + Action + " WHERE Id = " + rowID;
 
                     if (CommonFunctions.ExecutionToDB(query, 3))
                     {
@@ -1448,15 +1450,11 @@ namespace PlanningBoard
 
         private void deleteToolStripMenuItem_Click_1(object sender, EventArgs e)
         {
-            Int32 x = orderInfoDetailsdataGridView.Rows.GetFirstRow(DataGridViewElementStates.Selected);
-
             Int32 rowToDelete = orderInfoDetailsdataGridView.Rows.GetFirstRow(DataGridViewElementStates.Selected);
             if (rowToDelete > -1)
             {
-                //orderInfoDetailsdataGridView.Rows.RemoveAt(rowToDelete);
-                DeleteOrderInfoGridRow(rowToDelete);
+                ChangeOrderStatus(rowToDelete, 0);
             }
-
         }
 
         private void resetButton_Click(object sender, EventArgs e)
@@ -1615,6 +1613,24 @@ namespace PlanningBoard
                 toDateTimePicker.Enabled = true;
                 machineNoComboBox.Enabled = true;
                 Load_WorkingDays_ComboBox();
+            }
+        }
+
+        private void completeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Int32 rowToComplete = orderInfoDetailsdataGridView.Rows.GetFirstRow(DataGridViewElementStates.Selected);
+            if (rowToComplete > -1)
+            {
+                ChangeOrderStatus(rowToComplete, 3);
+            }
+        }
+
+        private void activeToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Int32 rowToActive = orderInfoDetailsdataGridView.Rows.GetFirstRow(DataGridViewElementStates.Selected);
+            if (rowToActive > -1)
+            {
+                ChangeOrderStatus(rowToActive, 2);
             }
         }
     }

@@ -31,22 +31,23 @@
             this.components = new System.ComponentModel.Container();
             this.planBoardDataGridView = new System.Windows.Forms.DataGridView();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.fromDateTimePicker = new System.Windows.Forms.DateTimePicker();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
+            this.MachineComboBox = new System.Windows.Forms.ComboBox();
+            this.MStatuscomboBox = new System.Windows.Forms.ComboBox();
             this.GenerateExcelBtn = new System.Windows.Forms.Button();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.BtnAddPlan = new System.Windows.Forms.Button();
             this.BtnGeneratePlan = new System.Windows.Forms.Button();
             this.toDateTimePicker = new System.Windows.Forms.DateTimePicker();
             this.label14 = new System.Windows.Forms.Label();
-            this.fromDateTimePicker = new System.Windows.Forms.DateTimePicker();
             this.label15 = new System.Windows.Forms.Label();
             this.pBContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.forwardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.backwardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.changeWorkDateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.MStatuscomboBox = new System.Windows.Forms.ComboBox();
-            this.MachineComboBox = new System.Windows.Forms.ComboBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
+            this.updateActualQtyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.planBoardDataGridView)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.pBContextMenuStrip.SuspendLayout();
@@ -60,12 +61,12 @@
             this.planBoardDataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.planBoardDataGridView.ColumnHeadersVisible = false;
             this.planBoardDataGridView.GridColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.planBoardDataGridView.Location = new System.Drawing.Point(12, 121);
+            this.planBoardDataGridView.Location = new System.Drawing.Point(12, 85);
             this.planBoardDataGridView.Name = "planBoardDataGridView";
             this.planBoardDataGridView.ReadOnly = true;
             this.planBoardDataGridView.RowHeadersVisible = false;
             this.planBoardDataGridView.RowHeadersWidth = 4;
-            this.planBoardDataGridView.Size = new System.Drawing.Size(1258, 468);
+            this.planBoardDataGridView.Size = new System.Drawing.Size(1258, 504);
             this.planBoardDataGridView.TabIndex = 0;
             this.planBoardDataGridView.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.planBoardDataGridView_CellClick);
             this.planBoardDataGridView.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.planBoardDataGridView_CellDoubleClick);
@@ -80,6 +81,7 @@
             // groupBox1
             // 
             this.groupBox1.BackColor = System.Drawing.Color.SlateGray;
+            this.groupBox1.Controls.Add(this.fromDateTimePicker);
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Controls.Add(this.MachineComboBox);
@@ -90,22 +92,70 @@
             this.groupBox1.Controls.Add(this.BtnGeneratePlan);
             this.groupBox1.Controls.Add(this.toDateTimePicker);
             this.groupBox1.Controls.Add(this.label14);
-            this.groupBox1.Controls.Add(this.fromDateTimePicker);
             this.groupBox1.Controls.Add(this.label15);
             this.groupBox1.Font = new System.Drawing.Font("Microsoft Tai Le", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBox1.Location = new System.Drawing.Point(12, 12);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(1258, 103);
+            this.groupBox1.Size = new System.Drawing.Size(1258, 67);
             this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Planning Board Parameter";
             this.groupBox1.Enter += new System.EventHandler(this.groupBox1_Enter);
             // 
+            // fromDateTimePicker
+            // 
+            this.fromDateTimePicker.CustomFormat = "dd/MM/yyyy";
+            this.fromDateTimePicker.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+            this.fromDateTimePicker.Location = new System.Drawing.Point(144, 25);
+            this.fromDateTimePicker.Name = "fromDateTimePicker";
+            this.fromDateTimePicker.Size = new System.Drawing.Size(127, 27);
+            this.fromDateTimePicker.TabIndex = 12;
+            this.fromDateTimePicker.Value = new System.DateTime(2019, 2, 5, 11, 53, 30, 0);
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.Location = new System.Drawing.Point(686, 29);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(88, 18);
+            this.label2.TabIndex = 38;
+            this.label2.Text = "Machine No";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Location = new System.Drawing.Point(481, 29);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(110, 18);
+            this.label1.TabIndex = 37;
+            this.label1.Text = "Machine Status";
+            // 
+            // MachineComboBox
+            // 
+            this.MachineComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.MachineComboBox.FormattingEnabled = true;
+            this.MachineComboBox.Location = new System.Drawing.Point(780, 25);
+            this.MachineComboBox.Name = "MachineComboBox";
+            this.MachineComboBox.Size = new System.Drawing.Size(134, 27);
+            this.MachineComboBox.TabIndex = 36;
+            // 
+            // MStatuscomboBox
+            // 
+            this.MStatuscomboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.MStatuscomboBox.FormattingEnabled = true;
+            this.MStatuscomboBox.Location = new System.Drawing.Point(597, 25);
+            this.MStatuscomboBox.Name = "MStatuscomboBox";
+            this.MStatuscomboBox.Size = new System.Drawing.Size(83, 27);
+            this.MStatuscomboBox.TabIndex = 35;
+            this.MStatuscomboBox.SelectedIndexChanged += new System.EventHandler(this.MStatuscomboBox_SelectedIndexChanged);
+            // 
             // GenerateExcelBtn
             // 
             this.GenerateExcelBtn.BackColor = System.Drawing.Color.RosyBrown;
             this.GenerateExcelBtn.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.GenerateExcelBtn.Location = new System.Drawing.Point(1143, 41);
+            this.GenerateExcelBtn.Location = new System.Drawing.Point(1143, 23);
             this.GenerateExcelBtn.Name = "GenerateExcelBtn";
             this.GenerateExcelBtn.Size = new System.Drawing.Size(87, 31);
             this.GenerateExcelBtn.TabIndex = 18;
@@ -116,7 +166,7 @@
             // textBox1
             // 
             this.textBox1.BackColor = System.Drawing.Color.RosyBrown;
-            this.textBox1.Location = new System.Drawing.Point(31, 38);
+            this.textBox1.Location = new System.Drawing.Point(31, 25);
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(35, 27);
             this.textBox1.TabIndex = 19;
@@ -126,7 +176,7 @@
             // 
             this.BtnAddPlan.BackColor = System.Drawing.Color.RosyBrown;
             this.BtnAddPlan.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.BtnAddPlan.Location = new System.Drawing.Point(1050, 41);
+            this.BtnAddPlan.Location = new System.Drawing.Point(1050, 23);
             this.BtnAddPlan.Name = "BtnAddPlan";
             this.BtnAddPlan.Size = new System.Drawing.Size(87, 31);
             this.BtnAddPlan.TabIndex = 16;
@@ -138,7 +188,7 @@
             // 
             this.BtnGeneratePlan.BackColor = System.Drawing.Color.RosyBrown;
             this.BtnGeneratePlan.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.BtnGeneratePlan.Location = new System.Drawing.Point(957, 42);
+            this.BtnGeneratePlan.Location = new System.Drawing.Point(957, 23);
             this.BtnGeneratePlan.Name = "BtnGeneratePlan";
             this.BtnGeneratePlan.Size = new System.Drawing.Size(87, 31);
             this.BtnGeneratePlan.TabIndex = 15;
@@ -150,7 +200,7 @@
             // 
             this.toDateTimePicker.CustomFormat = "dd/MM/yyyy";
             this.toDateTimePicker.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.toDateTimePicker.Location = new System.Drawing.Point(309, 44);
+            this.toDateTimePicker.Location = new System.Drawing.Point(309, 25);
             this.toDateTimePicker.Name = "toDateTimePicker";
             this.toDateTimePicker.Size = new System.Drawing.Size(127, 27);
             this.toDateTimePicker.TabIndex = 14;
@@ -159,27 +209,17 @@
             // 
             this.label14.AutoSize = true;
             this.label14.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label14.Location = new System.Drawing.Point(277, 46);
+            this.label14.Location = new System.Drawing.Point(277, 29);
             this.label14.Name = "label14";
             this.label14.Size = new System.Drawing.Size(26, 18);
             this.label14.TabIndex = 13;
             this.label14.Text = "To";
             // 
-            // fromDateTimePicker
-            // 
-            this.fromDateTimePicker.CustomFormat = "dd/MM/yyyy";
-            this.fromDateTimePicker.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.fromDateTimePicker.Location = new System.Drawing.Point(144, 44);
-            this.fromDateTimePicker.Name = "fromDateTimePicker";
-            this.fromDateTimePicker.Size = new System.Drawing.Size(127, 27);
-            this.fromDateTimePicker.TabIndex = 12;
-            this.fromDateTimePicker.Value = new System.DateTime(2019, 2, 5, 11, 53, 30, 0);
-            // 
             // label15
             // 
             this.label15.AutoSize = true;
             this.label15.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label15.Location = new System.Drawing.Point(94, 46);
+            this.label15.Location = new System.Drawing.Point(94, 29);
             this.label15.Name = "label15";
             this.label15.Size = new System.Drawing.Size(44, 18);
             this.label15.TabIndex = 11;
@@ -190,69 +230,38 @@
             this.pBContextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.forwardToolStripMenuItem,
             this.backwardToolStripMenuItem,
-            this.changeWorkDateToolStripMenuItem});
+            this.changeWorkDateToolStripMenuItem,
+            this.updateActualQtyToolStripMenuItem});
             this.pBContextMenuStrip.Name = "pBContextMenuStrip";
-            this.pBContextMenuStrip.Size = new System.Drawing.Size(168, 70);
+            this.pBContextMenuStrip.Size = new System.Drawing.Size(174, 92);
             // 
             // forwardToolStripMenuItem
             // 
             this.forwardToolStripMenuItem.Name = "forwardToolStripMenuItem";
-            this.forwardToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
-            this.forwardToolStripMenuItem.Text = "Forward";
+            this.forwardToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
+            this.forwardToolStripMenuItem.Text = "Forward Plan";
             this.forwardToolStripMenuItem.Click += new System.EventHandler(this.forwardToolStripMenuItem_Click);
             // 
             // backwardToolStripMenuItem
             // 
             this.backwardToolStripMenuItem.Name = "backwardToolStripMenuItem";
-            this.backwardToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
-            this.backwardToolStripMenuItem.Text = "Backward";
+            this.backwardToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
+            this.backwardToolStripMenuItem.Text = "Backward Plan";
             this.backwardToolStripMenuItem.Click += new System.EventHandler(this.backwardToolStripMenuItem_Click);
             // 
             // changeWorkDateToolStripMenuItem
             // 
             this.changeWorkDateToolStripMenuItem.Name = "changeWorkDateToolStripMenuItem";
-            this.changeWorkDateToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
-            this.changeWorkDateToolStripMenuItem.Text = "ChangeWorkDate";
+            this.changeWorkDateToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
+            this.changeWorkDateToolStripMenuItem.Text = "Change Work Date";
             this.changeWorkDateToolStripMenuItem.Click += new System.EventHandler(this.changeWorkDateToolStripMenuItem_Click);
             // 
-            // MStatuscomboBox
+            // updateActualQtyToolStripMenuItem
             // 
-            this.MStatuscomboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.MStatuscomboBox.FormattingEnabled = true;
-            this.MStatuscomboBox.Location = new System.Drawing.Point(597, 42);
-            this.MStatuscomboBox.Name = "MStatuscomboBox";
-            this.MStatuscomboBox.Size = new System.Drawing.Size(83, 27);
-            this.MStatuscomboBox.TabIndex = 35;
-            this.MStatuscomboBox.SelectedIndexChanged += new System.EventHandler(this.MStatuscomboBox_SelectedIndexChanged);
-            // 
-            // MachineComboBox
-            // 
-            this.MachineComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.MachineComboBox.FormattingEnabled = true;
-            this.MachineComboBox.Location = new System.Drawing.Point(780, 45);
-            this.MachineComboBox.Name = "MachineComboBox";
-            this.MachineComboBox.Size = new System.Drawing.Size(134, 27);
-            this.MachineComboBox.TabIndex = 36;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(481, 46);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(110, 18);
-            this.label1.TabIndex = 37;
-            this.label1.Text = "Machine Status";
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(686, 46);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(88, 18);
-            this.label2.TabIndex = 38;
-            this.label2.Text = "Machine No";
+            this.updateActualQtyToolStripMenuItem.Name = "updateActualQtyToolStripMenuItem";
+            this.updateActualQtyToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
+            this.updateActualQtyToolStripMenuItem.Text = "Update Actual Qty";
+            this.updateActualQtyToolStripMenuItem.Click += new System.EventHandler(this.updateActualQtyToolStripMenuItem_Click);
             // 
             // PlanBoardDisplayForm
             // 
@@ -262,8 +271,8 @@
             this.ClientSize = new System.Drawing.Size(1282, 599);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.planBoardDataGridView);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "PlanBoardDisplayForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "PlanBoardDisplayForm";
             this.Load += new System.EventHandler(this.PlanBoardDisplayForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.planBoardDataGridView)).EndInit();
@@ -294,6 +303,7 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ComboBox MachineComboBox;
         private System.Windows.Forms.ComboBox MStatuscomboBox;
+        private System.Windows.Forms.ToolStripMenuItem updateActualQtyToolStripMenuItem;
 
     }
 }

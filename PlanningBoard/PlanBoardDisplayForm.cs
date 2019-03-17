@@ -26,6 +26,8 @@ namespace PlanningBoard
         public static DateTime fromDate = DateTime.Now.Date;
         public static DateTime toDate = DateTime.Now.Date;
 
+        clsResize _form_resize;
+
         public static string orderIDs = "";
         public static int orderID = 0;
         public static int MachineNo = 0;
@@ -61,6 +63,21 @@ namespace PlanningBoard
             LoadComboBox();
             planBoardDataGridView.AutoGenerateColumns = false;
             planBoardDataGridView.ClearSelection();
+
+            _form_resize = new clsResize(this);
+            this.Load += _Load;
+            this.Resize += _Resize;
+
+        }
+
+        private void _Load(object sender, EventArgs e)
+        {
+            _form_resize._get_initial_size();
+        }
+
+        private void _Resize(object sender, EventArgs e)
+        {
+            _form_resize._resize();
         }
 
         private void PlanBoardDisplayForm_Load(object sender, EventArgs e)
@@ -112,6 +129,7 @@ namespace PlanningBoard
                 SqlDataReader reader = CommonFunctions.GetFromDB(query);
                 MachineComboBox.DataSource = null;
                 MachineComboBox.Items.Clear();
+                MachineDiaList.Clear();
                 MachineList.Clear();
                 MachineList.Add("ALL");
                 if (reader.HasRows)
@@ -140,11 +158,18 @@ namespace PlanningBoard
         {
             try
             {
-                var temp = MachineList;
-                temp.RemoveAt(0);
-                MachineDiaList.Clear();
-                string MachineNoList = MachineComboBox.SelectedIndex == 0 ? string.Join(",", temp.ToArray()) : MachineComboBox.Items[MachineComboBox.SelectedIndex].ToString();
+                var temp = "";
 
+                foreach(var obj in MachineList)
+                {
+                    if (!obj.ToString().Equals("ALL"))
+                    {
+                        temp = temp == "" ? obj.ToString() : temp + "," + obj.ToString();
+                    }
+                }
+
+                MachineDiaList.Clear();
+                string MachineNoList = MachineComboBox.SelectedIndex == 0 ? temp : MachineComboBox.Items[MachineComboBox.SelectedIndex].ToString();
                 string query = "SELECT * FROM Machine_Info WHERE MachineNo IN (" + MachineNoList + ") order by MachineNo asc";
 
                 SqlDataReader reader = CommonFunctions.GetFromDB(query);
@@ -228,14 +253,27 @@ namespace PlanningBoard
             SqlConnection cn = new SqlConnection(connectionStr);
             cn.Open();
             cm.Connection = cn;
-            var temp = MachineList;
-            temp.RemoveAt(0);
-            var MachineNoList = MachineComboBox.SelectedIndex == 0 ? string.Join(",", temp.ToArray()) : MachineComboBox.Items[MachineComboBox.SelectedIndex];
+            Queue MachineNoList = new Queue();
 
             try
             {
                 for (int y = 3; y < planBoardDataGridView.ColumnCount; y++)
                 {
+                    MachineNoList = new Queue();
+                    foreach (var obj in MachineList)
+                    {
+                        if (!obj.ToString().Equals("ALL"))
+                        {
+                            MachineNoList.Enqueue(obj);
+                        }
+                    }
+
+                    if (MachineComboBox.SelectedIndex != 0)
+                    {
+                        MachineNoList = new Queue();
+                        MachineNoList.Enqueue(MachineComboBox.Items[MachineComboBox.SelectedIndex]);
+                    }
+
                     DateTime GetDate = DateTime.ParseExact(planBoardDataGridView.Rows[1].Cells[y].Value.ToString(), "dd/MM/yyyy", null);
 
                     for (int x = 3; x < planBoardDataGridView.RowCount - 1; x++)
@@ -256,7 +294,7 @@ namespace PlanningBoard
                             string Style1 = "";
                             string OrderIDList = "";
 
-                            cm.CommandText = "select * from Planing_Board_Details where TaskDate='" + GetDate + "' and MachineNo IN (" + MachineNoList + ")";
+                            cm.CommandText = "select * from Planing_Board_Details where TaskDate='" + GetDate + "' and MachineNo = " + MachineNoList.Dequeue();
 
                             SqlDataReader reader;
                             reader = cm.ExecuteReader();
@@ -291,7 +329,7 @@ namespace PlanningBoard
                                     DateTime SetTime = Convert.ToDateTime(reader["ShipmentDate"]);
                                     CHD = CHD == "" ? SetTime.ToString("dd/MM/yyyy") : CHD + ";" + SetTime.ToString("dd/MM/yyyy");
                                     OrderQty = OrderQty == "" ? Convert.ToString(reader["OrderQty"]) : OrderQty + ";" + Convert.ToString(reader["OrderQty"]);
-                                    //ActualQty = ActualQty == "" ? Convert.ToString(reader["ActualQty"]) : OrderQty + "-" + Convert.ToString(reader["ActualQty"]);
+                                    ActualQty = reader.IsDBNull(reader.GetOrdinal("ActualQty")) == true ? "0" : ActualQty == "" ? Convert.ToString(reader["ActualQty"]) : ActualQty + "-" + Convert.ToString(reader["ActualQty"]);
                                     OrderIDList = OrderIDList == "" ? Convert.ToString(reader["OrderID"]) : OrderIDList + "," + Convert.ToString(reader["OrderID"]);
 
                                     Style1 = Convert.ToString(reader["StyleName"]);
@@ -1071,6 +1109,17 @@ namespace PlanningBoard
         private void MStatuscomboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             LoadMachineStatusWise();
+        }
+
+        private void updateActualQtyToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            DateTime taskDate = DateTime.ParseExact(planBoardDataGridView.Rows[1].Cells[colIndex].Value.ToString(), "dd/MM/yyyy", System.Globalization.CultureInfo.InvariantCulture);
+            orderIDs = planBoardDataGridView.Rows[rowIndex + OrderFactorsCount - 1].Cells[colIndex].Value.ToString();
+            int mcNo = Convert.ToInt32(planBoardDataGridView.Rows[rowIndex].Cells[0].Value);
+
+            UpdateActualQtyForm updateActualQtyForm = new UpdateActualQtyForm(orderIDs, mcNo, taskDate);
+            updateActualQtyForm.ShowDialog();
+            Generate_Plan_Board();
         }
 
     }

@@ -93,6 +93,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="clsResize.cs" />
     <Compile Include="FBPlanBoardForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -151,6 +152,12 @@
     <Compile Include="StyleInfo.Designer.cs">
       <DependentUpon>StyleInfo.cs</DependentUpon>
     </Compile>
+    <Compile Include="UpdateActualQtyForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UpdateActualQtyForm.Designer.cs">
+      <DependentUpon>UpdateActualQtyForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="VariableDecleration_Class.cs" />
     <Compile Include="AddPlanInfo.cs">
       <SubType>Form</SubType>
@@ -196,6 +203,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="AddPlanInfo.resx">
       <DependentUpon>AddPlanInfo.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UpdateActualQtyForm.resx">
+      <DependentUpon>UpdateActualQtyForm.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\app.manifest" />

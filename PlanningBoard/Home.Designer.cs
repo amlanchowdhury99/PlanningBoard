@@ -53,11 +53,11 @@
             this.MStatuscomboBox = new System.Windows.Forms.ComboBox();
             this.label2 = new System.Windows.Forms.Label();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.completeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStrip2 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.checkAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.unCheckAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.contextMenuStrip3 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.entryGroupBox = new System.Windows.Forms.GroupBox();
             this.samTextBox = new System.Windows.Forms.TextBox();
             this.effTextBox = new System.Windows.Forms.TextBox();
@@ -117,8 +117,10 @@
             this.BtnUpdate = new System.Windows.Forms.Button();
             this.panel3 = new System.Windows.Forms.Panel();
             this.HomePanel = new System.Windows.Forms.Panel();
-            this.button5 = new System.Windows.Forms.Button();
             this.label17 = new System.Windows.Forms.Label();
+            this.button5 = new System.Windows.Forms.Button();
+            this.contextMenuStrip3 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.activeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panel2.SuspendLayout();
             this.panel1.SuspendLayout();
             this.groupBox4.SuspendLayout();
@@ -410,14 +412,23 @@
             // contextMenuStrip1
             // 
             this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.activeToolStripMenuItem,
+            this.completeToolStripMenuItem,
             this.deleteToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(108, 26);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(153, 92);
+            // 
+            // completeToolStripMenuItem
+            // 
+            this.completeToolStripMenuItem.Name = "completeToolStripMenuItem";
+            this.completeToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.completeToolStripMenuItem.Text = "Complete";
+            this.completeToolStripMenuItem.Click += new System.EventHandler(this.completeToolStripMenuItem_Click);
             // 
             // deleteToolStripMenuItem
             // 
             this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
-            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
+            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.deleteToolStripMenuItem.Text = "Delete";
             this.deleteToolStripMenuItem.Click += new System.EventHandler(this.deleteToolStripMenuItem_Click_1);
             // 
@@ -442,11 +453,6 @@
             this.unCheckAllToolStripMenuItem.Size = new System.Drawing.Size(144, 22);
             this.unCheckAllToolStripMenuItem.Text = "Un-Check All";
             this.unCheckAllToolStripMenuItem.Click += new System.EventHandler(this.unCheckAllToolStripMenuItem_Click);
-            // 
-            // contextMenuStrip3
-            // 
-            this.contextMenuStrip3.Name = "contextMenuStrip3";
-            this.contextMenuStrip3.Size = new System.Drawing.Size(61, 4);
             // 
             // entryGroupBox
             // 
@@ -1089,6 +1095,16 @@
             this.HomePanel.Size = new System.Drawing.Size(1111, 582);
             this.HomePanel.TabIndex = 42;
             // 
+            // label17
+            // 
+            this.label17.AutoSize = true;
+            this.label17.Font = new System.Drawing.Font("Monotype Corsiva", 48F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label17.Location = new System.Drawing.Point(204, 231);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(705, 79);
+            this.label17.TabIndex = 6;
+            this.label17.Text = "Welcome To Planning Board";
+            // 
             // button5
             // 
             this.button5.BackColor = System.Drawing.Color.RosyBrown;
@@ -1100,15 +1116,17 @@
             this.button5.Text = "Save";
             this.button5.UseVisualStyleBackColor = false;
             // 
-            // label17
+            // contextMenuStrip3
             // 
-            this.label17.AutoSize = true;
-            this.label17.Font = new System.Drawing.Font("Monotype Corsiva", 48F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label17.Location = new System.Drawing.Point(204, 231);
-            this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(705, 79);
-            this.label17.TabIndex = 6;
-            this.label17.Text = "Welcome To Planning Board";
+            this.contextMenuStrip3.Name = "contextMenuStrip3";
+            this.contextMenuStrip3.Size = new System.Drawing.Size(61, 4);
+            // 
+            // activeToolStripMenuItem
+            // 
+            this.activeToolStripMenuItem.Name = "activeToolStripMenuItem";
+            this.activeToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.activeToolStripMenuItem.Text = "Active";
+            this.activeToolStripMenuItem.Click += new System.EventHandler(this.activeToolStripMenuItem_Click);
             // 
             // Home
             // 
@@ -1181,7 +1199,6 @@
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip2;
         private System.Windows.Forms.ToolStripMenuItem checkAllToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem unCheckAllToolStripMenuItem;
-        private System.Windows.Forms.ContextMenuStrip contextMenuStrip3;
         private System.Windows.Forms.DataGridViewTextBoxColumn SL;
         private System.Windows.Forms.DataGridViewTextBoxColumn MachineNumber;
         private System.Windows.Forms.DataGridViewTextBoxColumn MachineDia;
@@ -1247,6 +1264,9 @@
         private System.Windows.Forms.Panel HomePanel;
         private System.Windows.Forms.Label label17;
         private System.Windows.Forms.Button button5;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip3;
+        private System.Windows.Forms.ToolStripMenuItem completeToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem activeToolStripMenuItem;
         //private FirstCustomControl firstCustomControl1;
         //private MySecondCustmControl mySecondCustmControl1;
     }
