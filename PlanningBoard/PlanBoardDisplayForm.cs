@@ -12,7 +12,6 @@ using System.Windows.Forms;
 using System.IO;
 using System.Reflection;
 using System.Data.SqlClient;
-using System.Collections;
 using System.Configuration;
 using System.Text.RegularExpressions;
 using System.Drawing.Drawing2D;
@@ -285,6 +284,7 @@ namespace PlanningBoard
                             string Parts = "";
                             string Size = "";
                             string SAM = "";
+
                             string Efficiency = "";
                             string Capacity = "";
                             string PlanQty = "";
@@ -1120,6 +1120,12 @@ namespace PlanningBoard
             UpdateActualQtyForm updateActualQtyForm = new UpdateActualQtyForm(orderIDs, mcNo, taskDate);
             updateActualQtyForm.ShowDialog();
             Generate_Plan_Board();
+        }
+
+        private void Search_Click(object sender, EventArgs e)
+        {
+            Report reportForm = new Report();
+            reportForm.ShowDialog();
         }
 
     }

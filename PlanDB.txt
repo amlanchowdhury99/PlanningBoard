@@ -1,113 +1,6 @@
 USE [PlanningBoard]
 GO
-/****** Object:  Table [dbo].[Employee_Info]    Script Date: 03/17/2019 17:29:38 ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-SET ANSI_PADDING ON
-GO
-CREATE TABLE [dbo].[Employee_Info](
-	[Id] [int] IDENTITY(1,1) NOT NULL,
-	[UserName] [varchar](50) NULL,
-	[Password] [varchar](50) NULL,
-	[UserType] [int] NULL
-) ON [PRIMARY]
-GO
-SET ANSI_PADDING OFF
-GO
-SET IDENTITY_INSERT [dbo].[Employee_Info] ON
-INSERT [dbo].[Employee_Info] ([Id], [UserName], [Password], [UserType]) VALUES (1, N'admin', N'123', 1)
-INSERT [dbo].[Employee_Info] ([Id], [UserName], [Password], [UserType]) VALUES (2, N'amlan', N'amlan123', 2)
-SET IDENTITY_INSERT [dbo].[Employee_Info] OFF
-/****** Object:  Table [dbo].[Dia]    Script Date: 03/17/2019 17:29:38 ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-SET ANSI_PADDING ON
-GO
-CREATE TABLE [dbo].[Dia](
-	[Id] [int] IDENTITY(1,1) NOT NULL,
-	[Dia] [varchar](15) NULL,
- CONSTRAINT [PK_Dia] PRIMARY KEY CLUSTERED 
-(
-	[Id] ASC
-)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY],
- CONSTRAINT [IX_Dia] UNIQUE NONCLUSTERED 
-(
-	[Dia] ASC
-)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
-) ON [PRIMARY]
-GO
-SET ANSI_PADDING OFF
-GO
-SET IDENTITY_INSERT [dbo].[Dia] ON
-INSERT [dbo].[Dia] ([Id], [Dia]) VALUES (13, N'13 DIA')
-INSERT [dbo].[Dia] ([Id], [Dia]) VALUES (12, N'14 DIA')
-INSERT [dbo].[Dia] ([Id], [Dia]) VALUES (11, N'15 DIA')
-INSERT [dbo].[Dia] ([Id], [Dia]) VALUES (14, N'16 DIA')
-INSERT [dbo].[Dia] ([Id], [Dia]) VALUES (15, N'17 DIA')
-INSERT [dbo].[Dia] ([Id], [Dia]) VALUES (16, N'18 DIA')
-INSERT [dbo].[Dia] ([Id], [Dia]) VALUES (17, N'19 DIA')
-INSERT [dbo].[Dia] ([Id], [Dia]) VALUES (18, N'20 DIA')
-SET IDENTITY_INSERT [dbo].[Dia] OFF
-/****** Object:  Table [dbo].[Buyer]    Script Date: 03/17/2019 17:29:38 ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-SET ANSI_PADDING ON
-GO
-CREATE TABLE [dbo].[Buyer](
-	[Id] [int] IDENTITY(1,1) NOT NULL,
-	[BuyerName] [varchar](50) NOT NULL,
- CONSTRAINT [PK_Buyer_1] PRIMARY KEY CLUSTERED 
-(
-	[Id] ASC
-)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY],
- CONSTRAINT [IX_Buyer] UNIQUE NONCLUSTERED 
-(
-	[BuyerName] ASC
-)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
-) ON [PRIMARY]
-GO
-SET ANSI_PADDING OFF
-GO
-SET IDENTITY_INSERT [dbo].[Buyer] ON
-INSERT [dbo].[Buyer] ([Id], [BuyerName]) VALUES (27, N'JURITEX')
-INSERT [dbo].[Buyer] ([Id], [BuyerName]) VALUES (28, N'KMART')
-INSERT [dbo].[Buyer] ([Id], [BuyerName]) VALUES (30, N'LAREDUTE')
-INSERT [dbo].[Buyer] ([Id], [BuyerName]) VALUES (29, N'MNS')
-INSERT [dbo].[Buyer] ([Id], [BuyerName]) VALUES (26, N'PUMA')
-SET IDENTITY_INSERT [dbo].[Buyer] OFF
-/****** Object:  Table [dbo].[BodyPart]    Script Date: 03/17/2019 17:29:38 ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-SET ANSI_PADDING ON
-GO
-CREATE TABLE [dbo].[BodyPart](
-	[Id] [int] IDENTITY(1,1) NOT NULL,
-	[PartName] [varchar](50) NULL,
- CONSTRAINT [PK_BodyPart] PRIMARY KEY CLUSTERED 
-(
-	[Id] ASC
-)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY],
- CONSTRAINT [IX_BodyPart] UNIQUE NONCLUSTERED 
-(
-	[PartName] ASC
-)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
-) ON [PRIMARY]
-GO
-SET ANSI_PADDING OFF
-GO
-SET IDENTITY_INSERT [dbo].[BodyPart] ON
-INSERT [dbo].[BodyPart] ([Id], [PartName]) VALUES (4, N'BODY')
-INSERT [dbo].[BodyPart] ([Id], [PartName]) VALUES (3, N'SLEEVE')
-SET IDENTITY_INSERT [dbo].[BodyPart] OFF
-/****** Object:  Table [dbo].[WorkingDays]    Script Date: 03/17/2019 17:29:38 ******/
+/****** Object:  Table [dbo].[WorkingDays]    Script Date: 03/18/2019 17:23:11 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -1998,7 +1891,7 @@ INSERT [dbo].[WorkingDays] ([Id], [WorkDate], [MachineNo], [Minute], [DayName], 
 INSERT [dbo].[WorkingDays] ([Id], [WorkDate], [MachineNo], [Minute], [DayName], [WorkDay], [Active]) VALUES (1858, CAST(0x9A3F0B00 AS Date), 2001, 1320, N'Tuesday', 1, 1)
 INSERT [dbo].[WorkingDays] ([Id], [WorkDate], [MachineNo], [Minute], [DayName], [WorkDay], [Active]) VALUES (1859, CAST(0x9A3F0B00 AS Date), 2002, 1320, N'Tuesday', 1, 1)
 SET IDENTITY_INSERT [dbo].[WorkingDays] OFF
-/****** Object:  Table [dbo].[Style]    Script Date: 03/17/2019 17:29:38 ******/
+/****** Object:  Table [dbo].[Style]    Script Date: 03/18/2019 17:23:11 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -2021,7 +1914,7 @@ INSERT [dbo].[Style] ([Id], [StyleName]) VALUES (3, N'S123')
 INSERT [dbo].[Style] ([Id], [StyleName]) VALUES (4, N'K456')
 INSERT [dbo].[Style] ([Id], [StyleName]) VALUES (5, N'M323')
 SET IDENTITY_INSERT [dbo].[Style] OFF
-/****** Object:  Table [dbo].[Size]    Script Date: 03/17/2019 17:29:38 ******/
+/****** Object:  Table [dbo].[Size]    Script Date: 03/18/2019 17:23:11 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -2051,7 +1944,7 @@ INSERT [dbo].[Size] ([Id], [SizeName]) VALUES (8, N'XL')
 INSERT [dbo].[Size] ([Id], [SizeName]) VALUES (6, N'XS')
 INSERT [dbo].[Size] ([Id], [SizeName]) VALUES (11, N'XXL')
 SET IDENTITY_INSERT [dbo].[Size] OFF
-/****** Object:  Table [dbo].[PlanTable]    Script Date: 03/17/2019 17:29:38 ******/
+/****** Object:  Table [dbo].[PlanTable]    Script Date: 03/18/2019 17:23:11 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -2088,7 +1981,114 @@ INSERT [dbo].[PlanTable] ([Id], [MachineNo], [TaskDate], [OrderID], [Capacity], 
 INSERT [dbo].[PlanTable] ([Id], [MachineNo], [TaskDate], [OrderID], [Capacity], [PlanQty], [RemainingQty], [OrderQty], [ColIndex], [Efficiency], [SAM], [Minute], [Status], [ActualQty]) VALUES (455, 1402, CAST(0x703F0B00 AS Date), 10, 234, 234, 0, 700, NULL, 80, CAST(4.50 AS Decimal(18, 2)), 1320, NULL, NULL)
 INSERT [dbo].[PlanTable] ([Id], [MachineNo], [TaskDate], [OrderID], [Capacity], [PlanQty], [RemainingQty], [OrderQty], [ColIndex], [Efficiency], [SAM], [Minute], [Status], [ActualQty]) VALUES (456, 1402, CAST(0x713F0B00 AS Date), 10, 234, 232, 2, 700, NULL, 80, CAST(4.50 AS Decimal(18, 2)), 1320, NULL, NULL)
 SET IDENTITY_INSERT [dbo].[PlanTable] OFF
-/****** Object:  Table [dbo].[Machine_Info]    Script Date: 03/17/2019 17:29:38 ******/
+/****** Object:  Table [dbo].[Employee_Info]    Script Date: 03/18/2019 17:23:11 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+CREATE TABLE [dbo].[Employee_Info](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[UserName] [varchar](50) NULL,
+	[Password] [varchar](50) NULL,
+	[UserType] [int] NULL
+) ON [PRIMARY]
+GO
+SET ANSI_PADDING OFF
+GO
+SET IDENTITY_INSERT [dbo].[Employee_Info] ON
+INSERT [dbo].[Employee_Info] ([Id], [UserName], [Password], [UserType]) VALUES (1, N'admin', N'123', 1)
+INSERT [dbo].[Employee_Info] ([Id], [UserName], [Password], [UserType]) VALUES (2, N'amlan', N'amlan123', 2)
+SET IDENTITY_INSERT [dbo].[Employee_Info] OFF
+/****** Object:  Table [dbo].[Dia]    Script Date: 03/18/2019 17:23:11 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+CREATE TABLE [dbo].[Dia](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[Dia] [varchar](15) NULL,
+ CONSTRAINT [PK_Dia] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY],
+ CONSTRAINT [IX_Dia] UNIQUE NONCLUSTERED 
+(
+	[Dia] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+SET ANSI_PADDING OFF
+GO
+SET IDENTITY_INSERT [dbo].[Dia] ON
+INSERT [dbo].[Dia] ([Id], [Dia]) VALUES (13, N'13 DIA')
+INSERT [dbo].[Dia] ([Id], [Dia]) VALUES (12, N'14 DIA')
+INSERT [dbo].[Dia] ([Id], [Dia]) VALUES (11, N'15 DIA')
+INSERT [dbo].[Dia] ([Id], [Dia]) VALUES (14, N'16 DIA')
+INSERT [dbo].[Dia] ([Id], [Dia]) VALUES (15, N'17 DIA')
+INSERT [dbo].[Dia] ([Id], [Dia]) VALUES (16, N'18 DIA')
+INSERT [dbo].[Dia] ([Id], [Dia]) VALUES (17, N'19 DIA')
+INSERT [dbo].[Dia] ([Id], [Dia]) VALUES (18, N'20 DIA')
+SET IDENTITY_INSERT [dbo].[Dia] OFF
+/****** Object:  Table [dbo].[Buyer]    Script Date: 03/18/2019 17:23:11 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+CREATE TABLE [dbo].[Buyer](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[BuyerName] [varchar](50) NOT NULL,
+ CONSTRAINT [PK_Buyer_1] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY],
+ CONSTRAINT [IX_Buyer] UNIQUE NONCLUSTERED 
+(
+	[BuyerName] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+SET ANSI_PADDING OFF
+GO
+SET IDENTITY_INSERT [dbo].[Buyer] ON
+INSERT [dbo].[Buyer] ([Id], [BuyerName]) VALUES (27, N'JURITEX')
+INSERT [dbo].[Buyer] ([Id], [BuyerName]) VALUES (28, N'KMART')
+INSERT [dbo].[Buyer] ([Id], [BuyerName]) VALUES (30, N'LAREDUTE')
+INSERT [dbo].[Buyer] ([Id], [BuyerName]) VALUES (29, N'MNS')
+INSERT [dbo].[Buyer] ([Id], [BuyerName]) VALUES (26, N'PUMA')
+SET IDENTITY_INSERT [dbo].[Buyer] OFF
+/****** Object:  Table [dbo].[BodyPart]    Script Date: 03/18/2019 17:23:11 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+CREATE TABLE [dbo].[BodyPart](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[PartName] [varchar](50) NULL,
+ CONSTRAINT [PK_BodyPart] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY],
+ CONSTRAINT [IX_BodyPart] UNIQUE NONCLUSTERED 
+(
+	[PartName] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+SET ANSI_PADDING OFF
+GO
+SET IDENTITY_INSERT [dbo].[BodyPart] ON
+INSERT [dbo].[BodyPart] ([Id], [PartName]) VALUES (4, N'BODY')
+INSERT [dbo].[BodyPart] ([Id], [PartName]) VALUES (3, N'SLEEVE')
+SET IDENTITY_INSERT [dbo].[BodyPart] OFF
+/****** Object:  Table [dbo].[Machine_Info]    Script Date: 03/18/2019 17:23:11 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -2140,7 +2140,7 @@ INSERT [dbo].[Machine_Info] ([Id], [MachineNo], [MachineDia], [Status]) VALUES (
 INSERT [dbo].[Machine_Info] ([Id], [MachineNo], [MachineDia], [Status]) VALUES (48, 2001, N'20 DIA', 1)
 INSERT [dbo].[Machine_Info] ([Id], [MachineNo], [MachineDia], [Status]) VALUES (49, 2002, N'20 DIA', 1)
 SET IDENTITY_INSERT [dbo].[Machine_Info] OFF
-/****** Object:  Table [dbo].[OrderPlanTable]    Script Date: 03/17/2019 17:29:38 ******/
+/****** Object:  Table [dbo].[OrderPlanTable]    Script Date: 03/18/2019 17:23:11 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -2198,7 +2198,7 @@ INSERT [dbo].[OrderPlanTable] ([Id], [MachineNo], [OrderID], [PlanDate], [PlanSt
 INSERT [dbo].[OrderPlanTable] ([Id], [MachineNo], [OrderID], [PlanDate], [PlanStartDate], [PlanEndDate], [Remarks]) VALUES (112, 1402, 13, CAST(0x6E3F0B00 AS Date), CAST(0x6E3F0B00 AS Date), CAST(0x6E3F0B00 AS Date), N'')
 INSERT [dbo].[OrderPlanTable] ([Id], [MachineNo], [OrderID], [PlanDate], [PlanStartDate], [PlanEndDate], [Remarks]) VALUES (113, 1402, 10, CAST(0x6E3F0B00 AS Date), CAST(0x6F3F0B00 AS Date), CAST(0x713F0B00 AS Date), N'')
 SET IDENTITY_INSERT [dbo].[OrderPlanTable] OFF
-/****** Object:  Table [dbo].[Order_Info]    Script Date: 03/17/2019 17:29:38 ******/
+/****** Object:  Table [dbo].[Order_Info]    Script Date: 03/18/2019 17:23:11 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -2230,7 +2230,410 @@ INSERT [dbo].[Order_Info] ([Id], [Buyer], [Style], [Size], [Dia], [BodyPart], [Q
 INSERT [dbo].[Order_Info] ([Id], [Buyer], [Style], [Size], [Dia], [BodyPart], [Quantity], [ShipmentDate], [SAM], [Efficiency], [Status]) VALUES (13, 28, 5, 10, 15, 3, 1200, CAST(0x633F0B00 AS Date), CAST(3.74 AS Decimal(18, 2)), CAST(95.00 AS Decimal(18, 2)), 2)
 INSERT [dbo].[Order_Info] ([Id], [Buyer], [Style], [Size], [Dia], [BodyPart], [Quantity], [ShipmentDate], [SAM], [Efficiency], [Status]) VALUES (14, 27, 4, 10, 13, 3, 500, CAST(0x633F0B00 AS Date), CAST(5.00 AS Decimal(18, 2)), CAST(70.00 AS Decimal(18, 2)), 1)
 SET IDENTITY_INSERT [dbo].[Order_Info] OFF
-/****** Object:  View [dbo].[LoadWithActualQtyView]    Script Date: 03/17/2019 17:29:38 ******/
+/****** Object:  View [dbo].[Planing_Board_Details]    Script Date: 03/18/2019 17:23:12 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE VIEW [dbo].[Planing_Board_Details]
+AS
+SELECT     dbo.PlanTable.MachineNo, dbo.PlanTable.TaskDate, dbo.PlanTable.OrderID, dbo.Buyer.BuyerName, dbo.Style.StyleName, dbo.BodyPart.PartName, dbo.Size.SizeName, dbo.PlanTable.Efficiency, 
+                      dbo.PlanTable.Capacity, dbo.PlanTable.PlanQty, dbo.Order_Info.ShipmentDate, dbo.PlanTable.OrderQty, dbo.PlanTable.SAM, dbo.PlanTable.ActualQty, 
+                      dbo.Machine_Info.Status AS MachineStatus
+FROM         dbo.Machine_Info RIGHT OUTER JOIN
+                      dbo.PlanTable ON dbo.Machine_Info.MachineNo = dbo.PlanTable.MachineNo LEFT OUTER JOIN
+                      dbo.Style RIGHT OUTER JOIN
+                      dbo.Order_Info ON dbo.Style.Id = dbo.Order_Info.Style LEFT OUTER JOIN
+                      dbo.Size ON dbo.Order_Info.Size = dbo.Size.Id ON dbo.PlanTable.OrderID = dbo.Order_Info.Id LEFT OUTER JOIN
+                      dbo.BodyPart ON dbo.Order_Info.BodyPart = dbo.BodyPart.Id LEFT OUTER JOIN
+                      dbo.Buyer ON dbo.Order_Info.Buyer = dbo.Buyer.Id
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPane1', @value=N'[0E232FF0-B466-11cf-A24F-00AA00A3EFFF, 1.00]
+Begin DesignProperties = 
+   Begin PaneConfigurations = 
+      Begin PaneConfiguration = 0
+         NumPanes = 4
+         Configuration = "(H (1[71] 4[4] 2[16] 3) )"
+      End
+      Begin PaneConfiguration = 1
+         NumPanes = 3
+         Configuration = "(H (1 [50] 4 [25] 3))"
+      End
+      Begin PaneConfiguration = 2
+         NumPanes = 3
+         Configuration = "(H (1 [50] 2 [25] 3))"
+      End
+      Begin PaneConfiguration = 3
+         NumPanes = 3
+         Configuration = "(H (4 [30] 2 [40] 3))"
+      End
+      Begin PaneConfiguration = 4
+         NumPanes = 2
+         Configuration = "(H (1 [56] 3))"
+      End
+      Begin PaneConfiguration = 5
+         NumPanes = 2
+         Configuration = "(H (2 [66] 3))"
+      End
+      Begin PaneConfiguration = 6
+         NumPanes = 2
+         Configuration = "(H (4 [50] 3))"
+      End
+      Begin PaneConfiguration = 7
+         NumPanes = 1
+         Configuration = "(V (3))"
+      End
+      Begin PaneConfiguration = 8
+         NumPanes = 3
+         Configuration = "(H (1[56] 4[18] 2) )"
+      End
+      Begin PaneConfiguration = 9
+         NumPanes = 2
+         Configuration = "(H (1 [75] 4))"
+      End
+      Begin PaneConfiguration = 10
+         NumPanes = 2
+         Configuration = "(H (1[66] 2) )"
+      End
+      Begin PaneConfiguration = 11
+         NumPanes = 2
+         Configuration = "(H (4 [60] 2))"
+      End
+      Begin PaneConfiguration = 12
+         NumPanes = 1
+         Configuration = "(H (1) )"
+      End
+      Begin PaneConfiguration = 13
+         NumPanes = 1
+         Configuration = "(V (4))"
+      End
+      Begin PaneConfiguration = 14
+         NumPanes = 1
+         Configuration = "(V (2))"
+      End
+      ActivePaneConfig = 0
+   End
+   Begin DiagramPane = 
+      Begin Origin = 
+         Top = -46
+         Left = 0
+      End
+      Begin Tables = 
+         Begin Table = "Style"
+            Begin Extent = 
+               Top = 189
+               Left = 444
+               Bottom = 442
+               Right = 604
+            End
+            DisplayFlags = 280
+            TopColumn = 0
+         End
+         Begin Table = "Order_Info"
+            Begin Extent = 
+               Top = 6
+               Left = 236
+               Bottom = 328
+               Right = 396
+            End
+            DisplayFlags = 280
+            TopColumn = 0
+         End
+         Begin Table = "Size"
+            Begin Extent = 
+               Top = 37
+               Left = 901
+               Bottom = 127
+               Right = 1061
+            End
+            DisplayFlags = 280
+            TopColumn = 0
+         End
+         Begin Table = "PlanTable"
+            Begin Extent = 
+               Top = 32
+               Left = 0
+               Bottom = 305
+               Right = 160
+            End
+            DisplayFlags = 280
+            TopColumn = 0
+         End
+         Begin Table = "BodyPart"
+            Begin Extent = 
+               Top = 106
+               Left = 718
+               Bottom = 344
+               Right = 855
+            End
+            DisplayFlags = 280
+            TopColumn = 0
+         End
+         Begin Table = "Buyer"
+            Begin Extent = 
+               Top = 4
+               Left = 525
+               Bottom = 94
+               Right = 685
+            End
+            DisplayFlags = 280
+            TopColumn = 0
+         End
+         Begin Table = "Machine_Info"
+            Begin Extent = 
+               Top = 363
+               Left = 197
+               Bottom = 483
+               Right = 357
+            End
+            DisplayFlags = ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'Planing_Board_Details'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPane2', @value=N'280
+            TopColumn = 0
+         End
+      End
+   End
+   Begin SQLPane = 
+   End
+   Begin DataPane = 
+      Begin ParameterDefaults = ""
+      End
+      Begin ColumnWidths = 17
+         Width = 284
+         Width = 1500
+         Width = 1500
+         Width = 1500
+         Width = 1500
+         Width = 1500
+         Width = 1500
+         Width = 1500
+         Width = 1500
+         Width = 1500
+         Width = 1500
+         Width = 1500
+         Width = 1500
+         Width = 1500
+         Width = 1500
+         Width = 1500
+         Width = 1500
+      End
+   End
+   Begin CriteriaPane = 
+      Begin ColumnWidths = 11
+         Column = 1440
+         Alias = 900
+         Table = 1170
+         Output = 720
+         Append = 1400
+         NewValue = 1170
+         SortType = 1350
+         SortOrder = 1410
+         GroupBy = 1350
+         Filter = 1350
+         Or = 1350
+         Or = 1350
+         Or = 1350
+      End
+   End
+End
+' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'Planing_Board_Details'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPaneCount', @value=2 , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'Planing_Board_Details'
+GO
+/****** Object:  View [dbo].[OrderDetailsView]    Script Date: 03/18/2019 17:23:12 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE VIEW [dbo].[OrderDetailsView]
+AS
+SELECT     dbo.Order_Info.Id AS OrderID, dbo.Buyer.BuyerName, dbo.Style.StyleName, dbo.Size.SizeName, dbo.Dia.Dia, dbo.BodyPart.PartName, dbo.Order_Info.Buyer AS BuyerID, 
+                      dbo.Order_Info.Style AS StyleID, dbo.Order_Info.Size AS SizeID, dbo.Order_Info.Dia AS DiaID, dbo.Order_Info.BodyPart AS PartID
+FROM         dbo.Order_Info LEFT OUTER JOIN
+                      dbo.BodyPart ON dbo.Order_Info.BodyPart = dbo.BodyPart.Id LEFT OUTER JOIN
+                      dbo.Size ON dbo.Order_Info.Size = dbo.Size.Id LEFT OUTER JOIN
+                      dbo.Dia ON dbo.Order_Info.Dia = dbo.Dia.Id LEFT OUTER JOIN
+                      dbo.Style ON dbo.Order_Info.Style = dbo.Style.Id LEFT OUTER JOIN
+                      dbo.Buyer ON dbo.Order_Info.Buyer = dbo.Buyer.Id
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPane1', @value=N'[0E232FF0-B466-11cf-A24F-00AA00A3EFFF, 1.00]
+Begin DesignProperties = 
+   Begin PaneConfigurations = 
+      Begin PaneConfiguration = 0
+         NumPanes = 4
+         Configuration = "(H (1[44] 4[29] 2[9] 3) )"
+      End
+      Begin PaneConfiguration = 1
+         NumPanes = 3
+         Configuration = "(H (1 [50] 4 [25] 3))"
+      End
+      Begin PaneConfiguration = 2
+         NumPanes = 3
+         Configuration = "(H (1 [50] 2 [25] 3))"
+      End
+      Begin PaneConfiguration = 3
+         NumPanes = 3
+         Configuration = "(H (4 [30] 2 [40] 3))"
+      End
+      Begin PaneConfiguration = 4
+         NumPanes = 2
+         Configuration = "(H (1 [56] 3))"
+      End
+      Begin PaneConfiguration = 5
+         NumPanes = 2
+         Configuration = "(H (2 [66] 3))"
+      End
+      Begin PaneConfiguration = 6
+         NumPanes = 2
+         Configuration = "(H (4 [50] 3))"
+      End
+      Begin PaneConfiguration = 7
+         NumPanes = 1
+         Configuration = "(V (3))"
+      End
+      Begin PaneConfiguration = 8
+         NumPanes = 3
+         Configuration = "(H (1[56] 4[18] 2) )"
+      End
+      Begin PaneConfiguration = 9
+         NumPanes = 2
+         Configuration = "(H (1 [75] 4))"
+      End
+      Begin PaneConfiguration = 10
+         NumPanes = 2
+         Configuration = "(H (1[66] 2) )"
+      End
+      Begin PaneConfiguration = 11
+         NumPanes = 2
+         Configuration = "(H (4 [60] 2))"
+      End
+      Begin PaneConfiguration = 12
+         NumPanes = 1
+         Configuration = "(H (1) )"
+      End
+      Begin PaneConfiguration = 13
+         NumPanes = 1
+         Configuration = "(V (4))"
+      End
+      Begin PaneConfiguration = 14
+         NumPanes = 1
+         Configuration = "(V (2))"
+      End
+      ActivePaneConfig = 0
+   End
+   Begin DiagramPane = 
+      Begin Origin = 
+         Top = 0
+         Left = 0
+      End
+      Begin Tables = 
+         Begin Table = "Order_Info"
+            Begin Extent = 
+               Top = 6
+               Left = 38
+               Bottom = 341
+               Right = 198
+            End
+            DisplayFlags = 280
+            TopColumn = 0
+         End
+         Begin Table = "Buyer"
+            Begin Extent = 
+               Top = 0
+               Left = 545
+               Bottom = 90
+               Right = 705
+            End
+            DisplayFlags = 280
+            TopColumn = 0
+         End
+         Begin Table = "Style"
+            Begin Extent = 
+               Top = 22
+               Left = 826
+               Bottom = 112
+               Right = 986
+            End
+            DisplayFlags = 280
+            TopColumn = 0
+         End
+         Begin Table = "Dia"
+            Begin Extent = 
+               Top = 195
+               Left = 1132
+               Bottom = 285
+               Right = 1292
+            End
+            DisplayFlags = 280
+            TopColumn = 0
+         End
+         Begin Table = "Size"
+            Begin Extent = 
+               Top = 103
+               Left = 1066
+               Bottom = 193
+               Right = 1226
+            End
+            DisplayFlags = 280
+            TopColumn = 0
+         End
+         Begin Table = "BodyPart"
+            Begin Extent = 
+               Top = 316
+               Left = 1126
+               Bottom = 406
+               Right = 1286
+            End
+            DisplayFlags = 280
+            TopColumn = 0
+         End
+      End
+   End
+   Begin SQLPane = 
+   End
+   Begin DataPane = 
+      Begin ParameterDefaults = ""
+      End
+      Begin ColumnWidths = 12
+         Width = 284
+         Width = 1500
+         Width = 1500
+       ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'OrderDetailsView'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPane2', @value=N'  Width = 1500
+         Width = 1500
+         Width = 1500
+         Width = 1500
+         Width = 1500
+         Width = 1500
+         Width = 1500
+         Width = 1500
+         Width = 1500
+      End
+   End
+   Begin CriteriaPane = 
+      Begin ColumnWidths = 11
+         Column = 1440
+         Alias = 900
+         Table = 1170
+         Output = 720
+         Append = 1400
+         NewValue = 1170
+         SortType = 1350
+         SortOrder = 1410
+         GroupBy = 1350
+         Filter = 1350
+         Or = 1350
+         Or = 1350
+         Or = 1350
+      End
+   End
+End
+' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'OrderDetailsView'
+GO
+EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPaneCount', @value=2 , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'OrderDetailsView'
+GO
+/****** Object:  View [dbo].[LoadWithActualQtyView]    Script Date: 03/18/2019 17:23:12 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -2438,202 +2841,7 @@ End
 GO
 EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPaneCount', @value=2 , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'LoadWithActualQtyView'
 GO
-/****** Object:  View [dbo].[Planing_Board_Details]    Script Date: 03/17/2019 17:29:38 ******/
-SET ANSI_NULLS ON
-GO
-SET QUOTED_IDENTIFIER ON
-GO
-CREATE VIEW [dbo].[Planing_Board_Details]
-AS
-SELECT     dbo.PlanTable.MachineNo, dbo.PlanTable.TaskDate, dbo.PlanTable.OrderID, dbo.Buyer.BuyerName, dbo.Style.StyleName, dbo.BodyPart.PartName, dbo.Size.SizeName, dbo.PlanTable.Efficiency, 
-                      dbo.PlanTable.Capacity, dbo.PlanTable.PlanQty, dbo.Order_Info.ShipmentDate, dbo.PlanTable.OrderQty, dbo.PlanTable.SAM, dbo.PlanTable.ActualQty
-FROM         dbo.Style RIGHT OUTER JOIN
-                      dbo.Order_Info ON dbo.Style.Id = dbo.Order_Info.Style LEFT OUTER JOIN
-                      dbo.Size ON dbo.Order_Info.Size = dbo.Size.Id RIGHT OUTER JOIN
-                      dbo.PlanTable ON dbo.Order_Info.Id = dbo.PlanTable.OrderID LEFT OUTER JOIN
-                      dbo.BodyPart ON dbo.Order_Info.BodyPart = dbo.BodyPart.Id LEFT OUTER JOIN
-                      dbo.Buyer ON dbo.Order_Info.Buyer = dbo.Buyer.Id
-GO
-EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPane1', @value=N'[0E232FF0-B466-11cf-A24F-00AA00A3EFFF, 1.00]
-Begin DesignProperties = 
-   Begin PaneConfigurations = 
-      Begin PaneConfiguration = 0
-         NumPanes = 4
-         Configuration = "(H (1[73] 4[4] 2[6] 3) )"
-      End
-      Begin PaneConfiguration = 1
-         NumPanes = 3
-         Configuration = "(H (1 [50] 4 [25] 3))"
-      End
-      Begin PaneConfiguration = 2
-         NumPanes = 3
-         Configuration = "(H (1 [50] 2 [25] 3))"
-      End
-      Begin PaneConfiguration = 3
-         NumPanes = 3
-         Configuration = "(H (4 [30] 2 [40] 3))"
-      End
-      Begin PaneConfiguration = 4
-         NumPanes = 2
-         Configuration = "(H (1 [56] 3))"
-      End
-      Begin PaneConfiguration = 5
-         NumPanes = 2
-         Configuration = "(H (2 [66] 3))"
-      End
-      Begin PaneConfiguration = 6
-         NumPanes = 2
-         Configuration = "(H (4 [50] 3))"
-      End
-      Begin PaneConfiguration = 7
-         NumPanes = 1
-         Configuration = "(V (3))"
-      End
-      Begin PaneConfiguration = 8
-         NumPanes = 3
-         Configuration = "(H (1[56] 4[18] 2) )"
-      End
-      Begin PaneConfiguration = 9
-         NumPanes = 2
-         Configuration = "(H (1 [75] 4))"
-      End
-      Begin PaneConfiguration = 10
-         NumPanes = 2
-         Configuration = "(H (1[66] 2) )"
-      End
-      Begin PaneConfiguration = 11
-         NumPanes = 2
-         Configuration = "(H (4 [60] 2))"
-      End
-      Begin PaneConfiguration = 12
-         NumPanes = 1
-         Configuration = "(H (1) )"
-      End
-      Begin PaneConfiguration = 13
-         NumPanes = 1
-         Configuration = "(V (4))"
-      End
-      Begin PaneConfiguration = 14
-         NumPanes = 1
-         Configuration = "(V (2))"
-      End
-      ActivePaneConfig = 0
-   End
-   Begin DiagramPane = 
-      Begin Origin = 
-         Top = 0
-         Left = 0
-      End
-      Begin Tables = 
-         Begin Table = "Style"
-            Begin Extent = 
-               Top = 189
-               Left = 444
-               Bottom = 442
-               Right = 604
-            End
-            DisplayFlags = 280
-            TopColumn = 0
-         End
-         Begin Table = "Order_Info"
-            Begin Extent = 
-               Top = 6
-               Left = 236
-               Bottom = 328
-               Right = 396
-            End
-            DisplayFlags = 280
-            TopColumn = 0
-         End
-         Begin Table = "Size"
-            Begin Extent = 
-               Top = 37
-               Left = 901
-               Bottom = 127
-               Right = 1061
-            End
-            DisplayFlags = 280
-            TopColumn = 0
-         End
-         Begin Table = "PlanTable"
-            Begin Extent = 
-               Top = 6
-               Left = 38
-               Bottom = 329
-               Right = 198
-            End
-            DisplayFlags = 280
-            TopColumn = 0
-         End
-         Begin Table = "BodyPart"
-            Begin Extent = 
-               Top = 106
-               Left = 718
-               Bottom = 344
-               Right = 855
-            End
-            DisplayFlags = 280
-            TopColumn = 0
-         End
-         Begin Table = "Buyer"
-            Begin Extent = 
-               Top = 4
-               Left = 525
-               Bottom = 94
-               Right = 685
-            End
-            DisplayFlags = 280
-            TopColumn = 0
-         End
-      End
-   End
-   Begin SQLPane = 
-   End
-   Begin DataPane = 
-      Begin ParameterDefaults = ""
-      End
-      Begin ColumnWidths = 14
-         Width = 284
-         Width = 1500
-         Width = 1500
-         ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'Planing_Board_Details'
-GO
-EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPane2', @value=N'Width = 1500
-         Width = 1500
-         Width = 1500
-         Width = 1500
-         Width = 1500
-         Width = 1500
-         Width = 1500
-         Width = 1500
-         Width = 1500
-         Width = 1500
-         Width = 1500
-      End
-   End
-   Begin CriteriaPane = 
-      Begin ColumnWidths = 11
-         Column = 1440
-         Alias = 900
-         Table = 1170
-         Output = 720
-         Append = 1400
-         NewValue = 1170
-         SortType = 1350
-         SortOrder = 1410
-         GroupBy = 1350
-         Filter = 1350
-         Or = 1350
-         Or = 1350
-         Or = 1350
-      End
-   End
-End
-' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'Planing_Board_Details'
-GO
-EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPaneCount', @value=2 , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'Planing_Board_Details'
-GO
-/****** Object:  ForeignKey [FK_Order_Info_BodyPart]    Script Date: 03/17/2019 17:29:38 ******/
+/****** Object:  ForeignKey [FK_Order_Info_BodyPart]    Script Date: 03/18/2019 17:23:11 ******/
 ALTER TABLE [dbo].[Order_Info]  WITH CHECK ADD  CONSTRAINT [FK_Order_Info_BodyPart] FOREIGN KEY([BodyPart])
 REFERENCES [dbo].[BodyPart] ([Id])
 ON UPDATE CASCADE
@@ -2641,7 +2849,7 @@ ON DELETE CASCADE
 GO
 ALTER TABLE [dbo].[Order_Info] CHECK CONSTRAINT [FK_Order_Info_BodyPart]
 GO
-/****** Object:  ForeignKey [FK_Order_Info_Buyer]    Script Date: 03/17/2019 17:29:38 ******/
+/****** Object:  ForeignKey [FK_Order_Info_Buyer]    Script Date: 03/18/2019 17:23:11 ******/
 ALTER TABLE [dbo].[Order_Info]  WITH CHECK ADD  CONSTRAINT [FK_Order_Info_Buyer] FOREIGN KEY([Buyer])
 REFERENCES [dbo].[Buyer] ([Id])
 ON UPDATE CASCADE
@@ -2649,7 +2857,7 @@ ON DELETE CASCADE
 GO
 ALTER TABLE [dbo].[Order_Info] CHECK CONSTRAINT [FK_Order_Info_Buyer]
 GO
-/****** Object:  ForeignKey [FK_Order_Info_Dia]    Script Date: 03/17/2019 17:29:38 ******/
+/****** Object:  ForeignKey [FK_Order_Info_Dia]    Script Date: 03/18/2019 17:23:11 ******/
 ALTER TABLE [dbo].[Order_Info]  WITH CHECK ADD  CONSTRAINT [FK_Order_Info_Dia] FOREIGN KEY([Dia])
 REFERENCES [dbo].[Dia] ([Id])
 ON UPDATE CASCADE
@@ -2657,7 +2865,7 @@ ON DELETE CASCADE
 GO
 ALTER TABLE [dbo].[Order_Info] CHECK CONSTRAINT [FK_Order_Info_Dia]
 GO
-/****** Object:  ForeignKey [FK_Order_Info_Size]    Script Date: 03/17/2019 17:29:38 ******/
+/****** Object:  ForeignKey [FK_Order_Info_Size]    Script Date: 03/18/2019 17:23:11 ******/
 ALTER TABLE [dbo].[Order_Info]  WITH CHECK ADD  CONSTRAINT [FK_Order_Info_Size] FOREIGN KEY([Size])
 REFERENCES [dbo].[Size] ([Id])
 ON UPDATE CASCADE
@@ -2665,7 +2873,7 @@ ON DELETE CASCADE
 GO
 ALTER TABLE [dbo].[Order_Info] CHECK CONSTRAINT [FK_Order_Info_Size]
 GO
-/****** Object:  ForeignKey [FK_Order_Info_Style]    Script Date: 03/17/2019 17:29:38 ******/
+/****** Object:  ForeignKey [FK_Order_Info_Style]    Script Date: 03/18/2019 17:23:11 ******/
 ALTER TABLE [dbo].[Order_Info]  WITH CHECK ADD  CONSTRAINT [FK_Order_Info_Style] FOREIGN KEY([Style])
 REFERENCES [dbo].[Style] ([Id])
 ON UPDATE CASCADE
