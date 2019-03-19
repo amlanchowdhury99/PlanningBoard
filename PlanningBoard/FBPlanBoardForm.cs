@@ -68,7 +68,7 @@ namespace PlanningBoard
                 {
                     if (CommonFunctions.recordExist("SELECT * FROM WorkingDays WHERE MachineNo = " + MachineNo + " AND Active = 1 AND WorkDate = '" + TaskDate + "'"))
                     {
-                         if (!CommonFunctions.recordExist("SELECT * FROM PlanTable WHERE MachineNo = " + MachineNo + " AND TaskDate = '" + TaskDate + "'"))
+                        if (!CommonFunctions.recordExist("SELECT * FROM PlanTable WHERE  Revert = 0 OR Revert = 2 MachineNo = " + MachineNo + " AND TaskDate = '" + TaskDate + "'"))
                         {
                             try
                             {

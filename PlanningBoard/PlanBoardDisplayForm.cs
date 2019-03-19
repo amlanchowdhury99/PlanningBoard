@@ -130,16 +130,20 @@ namespace PlanningBoard
                 MachineComboBox.Items.Clear();
                 MachineDiaList.Clear();
                 MachineList.Clear();
-                MachineList.Add("ALL");
+                
                 if (reader.HasRows)
                 {
+                    MachineList.Add("ALL");
                     while (reader.Read())
                     {
                         MachineList.Add(Convert.ToInt32(reader["MachineNo"]));
                     }
                 }
-                MachineComboBox.DataSource = MachineList;
-                MachineComboBox.SelectedIndex = 0;
+                if (MachineList.Count > 0)
+                {
+                    MachineComboBox.DataSource = MachineList;
+                    MachineComboBox.SelectedIndex = 0;
+                }
             }
             catch (Exception e)
             {
@@ -149,7 +153,6 @@ namespace PlanningBoard
             finally
             {
                 CommonFunctions.connection.Close();
-
             }
         }
 
@@ -294,7 +297,7 @@ namespace PlanningBoard
                             string Style1 = "";
                             string OrderIDList = "";
 
-                            cm.CommandText = "select * from Planing_Board_Details where TaskDate='" + GetDate + "' and MachineNo = " + MachineNoList.Dequeue();
+                            cm.CommandText = "select * from Planing_Board_Details where Revert = 0 OR Revert = 2 AND TaskDate='" + GetDate + "' and MachineNo = " + MachineNoList.Dequeue();
 
                             SqlDataReader reader;
                             reader = cm.ExecuteReader();
@@ -379,7 +382,6 @@ namespace PlanningBoard
                 cn.Close();
                 ResetPlanBoardColor();
             }
-
         }
 
         private void SetRowIndex()

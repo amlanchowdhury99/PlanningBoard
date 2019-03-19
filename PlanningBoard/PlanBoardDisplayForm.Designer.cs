@@ -31,6 +31,8 @@
             this.components = new System.ComponentModel.Container();
             this.planBoardDataGridView = new System.Windows.Forms.DataGridView();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.toDateTimePicker = new System.Windows.Forms.DateTimePicker();
+            this.Search = new System.Windows.Forms.Button();
             this.fromDateTimePicker = new System.Windows.Forms.DateTimePicker();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
@@ -39,7 +41,6 @@
             this.GenerateExcelBtn = new System.Windows.Forms.Button();
             this.BtnAddPlan = new System.Windows.Forms.Button();
             this.BtnGeneratePlan = new System.Windows.Forms.Button();
-            this.toDateTimePicker = new System.Windows.Forms.DateTimePicker();
             this.label14 = new System.Windows.Forms.Label();
             this.label15 = new System.Windows.Forms.Label();
             this.pBContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -47,7 +48,7 @@
             this.backwardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.changeWorkDateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.updateActualQtyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.Search = new System.Windows.Forms.Button();
+            this.Revert = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.planBoardDataGridView)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.pBContextMenuStrip.SuspendLayout();
@@ -66,7 +67,7 @@
             this.planBoardDataGridView.ReadOnly = true;
             this.planBoardDataGridView.RowHeadersVisible = false;
             this.planBoardDataGridView.RowHeadersWidth = 4;
-            this.planBoardDataGridView.Size = new System.Drawing.Size(1258, 504);
+            this.planBoardDataGridView.Size = new System.Drawing.Size(1272, 504);
             this.planBoardDataGridView.TabIndex = 0;
             this.planBoardDataGridView.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.planBoardDataGridView_CellClick);
             this.planBoardDataGridView.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.planBoardDataGridView_CellDoubleClick);
@@ -81,6 +82,8 @@
             // groupBox1
             // 
             this.groupBox1.BackColor = System.Drawing.Color.SlateGray;
+            this.groupBox1.Controls.Add(this.Revert);
+            this.groupBox1.Controls.Add(this.toDateTimePicker);
             this.groupBox1.Controls.Add(this.Search);
             this.groupBox1.Controls.Add(this.fromDateTimePicker);
             this.groupBox1.Controls.Add(this.label2);
@@ -90,17 +93,37 @@
             this.groupBox1.Controls.Add(this.GenerateExcelBtn);
             this.groupBox1.Controls.Add(this.BtnAddPlan);
             this.groupBox1.Controls.Add(this.BtnGeneratePlan);
-            this.groupBox1.Controls.Add(this.toDateTimePicker);
             this.groupBox1.Controls.Add(this.label14);
             this.groupBox1.Controls.Add(this.label15);
             this.groupBox1.Font = new System.Drawing.Font("Microsoft Tai Le", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBox1.Location = new System.Drawing.Point(12, 12);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(1258, 67);
+            this.groupBox1.Size = new System.Drawing.Size(1272, 67);
             this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "AAAAAAAA";
             this.groupBox1.Enter += new System.EventHandler(this.groupBox1_Enter);
+            // 
+            // toDateTimePicker
+            // 
+            this.toDateTimePicker.CustomFormat = "dd/MM/yyyy";
+            this.toDateTimePicker.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+            this.toDateTimePicker.Location = new System.Drawing.Point(259, 25);
+            this.toDateTimePicker.Name = "toDateTimePicker";
+            this.toDateTimePicker.Size = new System.Drawing.Size(127, 27);
+            this.toDateTimePicker.TabIndex = 14;
+            // 
+            // Search
+            // 
+            this.Search.BackColor = System.Drawing.Color.RosyBrown;
+            this.Search.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Search.Location = new System.Drawing.Point(1086, 23);
+            this.Search.Name = "Search";
+            this.Search.Size = new System.Drawing.Size(87, 31);
+            this.Search.TabIndex = 39;
+            this.Search.Text = "Search";
+            this.Search.UseVisualStyleBackColor = false;
+            this.Search.Click += new System.EventHandler(this.Search_Click);
             // 
             // fromDateTimePicker
             // 
@@ -155,7 +178,7 @@
             // 
             this.GenerateExcelBtn.BackColor = System.Drawing.Color.RosyBrown;
             this.GenerateExcelBtn.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.GenerateExcelBtn.Location = new System.Drawing.Point(1056, 23);
+            this.GenerateExcelBtn.Location = new System.Drawing.Point(993, 23);
             this.GenerateExcelBtn.Name = "GenerateExcelBtn";
             this.GenerateExcelBtn.Size = new System.Drawing.Size(87, 31);
             this.GenerateExcelBtn.TabIndex = 18;
@@ -167,7 +190,7 @@
             // 
             this.BtnAddPlan.BackColor = System.Drawing.Color.RosyBrown;
             this.BtnAddPlan.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.BtnAddPlan.Location = new System.Drawing.Point(963, 23);
+            this.BtnAddPlan.Location = new System.Drawing.Point(900, 23);
             this.BtnAddPlan.Name = "BtnAddPlan";
             this.BtnAddPlan.Size = new System.Drawing.Size(87, 31);
             this.BtnAddPlan.TabIndex = 16;
@@ -179,22 +202,13 @@
             // 
             this.BtnGeneratePlan.BackColor = System.Drawing.Color.RosyBrown;
             this.BtnGeneratePlan.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.BtnGeneratePlan.Location = new System.Drawing.Point(870, 23);
+            this.BtnGeneratePlan.Location = new System.Drawing.Point(807, 23);
             this.BtnGeneratePlan.Name = "BtnGeneratePlan";
             this.BtnGeneratePlan.Size = new System.Drawing.Size(87, 31);
             this.BtnGeneratePlan.TabIndex = 15;
             this.BtnGeneratePlan.Text = "Generate";
             this.BtnGeneratePlan.UseVisualStyleBackColor = false;
             this.BtnGeneratePlan.Click += new System.EventHandler(this.BtnGeneratePlan_Click);
-            // 
-            // toDateTimePicker
-            // 
-            this.toDateTimePicker.CustomFormat = "dd/MM/yyyy";
-            this.toDateTimePicker.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.toDateTimePicker.Location = new System.Drawing.Point(259, 25);
-            this.toDateTimePicker.Name = "toDateTimePicker";
-            this.toDateTimePicker.Size = new System.Drawing.Size(127, 27);
-            this.toDateTimePicker.TabIndex = 14;
             // 
             // label14
             // 
@@ -254,24 +268,23 @@
             this.updateActualQtyToolStripMenuItem.Text = "Update Actual Qty";
             this.updateActualQtyToolStripMenuItem.Click += new System.EventHandler(this.updateActualQtyToolStripMenuItem_Click);
             // 
-            // Search
+            // Revert
             // 
-            this.Search.BackColor = System.Drawing.Color.RosyBrown;
-            this.Search.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Search.Location = new System.Drawing.Point(1149, 23);
-            this.Search.Name = "Search";
-            this.Search.Size = new System.Drawing.Size(87, 31);
-            this.Search.TabIndex = 39;
-            this.Search.Text = "Search";
-            this.Search.UseVisualStyleBackColor = false;
-            this.Search.Click += new System.EventHandler(this.Search_Click);
+            this.Revert.BackColor = System.Drawing.Color.RosyBrown;
+            this.Revert.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Revert.Location = new System.Drawing.Point(1179, 23);
+            this.Revert.Name = "Revert";
+            this.Revert.Size = new System.Drawing.Size(87, 31);
+            this.Revert.TabIndex = 40;
+            this.Revert.Text = "Revert";
+            this.Revert.UseVisualStyleBackColor = false;
             // 
             // PlanBoardDisplayForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ButtonShadow;
-            this.ClientSize = new System.Drawing.Size(1282, 599);
+            this.ClientSize = new System.Drawing.Size(1296, 599);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.planBoardDataGridView);
             this.Name = "PlanBoardDisplayForm";
@@ -307,6 +320,7 @@
         private System.Windows.Forms.ComboBox MStatuscomboBox;
         private System.Windows.Forms.ToolStripMenuItem updateActualQtyToolStripMenuItem;
         private System.Windows.Forms.Button Search;
+        private System.Windows.Forms.Button Revert;
 
     }
 }

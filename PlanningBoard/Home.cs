@@ -1204,7 +1204,6 @@ namespace PlanningBoard
                         {
                             for (int MachineNo = 1; MachineNo <= machineNoComboBox.Items.Count-1; MachineNo++)
                             {
-
                                 query = "SELECT Top 1* FROM WorkingDays WHERE WorkDate = '" + date.Date.ToString() + "' AND MachineNo = " + machineNoComboBox.Items[MachineNo].ToString()  ;
                                 reader = CommonFunctions.GetFromDB(query);
 
