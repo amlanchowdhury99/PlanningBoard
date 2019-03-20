@@ -72,8 +72,11 @@ namespace PlanningBoard
                 planBoardDataGridView.Rows.Clear();
                 planBoardDataGridView.Columns.Clear();
                 planBoardDataGridView.Columns.Add("SL", "SL");
-                planBoardDataGridView.Columns.Add("MachineNo", "MachineNo");
-                planBoardDataGridView.Columns.Add("MachineStatus", "MachineStatus");
+                if (!isDetailed)
+                {
+                    planBoardDataGridView.Columns.Add("MachineNo", "MachineNo");
+                    planBoardDataGridView.Columns.Add("MachineStatus", "MachineStatus");
+                }
                 planBoardDataGridView.Columns.Add("Buyer", "Buyer");
                 planBoardDataGridView.Columns.Add("Style", "Style");
                 planBoardDataGridView.Columns.Add("Size", "Size");
@@ -100,10 +103,9 @@ namespace PlanningBoard
                 {
                     planBoardDataGridView.Columns.Add("TotalPlanQty", "TotalPlanQty");
                     planBoardDataGridView.Columns.Add("TotalActualQty", "TotalActualQty");
+                    planBoardDataGridView.Columns.Add("OrderQtyLeft", "OrderQtyLeft");
+                    planBoardDataGridView.Columns.Add("PlanQtyLeft", "PlanQtyLeft");
                 }
-                
-                planBoardDataGridView.Columns.Add("OrderQtyLeft", "OrderQtyLeft");
-                planBoardDataGridView.Columns.Add("PlanQtyLeft", "PlanQtyLeft");
 
                 foreach (DataGridViewColumn col in planBoardDataGridView.Columns)
                 {
@@ -123,25 +125,21 @@ namespace PlanningBoard
                         while (reader.Read())
                         {
                             S1 = SL.ToString();
-                            S2 = reader["MachineNo"].ToString();
-                            S3 = MStatuscomboBox.Text;
-                            S4 = reader["BuyerName"].ToString();
-                            S5 = reader["StyleName"].ToString();
-                            S6 = reader["SizeName"].ToString();
-                            S7 = reader["Dia"].ToString();
-                            S8 = reader["PartName"].ToString();
-                            S9 = Convert.ToDateTime(reader["ShipmentDate"]).ToString("dd/MM/yyyy");
-                            S10 = Convert.ToDateTime(reader["TaskDate"]).ToString("dd/MM/yyyy");
-                            S11 = reader["OrderQty"].ToString();
-                            S12 = orderStatusComboBox.Text;
-                            S13 = reader["SAM"].ToString();
-                            S14 = reader["Efficiency"].ToString();
-                            S15 = reader["PlanQty"].ToString();
-                            S16 = reader.IsDBNull(reader.GetOrdinal("ActualQty")) == true ? "0" : reader["ActualQty"].ToString();
-                            S17 = (Convert.ToInt32(reader["OrderQty"]) - Convert.ToInt32(reader["PlanQty"])).ToString();
-                            S18 = (Convert.ToInt32(reader["OrderQty"]) - Convert.ToInt32(S16)).ToString();
+                            S2 = reader["BuyerName"].ToString();
+                            S3 = reader["StyleName"].ToString();
+                            S4 = reader["SizeName"].ToString();
+                            S5 = reader["Dia"].ToString();
+                            S6 = reader["PartName"].ToString();
+                            S7 = Convert.ToDateTime(reader["ShipmentDate"]).ToString("dd/MM/yyyy");
+                            S8 = Convert.ToDateTime(reader["TaskDate"]).ToString("dd/MM/yyyy");
+                            S9 = reader["OrderQty"].ToString();
+                            S10 = orderStatusComboBox.Text;
+                            S11 = reader["SAM"].ToString();
+                            S12 = reader["Efficiency"].ToString();
+                            S13 = reader["PlanQty"].ToString();
+                            S14 = reader.IsDBNull(reader.GetOrdinal("ActualQty")) == true ? "0" : reader["ActualQty"].ToString();
 
-                            planBoardDataGridView.Rows.Add(S1, S2, S3, S4, S5, S6, S7, S8, S9, S10, S11, S12, S13, S14, S15, S16, S17, S18);
+                            planBoardDataGridView.Rows.Add(S1, S2, S3, S4, S5, S6, S7, S8, S9, S10, S11, S12, S13, S14 );
 
                             SL++;
                         }

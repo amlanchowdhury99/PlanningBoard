@@ -1,6 +1,6 @@
 USE [PlanningBoard]
 GO
-/****** Object:  Table [dbo].[Employee_Info]    Script Date: 03/19/2019 19:04:54 ******/
+/****** Object:  Table [dbo].[Employee_Info]    Script Date: 03/20/2019 17:55:46 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -20,7 +20,7 @@ SET IDENTITY_INSERT [dbo].[Employee_Info] ON
 INSERT [dbo].[Employee_Info] ([Id], [UserName], [Password], [UserType]) VALUES (1, N'admin', N'123', 1)
 INSERT [dbo].[Employee_Info] ([Id], [UserName], [Password], [UserType]) VALUES (2, N'amlan', N'amlan123', 2)
 SET IDENTITY_INSERT [dbo].[Employee_Info] OFF
-/****** Object:  Table [dbo].[Dia]    Script Date: 03/19/2019 19:04:54 ******/
+/****** Object:  Table [dbo].[Dia]    Script Date: 03/20/2019 17:55:46 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -52,7 +52,7 @@ INSERT [dbo].[Dia] ([Id], [Dia]) VALUES (16, N'18 DIA')
 INSERT [dbo].[Dia] ([Id], [Dia]) VALUES (17, N'19 DIA')
 INSERT [dbo].[Dia] ([Id], [Dia]) VALUES (18, N'20 DIA')
 SET IDENTITY_INSERT [dbo].[Dia] OFF
-/****** Object:  Table [dbo].[Buyer]    Script Date: 03/19/2019 19:04:54 ******/
+/****** Object:  Table [dbo].[Buyer]    Script Date: 03/20/2019 17:55:46 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -81,7 +81,7 @@ INSERT [dbo].[Buyer] ([Id], [BuyerName]) VALUES (30, N'LAREDUTE')
 INSERT [dbo].[Buyer] ([Id], [BuyerName]) VALUES (29, N'MNS')
 INSERT [dbo].[Buyer] ([Id], [BuyerName]) VALUES (26, N'PUMA')
 SET IDENTITY_INSERT [dbo].[Buyer] OFF
-/****** Object:  Table [dbo].[BodyPart]    Script Date: 03/19/2019 19:04:54 ******/
+/****** Object:  Table [dbo].[BodyPart]    Script Date: 03/20/2019 17:55:46 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -107,7 +107,7 @@ SET IDENTITY_INSERT [dbo].[BodyPart] ON
 INSERT [dbo].[BodyPart] ([Id], [PartName]) VALUES (4, N'BODY')
 INSERT [dbo].[BodyPart] ([Id], [PartName]) VALUES (3, N'SLEEVE')
 SET IDENTITY_INSERT [dbo].[BodyPart] OFF
-/****** Object:  Table [dbo].[WorkingDays]    Script Date: 03/19/2019 19:04:54 ******/
+/****** Object:  Table [dbo].[WorkingDays]    Script Date: 03/20/2019 17:55:46 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -1998,7 +1998,7 @@ INSERT [dbo].[WorkingDays] ([Id], [WorkDate], [MachineNo], [Minute], [DayName], 
 INSERT [dbo].[WorkingDays] ([Id], [WorkDate], [MachineNo], [Minute], [DayName], [WorkDay], [Active]) VALUES (1858, CAST(0x9A3F0B00 AS Date), 2001, 1320, N'Tuesday', 1, 1)
 INSERT [dbo].[WorkingDays] ([Id], [WorkDate], [MachineNo], [Minute], [DayName], [WorkDay], [Active]) VALUES (1859, CAST(0x9A3F0B00 AS Date), 2002, 1320, N'Tuesday', 1, 1)
 SET IDENTITY_INSERT [dbo].[WorkingDays] OFF
-/****** Object:  Table [dbo].[Style]    Script Date: 03/19/2019 19:04:54 ******/
+/****** Object:  Table [dbo].[Style]    Script Date: 03/20/2019 17:55:46 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -2021,7 +2021,7 @@ INSERT [dbo].[Style] ([Id], [StyleName]) VALUES (3, N'S123')
 INSERT [dbo].[Style] ([Id], [StyleName]) VALUES (4, N'K456')
 INSERT [dbo].[Style] ([Id], [StyleName]) VALUES (5, N'M323')
 SET IDENTITY_INSERT [dbo].[Style] OFF
-/****** Object:  Table [dbo].[Size]    Script Date: 03/19/2019 19:04:54 ******/
+/****** Object:  Table [dbo].[Size]    Script Date: 03/20/2019 17:55:46 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -2051,7 +2051,7 @@ INSERT [dbo].[Size] ([Id], [SizeName]) VALUES (8, N'XL')
 INSERT [dbo].[Size] ([Id], [SizeName]) VALUES (6, N'XS')
 INSERT [dbo].[Size] ([Id], [SizeName]) VALUES (11, N'XXL')
 SET IDENTITY_INSERT [dbo].[Size] OFF
-/****** Object:  Table [dbo].[PlanTable]    Script Date: 03/19/2019 19:04:54 ******/
+/****** Object:  Table [dbo].[PlanTable]    Script Date: 03/20/2019 17:55:46 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -2066,10 +2066,10 @@ CREATE TABLE [dbo].[PlanTable](
 	[RemainingQty] [int] NOT NULL,
 	[OrderQty] [int] NOT NULL,
 	[Efficiency] [int] NOT NULL,
-	[SAM] [decimal](18, 2) NULL,
+	[SAM] [decimal](18, 2) NOT NULL,
 	[Minute] [int] NOT NULL,
-	[Status] [int] NULL,
-	[ActualQty] [int] NULL,
+	[Status] [int] NOT NULL,
+	[ActualQty] [int] NOT NULL,
 	[RevertVal] [int] NOT NULL,
  CONSTRAINT [PK_PlanTable] PRIMARY KEY CLUSTERED 
 (
@@ -2078,21 +2078,14 @@ CREATE TABLE [dbo].[PlanTable](
 ) ON [PRIMARY]
 GO
 SET IDENTITY_INSERT [dbo].[PlanTable] ON
-INSERT [dbo].[PlanTable] ([Id], [MachineNo], [TaskDate], [OrderID], [Capacity], [PlanQty], [RemainingQty], [OrderQty], [Efficiency], [SAM], [Minute], [Status], [ActualQty], [RevertVal]) VALUES (441, 1301, CAST(0x6E3F0B00 AS Date), 8, 330, 330, 0, 500, 85, CAST(3.40 AS Decimal(18, 2)), 1320, NULL, 0, 0)
-INSERT [dbo].[PlanTable] ([Id], [MachineNo], [TaskDate], [OrderID], [Capacity], [PlanQty], [RemainingQty], [OrderQty], [Efficiency], [SAM], [Minute], [Status], [ActualQty], [RevertVal]) VALUES (442, 1301, CAST(0x6F3F0B00 AS Date), 8, 330, 170, 160, 500, 85, CAST(3.40 AS Decimal(18, 2)), 1320, NULL, 0, 0)
-INSERT [dbo].[PlanTable] ([Id], [MachineNo], [TaskDate], [OrderID], [Capacity], [PlanQty], [RemainingQty], [OrderQty], [Efficiency], [SAM], [Minute], [Status], [ActualQty], [RevertVal]) VALUES (447, 1401, CAST(0x6E3F0B00 AS Date), 13, 335, 335, 0, 1200, 95, CAST(3.74 AS Decimal(18, 2)), 1320, NULL, 400, 0)
-INSERT [dbo].[PlanTable] ([Id], [MachineNo], [TaskDate], [OrderID], [Capacity], [PlanQty], [RemainingQty], [OrderQty], [Efficiency], [SAM], [Minute], [Status], [ActualQty], [RevertVal]) VALUES (448, 1401, CAST(0x6F3F0B00 AS Date), 13, 335, 335, 0, 1200, 95, CAST(3.74 AS Decimal(18, 2)), 1320, NULL, NULL, 0)
-INSERT [dbo].[PlanTable] ([Id], [MachineNo], [TaskDate], [OrderID], [Capacity], [PlanQty], [RemainingQty], [OrderQty], [Efficiency], [SAM], [Minute], [Status], [ActualQty], [RevertVal]) VALUES (449, 1401, CAST(0x703F0B00 AS Date), 13, 335, 335, 0, 1200, 95, CAST(3.74 AS Decimal(18, 2)), 1320, NULL, NULL, 0)
-INSERT [dbo].[PlanTable] ([Id], [MachineNo], [TaskDate], [OrderID], [Capacity], [PlanQty], [RemainingQty], [OrderQty], [Efficiency], [SAM], [Minute], [Status], [ActualQty], [RevertVal]) VALUES (450, 1402, CAST(0x6E3F0B00 AS Date), 13, 335, 195, 140, 1200, 95, CAST(3.74 AS Decimal(18, 2)), 1320, NULL, NULL, 0)
-INSERT [dbo].[PlanTable] ([Id], [MachineNo], [TaskDate], [OrderID], [Capacity], [PlanQty], [RemainingQty], [OrderQty], [Efficiency], [SAM], [Minute], [Status], [ActualQty], [RevertVal]) VALUES (454, 1402, CAST(0x6F3F0B00 AS Date), 10, 234, 234, 0, 700, 80, CAST(4.50 AS Decimal(18, 2)), 1320, NULL, NULL, 0)
-INSERT [dbo].[PlanTable] ([Id], [MachineNo], [TaskDate], [OrderID], [Capacity], [PlanQty], [RemainingQty], [OrderQty], [Efficiency], [SAM], [Minute], [Status], [ActualQty], [RevertVal]) VALUES (455, 1402, CAST(0x703F0B00 AS Date), 10, 234, 234, 0, 700, 80, CAST(4.50 AS Decimal(18, 2)), 1320, NULL, NULL, 0)
-INSERT [dbo].[PlanTable] ([Id], [MachineNo], [TaskDate], [OrderID], [Capacity], [PlanQty], [RemainingQty], [OrderQty], [Efficiency], [SAM], [Minute], [Status], [ActualQty], [RevertVal]) VALUES (456, 1402, CAST(0x713F0B00 AS Date), 10, 234, 232, 2, 700, 80, CAST(4.50 AS Decimal(18, 2)), 1320, NULL, NULL, 0)
-INSERT [dbo].[PlanTable] ([Id], [MachineNo], [TaskDate], [OrderID], [Capacity], [PlanQty], [RemainingQty], [OrderQty], [Efficiency], [SAM], [Minute], [Status], [ActualQty], [RevertVal]) VALUES (457, 1402, CAST(0x703F0B00 AS Date), 11, 300, 66, 0, 700, 80, CAST(2.54 AS Decimal(18, 2)), 1320, NULL, NULL, 0)
-INSERT [dbo].[PlanTable] ([Id], [MachineNo], [TaskDate], [OrderID], [Capacity], [PlanQty], [RemainingQty], [OrderQty], [Efficiency], [SAM], [Minute], [Status], [ActualQty], [RevertVal]) VALUES (458, 1402, CAST(0x713F0B00 AS Date), 11, 300, 68, 0, 700, 80, CAST(2.54 AS Decimal(18, 2)), 1320, NULL, NULL, 0)
-INSERT [dbo].[PlanTable] ([Id], [MachineNo], [TaskDate], [OrderID], [Capacity], [PlanQty], [RemainingQty], [OrderQty], [Efficiency], [SAM], [Minute], [Status], [ActualQty], [RevertVal]) VALUES (459, 1402, CAST(0x743F0B00 AS Date), 11, 415, 415, 0, 700, 80, CAST(2.54 AS Decimal(18, 2)), 1320, NULL, NULL, 0)
-INSERT [dbo].[PlanTable] ([Id], [MachineNo], [TaskDate], [OrderID], [Capacity], [PlanQty], [RemainingQty], [OrderQty], [Efficiency], [SAM], [Minute], [Status], [ActualQty], [RevertVal]) VALUES (460, 1402, CAST(0x753F0B00 AS Date), 11, 415, 151, 264, 700, 80, CAST(2.54 AS Decimal(18, 2)), 1320, NULL, NULL, 0)
+INSERT [dbo].[PlanTable] ([Id], [MachineNo], [TaskDate], [OrderID], [Capacity], [PlanQty], [RemainingQty], [OrderQty], [Efficiency], [SAM], [Minute], [Status], [ActualQty], [RevertVal]) VALUES (461, 1301, CAST(0x713F0B00 AS Date), 12, 334, 100, 234, 1400, 90, CAST(3.55 AS Decimal(18, 2)), 1320, 0, 0, 0)
+INSERT [dbo].[PlanTable] ([Id], [MachineNo], [TaskDate], [OrderID], [Capacity], [PlanQty], [RemainingQty], [OrderQty], [Efficiency], [SAM], [Minute], [Status], [ActualQty], [RevertVal]) VALUES (462, 1301, CAST(0x713F0B00 AS Date), 13, 334, 100, 134, 1200, 95, CAST(3.74 AS Decimal(18, 2)), 1320, 0, 0, 0)
+INSERT [dbo].[PlanTable] ([Id], [MachineNo], [TaskDate], [OrderID], [Capacity], [PlanQty], [RemainingQty], [OrderQty], [Efficiency], [SAM], [Minute], [Status], [ActualQty], [RevertVal]) VALUES (463, 1401, CAST(0x713F0B00 AS Date), 12, 334, 334, 0, 1400, 90, CAST(3.55 AS Decimal(18, 2)), 1320, 0, 0, 0)
+INSERT [dbo].[PlanTable] ([Id], [MachineNo], [TaskDate], [OrderID], [Capacity], [PlanQty], [RemainingQty], [OrderQty], [Efficiency], [SAM], [Minute], [Status], [ActualQty], [RevertVal]) VALUES (464, 1401, CAST(0x743F0B00 AS Date), 13, 335, 100, 235, 1200, 95, CAST(3.74 AS Decimal(18, 2)), 1320, 0, 0, 0)
+INSERT [dbo].[PlanTable] ([Id], [MachineNo], [TaskDate], [OrderID], [Capacity], [PlanQty], [RemainingQty], [OrderQty], [Efficiency], [SAM], [Minute], [Status], [ActualQty], [RevertVal]) VALUES (465, 1301, CAST(0x743F0B00 AS Date), 10, 234, 100, 134, 700, 80, CAST(4.50 AS Decimal(18, 2)), 1320, 0, 0, 0)
+INSERT [dbo].[PlanTable] ([Id], [MachineNo], [TaskDate], [OrderID], [Capacity], [PlanQty], [RemainingQty], [OrderQty], [Efficiency], [SAM], [Minute], [Status], [ActualQty], [RevertVal]) VALUES (466, 1301, CAST(0x743F0B00 AS Date), 11, 300, 100, 100, 700, 80, CAST(2.54 AS Decimal(18, 2)), 1320, 0, 0, 0)
 SET IDENTITY_INSERT [dbo].[PlanTable] OFF
-/****** Object:  Table [dbo].[Machine_Info]    Script Date: 03/19/2019 19:04:54 ******/
+/****** Object:  Table [dbo].[Machine_Info]    Script Date: 03/20/2019 17:55:46 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -2118,7 +2111,7 @@ INSERT [dbo].[Machine_Info] ([Id], [MachineNo], [MachineDia], [Status]) VALUES (
 INSERT [dbo].[Machine_Info] ([Id], [MachineNo], [MachineDia], [Status]) VALUES (22, 1402, N'14 DIA', 1)
 INSERT [dbo].[Machine_Info] ([Id], [MachineNo], [MachineDia], [Status]) VALUES (23, 1403, N'14 DIA', 1)
 INSERT [dbo].[Machine_Info] ([Id], [MachineNo], [MachineDia], [Status]) VALUES (24, 1404, N'14 DIA', 1)
-INSERT [dbo].[Machine_Info] ([Id], [MachineNo], [MachineDia], [Status]) VALUES (25, 1501, N'15 DIA', 1)
+INSERT [dbo].[Machine_Info] ([Id], [MachineNo], [MachineDia], [Status]) VALUES (25, 1501, N'15 DIA', 0)
 INSERT [dbo].[Machine_Info] ([Id], [MachineNo], [MachineDia], [Status]) VALUES (26, 1502, N'15 DIA', 1)
 INSERT [dbo].[Machine_Info] ([Id], [MachineNo], [MachineDia], [Status]) VALUES (27, 1503, N'15 DIA', 1)
 INSERT [dbo].[Machine_Info] ([Id], [MachineNo], [MachineDia], [Status]) VALUES (28, 1504, N'15 DIA', 1)
@@ -2144,7 +2137,7 @@ INSERT [dbo].[Machine_Info] ([Id], [MachineNo], [MachineDia], [Status]) VALUES (
 INSERT [dbo].[Machine_Info] ([Id], [MachineNo], [MachineDia], [Status]) VALUES (48, 2001, N'20 DIA', 1)
 INSERT [dbo].[Machine_Info] ([Id], [MachineNo], [MachineDia], [Status]) VALUES (49, 2002, N'20 DIA', 1)
 SET IDENTITY_INSERT [dbo].[Machine_Info] OFF
-/****** Object:  Table [dbo].[OrderPlanTable]    Script Date: 03/19/2019 19:04:54 ******/
+/****** Object:  Table [dbo].[OrderPlanTable]    Script Date: 03/20/2019 17:55:46 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -2202,8 +2195,14 @@ INSERT [dbo].[OrderPlanTable] ([Id], [MachineNo], [OrderID], [PlanDate], [PlanSt
 INSERT [dbo].[OrderPlanTable] ([Id], [MachineNo], [OrderID], [PlanDate], [PlanStartDate], [PlanEndDate], [Remarks]) VALUES (112, 1402, 13, CAST(0x6E3F0B00 AS Date), CAST(0x6E3F0B00 AS Date), CAST(0x6E3F0B00 AS Date), N'')
 INSERT [dbo].[OrderPlanTable] ([Id], [MachineNo], [OrderID], [PlanDate], [PlanStartDate], [PlanEndDate], [Remarks]) VALUES (113, 1402, 10, CAST(0x6E3F0B00 AS Date), CAST(0x6F3F0B00 AS Date), CAST(0x713F0B00 AS Date), N'')
 INSERT [dbo].[OrderPlanTable] ([Id], [MachineNo], [OrderID], [PlanDate], [PlanStartDate], [PlanEndDate], [Remarks]) VALUES (114, 1402, 11, CAST(0x703F0B00 AS Date), CAST(0x703F0B00 AS Date), CAST(0x753F0B00 AS Date), N'')
+INSERT [dbo].[OrderPlanTable] ([Id], [MachineNo], [OrderID], [PlanDate], [PlanStartDate], [PlanEndDate], [Remarks]) VALUES (115, 1301, 12, CAST(0x713F0B00 AS Date), CAST(0x713F0B00 AS Date), CAST(0x733F0B00 AS Date), N'')
+INSERT [dbo].[OrderPlanTable] ([Id], [MachineNo], [OrderID], [PlanDate], [PlanStartDate], [PlanEndDate], [Remarks]) VALUES (116, 1301, 13, CAST(0x713F0B00 AS Date), CAST(0x713F0B00 AS Date), CAST(0x713F0B00 AS Date), N'')
+INSERT [dbo].[OrderPlanTable] ([Id], [MachineNo], [OrderID], [PlanDate], [PlanStartDate], [PlanEndDate], [Remarks]) VALUES (117, 1401, 12, CAST(0x713F0B00 AS Date), CAST(0x713F0B00 AS Date), CAST(0x713F0B00 AS Date), N'')
+INSERT [dbo].[OrderPlanTable] ([Id], [MachineNo], [OrderID], [PlanDate], [PlanStartDate], [PlanEndDate], [Remarks]) VALUES (118, 1401, 13, CAST(0x713F0B00 AS Date), CAST(0x743F0B00 AS Date), CAST(0x743F0B00 AS Date), N'')
+INSERT [dbo].[OrderPlanTable] ([Id], [MachineNo], [OrderID], [PlanDate], [PlanStartDate], [PlanEndDate], [Remarks]) VALUES (119, 1301, 10, CAST(0x713F0B00 AS Date), CAST(0x743F0B00 AS Date), CAST(0x743F0B00 AS Date), N'')
+INSERT [dbo].[OrderPlanTable] ([Id], [MachineNo], [OrderID], [PlanDate], [PlanStartDate], [PlanEndDate], [Remarks]) VALUES (120, 1301, 11, CAST(0x713F0B00 AS Date), CAST(0x743F0B00 AS Date), CAST(0x743F0B00 AS Date), N'')
 SET IDENTITY_INSERT [dbo].[OrderPlanTable] OFF
-/****** Object:  Table [dbo].[Order_Info]    Script Date: 03/19/2019 19:04:54 ******/
+/****** Object:  Table [dbo].[Order_Info]    Script Date: 03/20/2019 17:55:46 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -2233,9 +2232,9 @@ INSERT [dbo].[Order_Info] ([Id], [Buyer], [Style], [Size], [Dia], [BodyPart], [Q
 INSERT [dbo].[Order_Info] ([Id], [Buyer], [Style], [Size], [Dia], [BodyPart], [Quantity], [ShipmentDate], [SAM], [Efficiency], [Status]) VALUES (11, 28, 3, 9, 13, 4, 700, CAST(0x773F0B00 AS Date), CAST(2.54 AS Decimal(18, 2)), CAST(80.00 AS Decimal(18, 2)), 2)
 INSERT [dbo].[Order_Info] ([Id], [Buyer], [Style], [Size], [Dia], [BodyPart], [Quantity], [ShipmentDate], [SAM], [Efficiency], [Status]) VALUES (12, 27, 5, 7, 13, 3, 1400, CAST(0x633F0B00 AS Date), CAST(3.55 AS Decimal(18, 2)), CAST(90.00 AS Decimal(18, 2)), 2)
 INSERT [dbo].[Order_Info] ([Id], [Buyer], [Style], [Size], [Dia], [BodyPart], [Quantity], [ShipmentDate], [SAM], [Efficiency], [Status]) VALUES (13, 28, 5, 10, 15, 3, 1200, CAST(0x633F0B00 AS Date), CAST(3.74 AS Decimal(18, 2)), CAST(95.00 AS Decimal(18, 2)), 2)
-INSERT [dbo].[Order_Info] ([Id], [Buyer], [Style], [Size], [Dia], [BodyPart], [Quantity], [ShipmentDate], [SAM], [Efficiency], [Status]) VALUES (14, 27, 4, 10, 13, 3, 500, CAST(0x633F0B00 AS Date), CAST(5.00 AS Decimal(18, 2)), CAST(70.00 AS Decimal(18, 2)), 1)
+INSERT [dbo].[Order_Info] ([Id], [Buyer], [Style], [Size], [Dia], [BodyPart], [Quantity], [ShipmentDate], [SAM], [Efficiency], [Status]) VALUES (14, 27, 4, 10, 13, 3, 500, CAST(0x633F0B00 AS Date), CAST(5.00 AS Decimal(18, 2)), CAST(70.00 AS Decimal(18, 2)), 0)
 SET IDENTITY_INSERT [dbo].[Order_Info] OFF
-/****** Object:  View [dbo].[Planing_Board_Details]    Script Date: 03/19/2019 19:04:54 ******/
+/****** Object:  View [dbo].[Planing_Board_Details]    Script Date: 03/20/2019 17:55:46 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -2245,7 +2244,7 @@ AS
 SELECT     dbo.PlanTable.MachineNo, dbo.PlanTable.TaskDate, dbo.PlanTable.OrderID, dbo.Buyer.BuyerName, dbo.Style.StyleName, dbo.BodyPart.PartName, dbo.Size.SizeName, dbo.PlanTable.Efficiency, 
                       dbo.PlanTable.Capacity, dbo.PlanTable.PlanQty, dbo.Order_Info.ShipmentDate, dbo.PlanTable.OrderQty, dbo.PlanTable.SAM, dbo.PlanTable.ActualQty, dbo.Machine_Info.Status AS MachineStatus, 
                       dbo.Order_Info.Status AS OrderStatus, dbo.Order_Info.Buyer AS BuyerID, dbo.Order_Info.Style AS StyleID, dbo.Order_Info.Size AS SizeID, dbo.Order_Info.Dia AS DiaID, 
-                      dbo.Order_Info.BodyPart AS PartID, dbo.Dia.Dia
+                      dbo.Order_Info.BodyPart AS PartID, dbo.Dia.Dia, dbo.PlanTable.RevertVal
 FROM         dbo.Size RIGHT OUTER JOIN
                       dbo.Dia RIGHT OUTER JOIN
                       dbo.Order_Info ON dbo.Dia.Id = dbo.Order_Info.Dia LEFT OUTER JOIN
@@ -2260,7 +2259,7 @@ Begin DesignProperties =
    Begin PaneConfigurations = 
       Begin PaneConfiguration = 0
          NumPanes = 4
-         Configuration = "(H (1[56] 4[27] 2[4] 3) )"
+         Configuration = "(H (1[76] 4[9] 2[4] 3) )"
       End
       Begin PaneConfiguration = 1
          NumPanes = 3
@@ -2326,32 +2325,22 @@ Begin DesignProperties =
          Left = 0
       End
       Begin Tables = 
-         Begin Table = "Machine_Info"
+         Begin Table = "Size"
             Begin Extent = 
-               Top = 232
-               Left = 468
-               Bottom = 380
-               Right = 628
+               Top = 26
+               Left = 764
+               Bottom = 116
+               Right = 924
             End
             DisplayFlags = 280
             TopColumn = 0
          End
-         Begin Table = "PlanTable"
+         Begin Table = "Dia"
             Begin Extent = 
-               Top = 32
-               Left = 0
-               Bottom = 305
-               Right = 160
-            End
-            DisplayFlags = 280
-            TopColumn = 0
-         End
-         Begin Table = "Style"
-            Begin Extent = 
-               Top = 184
-               Left = 1112
-               Bottom = 437
-               Right = 1272
+               Top = 118
+               Left = 930
+               Bottom = 208
+               Right = 1090
             End
             DisplayFlags = 280
             TopColumn = 0
@@ -2366,12 +2355,22 @@ Begin DesignProperties =
             DisplayFlags = 280
             TopColumn = 0
          End
-         Begin Table = "Size"
+         Begin Table = "Style"
             Begin Extent = 
-               Top = 26
-               Left = 764
-               Bottom = 116
-               Right = 924
+               Top = 184
+               Left = 1112
+               Bottom = 437
+               Right = 1272
+            End
+            DisplayFlags = 280
+            TopColumn = 0
+         End
+         Begin Table = "Machine_Info"
+            Begin Extent = 
+               Top = 232
+               Left = 468
+               Bottom = 380
+               Right = 628
             End
             DisplayFlags = 280
             TopColumn = 0
@@ -2393,17 +2392,17 @@ Begin DesignProperties =
                Bottom = 94
                Right = 685
             End
-            DisplayFlags = ' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'Planing_Board_Details'
+            DisplayFlags = 280' , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'Planing_Board_Details'
 GO
-EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPane2', @value=N'280
+EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPane2', @value=N'
             TopColumn = 0
          End
-         Begin Table = "Dia"
+         Begin Table = "PlanTable"
             Begin Extent = 
-               Top = 118
-               Left = 930
-               Bottom = 208
-               Right = 1090
+               Top = 32
+               Left = 0
+               Bottom = 305
+               Right = 160
             End
             DisplayFlags = 280
             TopColumn = 0
@@ -2463,7 +2462,7 @@ End
 GO
 EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPaneCount', @value=2 , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'Planing_Board_Details'
 GO
-/****** Object:  View [dbo].[OrderDetailsView]    Script Date: 03/19/2019 19:04:54 ******/
+/****** Object:  View [dbo].[OrderDetailsView]    Script Date: 03/20/2019 17:55:46 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -2664,7 +2663,7 @@ End
 GO
 EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPaneCount', @value=2 , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'OrderDetailsView'
 GO
-/****** Object:  View [dbo].[LoadWithActualQtyView]    Script Date: 03/19/2019 19:04:54 ******/
+/****** Object:  View [dbo].[LoadWithActualQtyView]    Script Date: 03/20/2019 17:55:46 ******/
 SET ANSI_NULLS ON
 GO
 SET QUOTED_IDENTIFIER ON
@@ -2872,7 +2871,7 @@ End
 GO
 EXEC sys.sp_addextendedproperty @name=N'MS_DiagramPaneCount', @value=2 , @level0type=N'SCHEMA',@level0name=N'dbo', @level1type=N'VIEW',@level1name=N'LoadWithActualQtyView'
 GO
-/****** Object:  ForeignKey [FK_Order_Info_BodyPart]    Script Date: 03/19/2019 19:04:54 ******/
+/****** Object:  ForeignKey [FK_Order_Info_BodyPart]    Script Date: 03/20/2019 17:55:46 ******/
 ALTER TABLE [dbo].[Order_Info]  WITH CHECK ADD  CONSTRAINT [FK_Order_Info_BodyPart] FOREIGN KEY([BodyPart])
 REFERENCES [dbo].[BodyPart] ([Id])
 ON UPDATE CASCADE
@@ -2880,7 +2879,7 @@ ON DELETE CASCADE
 GO
 ALTER TABLE [dbo].[Order_Info] CHECK CONSTRAINT [FK_Order_Info_BodyPart]
 GO
-/****** Object:  ForeignKey [FK_Order_Info_Buyer]    Script Date: 03/19/2019 19:04:54 ******/
+/****** Object:  ForeignKey [FK_Order_Info_Buyer]    Script Date: 03/20/2019 17:55:46 ******/
 ALTER TABLE [dbo].[Order_Info]  WITH CHECK ADD  CONSTRAINT [FK_Order_Info_Buyer] FOREIGN KEY([Buyer])
 REFERENCES [dbo].[Buyer] ([Id])
 ON UPDATE CASCADE
@@ -2888,7 +2887,7 @@ ON DELETE CASCADE
 GO
 ALTER TABLE [dbo].[Order_Info] CHECK CONSTRAINT [FK_Order_Info_Buyer]
 GO
-/****** Object:  ForeignKey [FK_Order_Info_Dia]    Script Date: 03/19/2019 19:04:54 ******/
+/****** Object:  ForeignKey [FK_Order_Info_Dia]    Script Date: 03/20/2019 17:55:46 ******/
 ALTER TABLE [dbo].[Order_Info]  WITH CHECK ADD  CONSTRAINT [FK_Order_Info_Dia] FOREIGN KEY([Dia])
 REFERENCES [dbo].[Dia] ([Id])
 ON UPDATE CASCADE
@@ -2896,7 +2895,7 @@ ON DELETE CASCADE
 GO
 ALTER TABLE [dbo].[Order_Info] CHECK CONSTRAINT [FK_Order_Info_Dia]
 GO
-/****** Object:  ForeignKey [FK_Order_Info_Size]    Script Date: 03/19/2019 19:04:54 ******/
+/****** Object:  ForeignKey [FK_Order_Info_Size]    Script Date: 03/20/2019 17:55:46 ******/
 ALTER TABLE [dbo].[Order_Info]  WITH CHECK ADD  CONSTRAINT [FK_Order_Info_Size] FOREIGN KEY([Size])
 REFERENCES [dbo].[Size] ([Id])
 ON UPDATE CASCADE
@@ -2904,7 +2903,7 @@ ON DELETE CASCADE
 GO
 ALTER TABLE [dbo].[Order_Info] CHECK CONSTRAINT [FK_Order_Info_Size]
 GO
-/****** Object:  ForeignKey [FK_Order_Info_Style]    Script Date: 03/19/2019 19:04:54 ******/
+/****** Object:  ForeignKey [FK_Order_Info_Style]    Script Date: 03/20/2019 17:55:46 ******/
 ALTER TABLE [dbo].[Order_Info]  WITH CHECK ADD  CONSTRAINT [FK_Order_Info_Style] FOREIGN KEY([Style])
 REFERENCES [dbo].[Style] ([Id])
 ON UPDATE CASCADE

@@ -114,8 +114,8 @@
             this.fromDateTimePicker = new System.Windows.Forms.DateTimePicker();
             this.toDateTimePicker = new System.Windows.Forms.DateTimePicker();
             this.labelAlert = new System.Windows.Forms.Label();
-            this.OrderInfoPBcontextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.OrderInfoPBcontextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.orderInfoDetailsdataGridView)).BeginInit();
             this.panel1.SuspendLayout();
@@ -1019,19 +1019,19 @@
             this.labelAlert.Text = "label24";
             this.labelAlert.Visible = false;
             // 
+            // deleteToolStripMenuItem
+            // 
+            this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
+            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.deleteToolStripMenuItem.Text = "Delete";
+            this.deleteToolStripMenuItem.Click += new System.EventHandler(this.deleteToolStripMenuItem_Click);
+            // 
             // OrderInfoPBcontextMenuStrip
             // 
             this.OrderInfoPBcontextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.deleteToolStripMenuItem});
             this.OrderInfoPBcontextMenuStrip.Name = "OrderInfoPBcontextMenuStrip";
-            this.OrderInfoPBcontextMenuStrip.Size = new System.Drawing.Size(108, 26);
-            // 
-            // deleteToolStripMenuItem
-            // 
-            this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
-            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
-            this.deleteToolStripMenuItem.Text = "Delete";
-            this.deleteToolStripMenuItem.Click += new System.EventHandler(this.deleteToolStripMenuItem_Click);
+            this.OrderInfoPBcontextMenuStrip.Size = new System.Drawing.Size(153, 48);
             // 
             // ViewOrderInfo
             // 
@@ -1145,8 +1145,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn ID;
         private System.Windows.Forms.Label labelShow;
         private System.Windows.Forms.Label labelAlert;
-        private System.Windows.Forms.ContextMenuStrip OrderInfoPBcontextMenuStrip;
-        private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;
         private System.Windows.Forms.Button UpdateButton;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn2;
         private System.Windows.Forms.DataGridViewTextBoxColumn TaskDate;
@@ -1156,5 +1154,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Minute;
         private System.Windows.Forms.DataGridViewTextBoxColumn Eff;
         private System.Windows.Forms.DataGridViewTextBoxColumn ReadMode;
+        private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;
+        private System.Windows.Forms.ContextMenuStrip OrderInfoPBcontextMenuStrip;
     }
 }

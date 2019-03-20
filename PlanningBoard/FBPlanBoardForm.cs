@@ -7,14 +7,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-
+using System.Collections;
 using System.Data.SqlClient;
 
 namespace PlanningBoard
 {
     public partial class FBPlanBoardForm : Form
     {
-
+        ArrayList MachineList = new ArrayList();
         public Boolean Flag = false;
         public DateTime planDate = DateTime.Now;
         string orderids = "";
@@ -32,12 +32,15 @@ namespace PlanningBoard
             if (changeDate)
             {
                 FBPlanDateDateTimePicker.Enabled = true;
-                label1.Visible = false;
+                label1.Text = "Mc No";
+                MachineComboBox.Visible = true;
                 daysFBTextBox.Visible = false;
+                LoadMachine();
             }
             else
             {
                 FBPlanDateDateTimePicker.Enabled = false;
+                MachineComboBox.Visible = false;
                 label1.Visible = true;
                 daysFBTextBox.Visible = true;
             }
@@ -47,6 +50,57 @@ namespace PlanningBoard
         {
             FBPlanDateDateTimePicker.Value = planDate;
             Orderlabel.Text = "Order ID : " + orderids;
+        }
+
+        private void LoadMachine()
+        {
+            try
+            {
+                string query = "SELECT * FROM Machine_Info WHERE Status = 1 order by MachineNo asc";
+
+                SqlDataReader reader = CommonFunctions.GetFromDB(query);
+                MachineComboBox.DataSource = null;
+                MachineComboBox.Items.Clear();
+                MachineList.Clear();
+
+                if (reader.HasRows)
+                {
+                    while (reader.Read())
+                    {
+                        MachineList.Add(Convert.ToInt32(reader["MachineNo"]));
+                    }
+                }
+                if (MachineList.Count > 0)
+                {
+                    MachineComboBox.DataSource = MachineList;
+                    MachineComboBox.SelectedIndex = 0;
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("" + e.ToString());
+            }
+
+            finally
+            {
+                CommonFunctions.connection.Close();
+            }
+        }
+
+        private void IsInValidForForwarding()
+        {
+            try
+            {
+                string query = "SELECT * FROM"
+            }
+            catch (Exception ee)
+            {
+                MessageBox.Show("" + ee.ToString());
+            }
+            finally
+            {
+                CommonFunctions.connection.Close();
+            }
         }
 
         private void BtnSave_Click(object sender, EventArgs e)
@@ -59,16 +113,41 @@ namespace PlanningBoard
                     daysFBTextBox.Text = "";
                     return;
                 }
+                if (CommonFunctions.recordExist("SELECT * FROM PlanTable WHERE ActualQty != 0 AND TaskDate >= '"+FBPlanDateDateTimePicker.Value+"'"))
+                {
+                    MessageBox.Show("Forwarding or Backwording Plan is not applicable for the orders where Auto Adjustment for Actual Qty has been used applied !!!!");
+                    daysFBTextBox.Text = "";
+                    return;
+                }
+                if(Flag == false)
+                {
+                    if (CommonFunctions.recordExist("SELECT * FROM PlanTable WHERE MachineNo = " + MachineNo + " AND TaskDate = '" + FBPlanDateDateTimePicker.Value.AddDays(-Convert.ToInt16(daysFBTextBox.Text)) + "'"))
+                    {
+                        MessageBox.Show("Invalid Forwarding Plan! Order already exists in that Date !!!!");
+                        daysFBTextBox.Text = "";
+                        return;
+                    }
+                }
+                else
+                {
+                    if (CommonFunctions.recordExist("SELECT * FROM WorkingDays WHERE MachineNo = " + MachineNo + " AND WorkDate = '" + FBPlanDateDateTimePicker.Value.AddDays(Convert.ToInt16(daysFBTextBox.Text)) + "'"))
+                    {
+                        MessageBox.Show("Invalid Backwording Plan!!!");
+                        daysFBTextBox.Text = "";
+                        return;
+                    }
+                }
+                
                 ReGenerate_Board();
             }
             else
             {
                 DateTime TaskDate = FBPlanDateDateTimePicker.Value;
-                if (CommonFunctions.recordExist("SELECT * FROM WorkingDays WHERE MachineNo = " + MachineNo + " and WorkDate = '" + TaskDate + "'"))
+                if (CommonFunctions.recordExist("SELECT * FROM WorkingDays WHERE MachineNo = " + MachineComboBox.SelectedItem + " and WorkDate = '" + TaskDate + "'"))
                 {
-                    if (CommonFunctions.recordExist("SELECT * FROM WorkingDays WHERE MachineNo = " + MachineNo + " AND Active = 1 AND WorkDate = '" + TaskDate + "'"))
+                    if (CommonFunctions.recordExist("SELECT * FROM WorkingDays WHERE MachineNo = " + MachineComboBox.SelectedItem + " AND Active = 1 AND WorkDate = '" + TaskDate + "'"))
                     {
-                        if (!CommonFunctions.recordExist("SELECT * FROM PlanTable WHERE  Revert = 0 OR Revert = 2 MachineNo = " + MachineNo + " AND TaskDate = '" + TaskDate + "'"))
+                        if (!CommonFunctions.recordExist("SELECT * FROM PlanTable WHERE  RevertVal !=  1 AND MachineNo = " + MachineComboBox.SelectedItem + " AND TaskDate = '" + TaskDate + "'"))
                         {
                             try
                             {
@@ -79,7 +158,7 @@ namespace PlanningBoard
                                 double SAM = 0;
                                 int GetCount = 1;
                                 int TotalPlanQty = 0;
-                                string query = "select (SELECT COUNT (Id) from PlanTable where TaskDate = '" + planDate.ToString() + "' and MachineNo='" + MachineNo + "') as RecordCount, Id, MachineNo, TaskDate, OrderID, Capacity, PlanQty, RemainingQty, OrderQty, ColIndex, Efficiency, Minute, Status, SAM from PlanTable where TaskDate = '" + planDate.ToString() + "' and MachineNo='" + MachineNo + "' order by TaskDate,Id asc";
+                                string query = "select (SELECT COUNT (Id) from PlanTable where TaskDate = '" + planDate.ToString() + "' and MachineNo='" + MachineNo + "') as RecordCount, Id, MachineNo, TaskDate, OrderID, Capacity, PlanQty, RemainingQty, OrderQty, Efficiency, Minute, Status, SAM from PlanTable where TaskDate = '" + planDate.ToString() + "' and MachineNo='" + MachineNo + "' order by TaskDate,Id asc";
                                 string connectionStr = ConnectionManager.connectionString;
                                 SqlCommand cm = new SqlCommand();
                                 SqlConnection cn = new SqlConnection(connectionStr);
@@ -98,7 +177,7 @@ namespace PlanningBoard
                                     int GetMinute = 0;
                                     cn1.Open();
                                     cm1.Connection = cn1;
-                                    cm1.CommandText = "SELECT Minute FROM WorkingDays where MachineNo='" + MachineNo + "' and Active = 1 and WorkDate='" + TaskDate + "'";
+                                    cm1.CommandText = "SELECT Minute FROM WorkingDays where MachineNo='" + MachineComboBox.SelectedItem + "' and Active = 1 and WorkDate='" + TaskDate + "'";
                                     reader1 = cm1.ExecuteReader();
                                     while (reader1.Read())
                                     {
@@ -117,7 +196,7 @@ namespace PlanningBoard
 
                                     cn2.Open();
                                     cm2.Connection = cn2;
-                                    cm2.CommandText = "UPDATE PlanTable SET TaskDate='" + TaskDate + "',Capacity='" + Capacity + "',RemainingQty='" + (Capacity - PlanQty) + "',Status=1 where Id='" + Convert.ToInt16(reader["Id"]) + "'";
+                                    cm2.CommandText = "UPDATE PlanTable SET MachineNo = " + MachineComboBox.SelectedItem + ", TaskDate='" + TaskDate + "',Capacity='" + Capacity + "',RemainingQty='" + (Capacity - PlanQty) + "',Status=1 where Id='" + Convert.ToInt16(reader["Id"]) + "'";
                                     cm2.ExecuteReader();
                                     cn2.Close();
 
@@ -192,7 +271,8 @@ namespace PlanningBoard
             try
             {
                 string orderByString = Flag == true ? "desc" : "asc";
-                query = "select top(1) TaskDate from PlanTable where MachineNo='"+MachineNo+"' AND Capacity != 0 order by TaskDate " + orderByString;
+                query = "select top(1) TaskDate from PlanTable where MachineNo='"+MachineNo+"' AND Capacity != 0 order by TaskDate desc";
+                //query = "select top(1) TaskDate from PlanTable where MachineNo='"+MachineNo+"' AND Capacity != 0 order by TaskDate " + orderByString;
                 cm.CommandText = query;
                 SqlDataReader reader;
                 reader = cm.ExecuteReader();
@@ -212,7 +292,8 @@ namespace PlanningBoard
             }
             try
             {
-                query = Flag == true ? "UPDATE PlanTable SET Status='0' where MachineNo='"+MachineNo+"' and TaskDate>='" + planDate + "'" : "update PlanTable set Status='0' where MachineNo='"+MachineNo+"' and TaskDate <='" + planDate + "'";
+                query = "UPDATE PlanTable SET Status='0' where MachineNo='" + MachineNo + "' and TaskDate>='" + planDate + "'";
+                //query = Flag == true ? "UPDATE PlanTable SET Status='0' where MachineNo='"+MachineNo+"' and TaskDate>='" + planDate + "'" : "update PlanTable set Status='0' where MachineNo='"+MachineNo+"' and TaskDate <='" + planDate + "'";
                 cm1.CommandText = query;
                 cm1.ExecuteReader();
             }
@@ -225,14 +306,7 @@ namespace PlanningBoard
                 cn1.Close();
             }
 
-            if (Flag == true)
-            {
-                Getdays = Convert.ToInt16(daysFBTextBox.Text);
-            }
-            else
-            {
-                Getdays = -Convert.ToInt16(daysFBTextBox.Text);
-            }
+            Getdays = Flag == true ? Convert.ToInt16(daysFBTextBox.Text) : -Convert.ToInt16(daysFBTextBox.Text);
 
             try
             {
@@ -248,15 +322,14 @@ namespace PlanningBoard
                 DateTime PrevUpdatedDate = DateTime.MinValue;
                 DateTime PrevOldDate = DateTime.MinValue;
                 Boolean DateDifference = false;
-
-                query = Flag == true ? "SELECT Id, MachineNo, TaskDate, OrderID, Capacity, PlanQty, RemainingQty, OrderQty, ColIndex, Efficiency, Minute, Status, SAM from PlanTable where TaskDate between '" + planDate.ToString() + "' and '" + TargateDate.ToString() + "' and MachineNo='"+MachineNo+"' and Status=0 order by TaskDate,Id asc" : "select Id, MachineNo, TaskDate, OrderID, Capacity, PlanQty, RemainingQty, OrderQty, ColIndex, Efficiency, Minute, Status, SAM from PlanTable where TaskDate between '" + TargateDate.ToString() + "' and '" + planDate.ToString() + "' and MachineNo='"+MachineNo+"' and Status=0 order by TaskDate desc, Id asc";
+                query = "SELECT Id, MachineNo, TaskDate, OrderID, Capacity, PlanQty, RemainingQty, OrderQty, Efficiency, Minute, Status, SAM from PlanTable where TaskDate between '" + planDate.ToString() + "' and '" + TargateDate.ToString() + "' and MachineNo='" + MachineNo + "' and Status=0 order by TaskDate,Id asc";
+                //query = Flag == true ? "SELECT Id, MachineNo, TaskDate, OrderID, Capacity, PlanQty, RemainingQty, OrderQty, Efficiency, Minute, Status, SAM from PlanTable where TaskDate between '" + planDate.ToString() + "' and '" + TargateDate.ToString() + "' and MachineNo='"+MachineNo+"' and Status=0 order by TaskDate,Id asc" : "select Id, MachineNo, TaskDate, OrderID, Capacity, PlanQty, RemainingQty, OrderQty, Efficiency, Minute, Status, SAM from PlanTable where TaskDate between '" + TargateDate.ToString() + "' and '" + planDate.ToString() + "' and MachineNo='"+MachineNo+"' and Status=0 order by TaskDate desc, Id asc";
                 cm2.CommandText = query;
                 SqlDataReader reader2;
                 reader2 = cm2.ExecuteReader();
 
                 while (reader2.Read())
                 {
-                    
                     if (Convert.ToInt32(reader2["Capacity"]) != 0)
                     {  
                         //For Forward && Backward

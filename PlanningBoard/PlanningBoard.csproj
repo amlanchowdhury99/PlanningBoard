@@ -94,6 +94,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="clsResize.cs" />
+    <Compile Include="DeleteOrderForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DeleteOrderForm.Designer.cs">
+      <DependentUpon>DeleteOrderForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="FBPlanBoardForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -171,6 +177,9 @@
     <Compile Include="AddPlanInfo.Designer.cs">
       <DependentUpon>AddPlanInfo.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="DeleteOrderForm.resx">
+      <DependentUpon>DeleteOrderForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FBPlanBoardForm.resx">
       <DependentUpon>FBPlanBoardForm.cs</DependentUpon>
     </EmbeddedResource>

@@ -923,7 +923,7 @@ namespace PlanningBoard
                 }
                 else
                 {
-                    MessageBox.Show("This Order has already been used in PlanBoard!!! To Delete Delete from PlanBoard!!!");
+                    MessageBox.Show("This Order has already been used in PlanBoard!!! To Delete First Delete from PlanBoard!!!");
                     return;
                 }
             }

@@ -297,7 +297,7 @@ namespace PlanningBoard
                             string Style1 = "";
                             string OrderIDList = "";
 
-                            cm.CommandText = "select * from Planing_Board_Details where Revert = 0 OR Revert = 2 AND TaskDate='" + GetDate + "' and MachineNo = " + MachineNoList.Dequeue();
+                            cm.CommandText = "select * from Planing_Board_Details where RevertVal != 1 AND TaskDate='" + GetDate + "' and MachineNo = " + MachineNoList.Dequeue();
 
                             SqlDataReader reader;
                             reader = cm.ExecuteReader();
@@ -1013,7 +1013,7 @@ namespace PlanningBoard
 
                         if (CommonFunctions.recordExist("select * from WorkingDays where MachineNo=" + mcNo + " and Active = 0 and WorkDate='" + workDate + "'"))
                         {
-                            ColorPlanBoard(j, i, Color.RosyBrown);
+                            ColorPlanBoard(j, i, Color.IndianRed);
                         }
                         else
                         {

@@ -37,12 +37,14 @@
             this.BtnSave = new System.Windows.Forms.Button();
             this.labelHeader = new System.Windows.Forms.Label();
             this.Orderlabel = new System.Windows.Forms.Label();
+            this.MachineComboBox = new System.Windows.Forms.ComboBox();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox1
             // 
             this.groupBox1.BackColor = System.Drawing.Color.SlateGray;
+            this.groupBox1.Controls.Add(this.MachineComboBox);
             this.groupBox1.Controls.Add(this.daysFBTextBox);
             this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Controls.Add(this.PlanDateLabel);
@@ -141,6 +143,16 @@
             this.Orderlabel.Text = "asdasdasdasdasd";
             this.Orderlabel.Click += new System.EventHandler(this.Orderlabel_Click);
             // 
+            // MachineComboBox
+            // 
+            this.MachineComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.MachineComboBox.FormattingEnabled = true;
+            this.MachineComboBox.Location = new System.Drawing.Point(71, 55);
+            this.MachineComboBox.Name = "MachineComboBox";
+            this.MachineComboBox.Size = new System.Drawing.Size(99, 24);
+            this.MachineComboBox.TabIndex = 39;
+            this.MachineComboBox.Visible = false;
+            // 
             // FBPlanBoardForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -173,5 +185,6 @@
         private System.Windows.Forms.Button BtnSave;
         private System.Windows.Forms.Label labelHeader;
         private System.Windows.Forms.Label Orderlabel;
+        private System.Windows.Forms.ComboBox MachineComboBox;
     }
 }

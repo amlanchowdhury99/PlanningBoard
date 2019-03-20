@@ -1487,8 +1487,8 @@ namespace PlanningBoard
                                 query = "IF EXISTS (SELECT * FROM PlanTable WHERE MachineNo = " + MachineNo + " AND OrderID = " + orderID + " AND TaskDate = '" + taskDate + "' ) UPDATE PlanTable SET " +
                                         "Capacity = " + capacity + ", PlanQty = " + plnQty + ", RemainingQty = " + remainQty + ", OrderQty = " + orderQty + ", Efficiency = " + efficiency +
                                         " WHERE MachineNo = " + MachineNo + " AND OrderID = " + orderID + " AND TaskDate = '" + taskDate + "' ELSE " +
-                                        "INSERT INTO PlanTable (MachineNo, TaskDate, OrderID, Capacity, PlanQty, RemainingQty, OrderQty, Efficiency, SAM, Minute, RevertVal) " +
-                                        "VALUES (" + MachineNo + ",'" + taskDate + "'," + orderID + "," + capacity + "," + plnQty + "," + remainQty + "," + orderQty + "," + efficiency + "," + Convert.ToDouble(samTextBox.Text) + "," + minute + ", 0)";
+                                        "INSERT INTO PlanTable (MachineNo, TaskDate, OrderID, Capacity, PlanQty, RemainingQty, OrderQty, Efficiency, SAM, Minute, RevertVal, ActualQty, Status) " +
+                                        "VALUES (" + MachineNo + ",'" + taskDate + "'," + orderID + "," + capacity + "," + plnQty + "," + remainQty + "," + orderQty + "," + efficiency + "," + Convert.ToDouble(samTextBox.Text) + "," + minute + ", 0, 0, 0)";
                                 result = CommonFunctions.ExecutionToDB(query, 3);
                             }
                         }
@@ -2534,27 +2534,41 @@ namespace PlanningBoard
 
         private void deleteToolStripMenuItem_Click(object sender, System.EventArgs e)
         {
+            String query = "";
             if (PlanBoardDisplayForm.EditMode)
             {
-                int OrderID = Convert.ToInt32(orderInfoDetailsdataGridView.SelectedRows[0].Cells["Id"].Value);
-                String query = "DELETE FROM PlanTable WHERE OrderID = " + OrderID;
-                Boolean result = CommonFunctions.ExecutionToDB(query, 3);
-                if (result)
+                DeleteOrderForm dltOrderForm = new DeleteOrderForm();
+                DialogResult dr = dltOrderForm.ShowDialog();
+
+                if (dr == System.Windows.Forms.DialogResult.OK)
                 {
-                    MessageBox.Show("Deleted Successully!!!");
-                    IDs.RemoveAll(item => item == OrderID);
-
-                    if (OrderID == orderID)
-                        orderWisePlandataGridView.Rows.Clear();
-
-                    if (IDs.Count != 0)
+                    int OrderID = Convert.ToInt32(orderInfoDetailsdataGridView.SelectedRows[0].Cells["Id"].Value);
+                    if (dltOrderForm.dltSingle)
                     {
-                        PlanBoardDisplayForm.orderIDs = string.Join(",", IDs.ToArray());
-                        LoadOrderInfoGridOnEditMode();
-                    }  
+                        query = "DELETE FROM PlanTable WHERE MachineNo = " + MachineNo + " AND TaskDate = '" + CurrentTaskDate + "' AND OrderID = " + OrderID;
+                    }
                     else
                     {
-                        orderInfoDetailsdataGridView.Rows.Clear();
+                        query = "DELETE FROM PlanTable WHERE OrderID = " + OrderID;
+                    }
+                    Boolean result = CommonFunctions.ExecutionToDB(query, 3);
+                    if (result)
+                    {
+                        MessageBox.Show("Deleted Successully!!!");
+                        IDs.RemoveAll(item => item == OrderID);
+
+                        if (OrderID == orderID)
+                            orderWisePlandataGridView.Rows.Clear();
+
+                        if (IDs.Count != 0)
+                        {
+                            PlanBoardDisplayForm.orderIDs = string.Join(",", IDs.ToArray());
+                            LoadOrderInfoGridOnEditMode();
+                        }
+                        else
+                        {
+                            orderInfoDetailsdataGridView.Rows.Clear();
+                        }
                     }
                 }
             }
