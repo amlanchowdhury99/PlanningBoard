@@ -31,6 +31,7 @@
             this.components = new System.ComponentModel.Container();
             this.planBoardDataGridView = new System.Windows.Forms.DataGridView();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.Revert = new System.Windows.Forms.Button();
             this.toDateTimePicker = new System.Windows.Forms.DateTimePicker();
             this.Search = new System.Windows.Forms.Button();
             this.fromDateTimePicker = new System.Windows.Forms.DateTimePicker();
@@ -48,7 +49,8 @@
             this.backwardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.changeWorkDateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.updateActualQtyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.Revert = new System.Windows.Forms.Button();
+            this.progressBar1 = new System.Windows.Forms.ProgressBar();
+            this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             ((System.ComponentModel.ISupportInitialize)(this.planBoardDataGridView)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.pBContextMenuStrip.SuspendLayout();
@@ -101,8 +103,19 @@
             this.groupBox1.Size = new System.Drawing.Size(1272, 67);
             this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "AAAAAAAA";
+            this.groupBox1.Text = "Plan Board Generation Criteria";
             this.groupBox1.Enter += new System.EventHandler(this.groupBox1_Enter);
+            // 
+            // Revert
+            // 
+            this.Revert.BackColor = System.Drawing.Color.RosyBrown;
+            this.Revert.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Revert.Location = new System.Drawing.Point(1179, 23);
+            this.Revert.Name = "Revert";
+            this.Revert.Size = new System.Drawing.Size(87, 31);
+            this.Revert.TabIndex = 40;
+            this.Revert.Text = "Revert";
+            this.Revert.UseVisualStyleBackColor = false;
             // 
             // toDateTimePicker
             // 
@@ -268,16 +281,13 @@
             this.updateActualQtyToolStripMenuItem.Text = "Update Actual Qty";
             this.updateActualQtyToolStripMenuItem.Click += new System.EventHandler(this.updateActualQtyToolStripMenuItem_Click);
             // 
-            // Revert
+            // progressBar1
             // 
-            this.Revert.BackColor = System.Drawing.Color.RosyBrown;
-            this.Revert.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Revert.Location = new System.Drawing.Point(1179, 23);
-            this.Revert.Name = "Revert";
-            this.Revert.Size = new System.Drawing.Size(87, 31);
-            this.Revert.TabIndex = 40;
-            this.Revert.Text = "Revert";
-            this.Revert.UseVisualStyleBackColor = false;
+            this.progressBar1.Location = new System.Drawing.Point(560, 273);
+            this.progressBar1.Name = "progressBar1";
+            this.progressBar1.Size = new System.Drawing.Size(100, 23);
+            this.progressBar1.TabIndex = 2;
+            this.progressBar1.Visible = false;
             // 
             // PlanBoardDisplayForm
             // 
@@ -285,6 +295,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ButtonShadow;
             this.ClientSize = new System.Drawing.Size(1296, 599);
+            this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.planBoardDataGridView);
             this.Name = "PlanBoardDisplayForm";
@@ -321,6 +332,8 @@
         private System.Windows.Forms.ToolStripMenuItem updateActualQtyToolStripMenuItem;
         private System.Windows.Forms.Button Search;
         private System.Windows.Forms.Button Revert;
+        private System.Windows.Forms.ProgressBar progressBar1;
+        private System.ComponentModel.BackgroundWorker backgroundWorker1;
 
     }
 }

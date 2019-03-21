@@ -15,6 +15,9 @@ using System.Data.SqlClient;
 using System.Configuration;
 using System.Text.RegularExpressions;
 using System.Drawing.Drawing2D;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Net.Http;
 //System.Drawing.Color.FromArgb(0, 128, 255);
 namespace PlanningBoard
 {
@@ -130,7 +133,7 @@ namespace PlanningBoard
                 MachineComboBox.Items.Clear();
                 MachineDiaList.Clear();
                 MachineList.Clear();
-                
+
                 if (reader.HasRows)
                 {
                     MachineList.Add("ALL");
@@ -162,7 +165,7 @@ namespace PlanningBoard
             {
                 var temp = "";
 
-                foreach(var obj in MachineList)
+                foreach (var obj in MachineList)
                 {
                     if (!obj.ToString().Equals("ALL"))
                     {
@@ -218,7 +221,7 @@ namespace PlanningBoard
                     planBoardDataGridView.Columns.Add(i.ToString(), i.ToString());
                     if (i > 2)
                     {
-                        planBoardDataGridView.Columns[i].Width = 170; 
+                        planBoardDataGridView.Columns[i].Width = 170;
                     }
                 }
                 SetColWidth();
@@ -248,8 +251,17 @@ namespace PlanningBoard
             planBoardDataGridView.CurrentCellChanged += new EventHandler(planBoardDataGridView_CurrentCellChanged);
         }
 
-        private void Generate_Plan_Board()
+        private async void Generate_Plan_Board()
         {
+            // start the waiting animation
+            progressBar1.Visible = true;
+            progressBar1.Style = ProgressBarStyle.Marquee;
+
+            // simply start and await the loading task
+            BtnGeneratePlan.Enabled = false;
+            await Task.Run(() => LoadWaiting());
+
+            int DailyPlanQty = 0;
             string connectionStr = ConnectionManager.connectionString;
             SqlCommand cm = new SqlCommand();
             SqlConnection cn = new SqlConnection(connectionStr);
@@ -261,6 +273,7 @@ namespace PlanningBoard
             {
                 for (int y = 3; y < planBoardDataGridView.ColumnCount; y++)
                 {
+                    DailyPlanQty = 0;
                     MachineNoList = new Queue();
                     foreach (var obj in MachineList)
                     {
@@ -336,6 +349,7 @@ namespace PlanningBoard
                                     OrderIDList = OrderIDList == "" ? Convert.ToString(reader["OrderID"]) : OrderIDList + "," + Convert.ToString(reader["OrderID"]);
 
                                     Style1 = Convert.ToString(reader["StyleName"]);
+                                    DailyPlanQty = DailyPlanQty + Convert.ToInt32(reader["PlanQty"]);
                                 }
                             }
 
@@ -370,6 +384,7 @@ namespace PlanningBoard
                             MessageBox.Show(ex.Message);
                         }
                     }
+                    planBoardDataGridView.Rows[0].Cells[y].Value = DailyPlanQty;
                 }
             }
             catch (Exception ex)
@@ -381,12 +396,15 @@ namespace PlanningBoard
             {
                 cn.Close();
                 ResetPlanBoardColor();
+                // re-enable things
+                BtnGeneratePlan.Enabled = true;
+                progressBar1.Visible = false;
             }
         }
 
         private void SetRowIndex()
         {
-            for (int i = 0; i < MachineDiaList.Count; i++ )
+            for (int i = 0; i < MachineDiaList.Count; i++)
             {
                 if (i == 0)
                 {
@@ -399,7 +417,7 @@ namespace PlanningBoard
             }
         }
 
-        private void SetGridColor() 
+        private void SetGridColor()
         {
             for (int i = 0; i < 3; i++)
             {
@@ -419,7 +437,7 @@ namespace PlanningBoard
 
         private void SetColWidth()
         {
-            planBoardDataGridView.Columns[2].Width = 170; 
+            planBoardDataGridView.Columns[2].Width = 170;
         }
 
         private void FetchDateFromDB()
@@ -430,7 +448,7 @@ namespace PlanningBoard
                 SqlDataReader reader = null;
                 for (DateTime date = fromDateTimePicker.Value; date <= fromDateTimePicker.Value; date = date.AddDays(1))
                 {
-                    foreach(var item in MachineDiaList)
+                    foreach (var item in MachineDiaList)
                     {
                         style = " ";
                         part = " ";
@@ -591,9 +609,9 @@ namespace PlanningBoard
                         int MachineRowIndex = gridMachineRowStartIndex.IndexOf(i);
                         if (j == 0)
                         {
-                            if(MachineRowIndex == -1)
+                            if (MachineRowIndex == -1)
                             {
-                                row.Cells.Add(new DataGridViewTextBoxCell { Value = planBoardDataGridView.Rows[i-1].Cells[0].Value.ToString() });
+                                row.Cells.Add(new DataGridViewTextBoxCell { Value = planBoardDataGridView.Rows[i - 1].Cells[0].Value.ToString() });
                             }
                             else
                             {
@@ -626,7 +644,7 @@ namespace PlanningBoard
                         }
                     }
                 }
-                
+
                 planBoardDataGridView.Rows.Add(row);
                 if (i > 3 && queue.Count == 0)
                 {
@@ -655,7 +673,7 @@ namespace PlanningBoard
                 {
                     e.AdvancedBorderStyle.Top = planBoardDataGridView.AdvancedCellBorderStyle.Top;
                 }
-            } 
+            }
         }
 
         bool IsTheSameCellValue(int column, int row)
@@ -718,6 +736,12 @@ namespace PlanningBoard
             Generate_Plan_Board();
         }
 
+        private void LoadWaiting()
+        {
+            // some work takes 5 sec
+            Thread.Sleep(1000);
+        }
+
         private void BtnAddPlan_Click(object sender, EventArgs e)
         {
             //Home frm = Application.OpenForms.OfType<Home>().FirstOrDefault();
@@ -738,7 +762,7 @@ namespace PlanningBoard
             orderIDs = "";
             ViewOrderInfo viewOrderInfo = new ViewOrderInfo();
             viewOrderInfo.ShowDialog();
-            if(orderID > 0)
+            if (orderID > 0)
             {
                 if (planStartDate < fromDateTimePicker.Value)
                 {
@@ -760,7 +784,7 @@ namespace PlanningBoard
             planEndDate = DateTime.Now.Date;
         }
 
-        internal static void sendPlanValue(int orderId, string styleName, string sizeName, string diaName, string partName, int mcNo,  DateTime plnDate, DateTime plnStartDate, DateTime plnEndDate, string remarksText, int Qty, double efficiency, int McCapacity, string chd, int plnQty)
+        internal static void sendPlanValue(int orderId, string styleName, string sizeName, string diaName, string partName, int mcNo, DateTime plnDate, DateTime plnStartDate, DateTime plnEndDate, string remarksText, int Qty, double efficiency, int McCapacity, string chd, int plnQty)
         {
             MachineNo = mcNo;
             orderID = orderId;
@@ -773,7 +797,7 @@ namespace PlanningBoard
             sam = "";
             eff = efficiency.ToString();
             capacity = McCapacity.ToString();
-            orderQuantity =  Qty.ToString();
+            orderQuantity = Qty.ToString();
             shipDate = chd;
             plnQuantity = plnQty.ToString();
             string remarks = remarksText;
@@ -875,7 +899,6 @@ namespace PlanningBoard
 
         private void planBoardDataGridView_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            ResetPlanBoardColor();
             if (e.RowIndex > 2 && e.ColumnIndex > 2)
             {
                 string buyer = "";
@@ -885,118 +908,142 @@ namespace PlanningBoard
 
                 rowIndex = e.RowIndex;
                 colIndex = e.ColumnIndex;
-                //if (planBoardDataGridView.Rows[(e.RowIndex + OrderFactorsCount - 1) - (e.RowIndex - 3)].Cells[colIndex].Value.ToString() != "")
-                if (planBoardDataGridView.Rows[e.RowIndex].Cells[colIndex].Value != null && planBoardDataGridView.Rows[e.RowIndex].Cells[colIndex].Value.ToString() != "" )
-                {
-                    if (e.RowIndex % OrderFactorsCount == 3)
-                    {
-                        buyer = planBoardDataGridView.Rows[e.RowIndex - 0].Cells[colIndex].Value.ToString();
-                        if(buyer.Contains(";"))
-                            buyer = buyer.Split(';')[0].Trim();
-                    }
-                    else if (e.RowIndex % OrderFactorsCount == 4)
-                    {
-                        buyer = planBoardDataGridView.Rows[e.RowIndex - 1].Cells[colIndex].Value.ToString();
-                        if (buyer.Contains(";"))
-                            buyer = buyer.Split(';')[0].Trim();
-                        style = planBoardDataGridView.Rows[e.RowIndex - 0].Cells[colIndex].Value.ToString();
-                        if (style.Contains(";"))
-                            style = style.Split(';')[0].Trim();
-                    }
-                    else if (e.RowIndex % OrderFactorsCount == 5)
-                    {
-                        buyer = planBoardDataGridView.Rows[e.RowIndex - 2].Cells[colIndex].Value.ToString();
-                        if (buyer.Contains(";"))
-                            buyer = buyer.Split(';')[0].Trim();
-                        style = planBoardDataGridView.Rows[e.RowIndex - 1].Cells[colIndex].Value.ToString();
-                        if (style.Contains(";"))
-                            style = style.Split(';')[0].Trim();
-                        parts = planBoardDataGridView.Rows[e.RowIndex - 0].Cells[colIndex].Value.ToString();
-                        if (buyer.Contains(";"))
-                            parts = parts.Split(';')[0].Trim();
-                    }
-                    else if (e.RowIndex % OrderFactorsCount == 6)
-                    {
-                        buyer = planBoardDataGridView.Rows[e.RowIndex - 3].Cells[colIndex].Value.ToString();
-                        if (buyer.Contains(";"))
-                            buyer = buyer.Split(';')[0].Trim();
-                        style = planBoardDataGridView.Rows[e.RowIndex - 2].Cells[colIndex].Value.ToString();
-                        if (style.Contains(";"))
-                            style = style.Split(';')[0].Trim();
-                        parts = planBoardDataGridView.Rows[e.RowIndex - 1].Cells[colIndex].Value.ToString();
-                        if (buyer.Contains(";"))
-                            parts = parts.Split(';')[0].Trim();
-                        size = planBoardDataGridView.Rows[e.RowIndex - 0].Cells[colIndex].Value.ToString();
-                        if (buyer.Contains(";"))
-                            size = size.Split(';')[0].Trim();
-                    }
 
-                    for (int i = 3; i < planBoardDataGridView.ColumnCount; i++)
+                if (planBoardDataGridView.Rows[e.RowIndex].Cells[colIndex].Value != null && planBoardDataGridView.Rows[e.RowIndex].Cells[colIndex].Value.ToString() != "")
+                {
+                    //planBoardDataGridView.Rows[e.RowIndex].Cells[colIndex].Style.BackColor != Color.SlateBlue && planBoardDataGridView.Rows[e.RowIndex].Cells[colIndex].Style.BackColor != Color.Thistle
+                    if (rowIndex % OrderFactorsCount < 7)
                     {
-                        for (int j = 3; j < planBoardDataGridView.Rows.Count; j = j + OrderFactorsCount)
-                        {
-                            if (planBoardDataGridView.Rows[j].Cells[i].Value != null)
+                        //if (planBoardDataGridView.Rows[e.RowIndex].Cells[colIndex].Style.BackColor != Color.SlateBlue && planBoardDataGridView.Rows[e.RowIndex].Cells[colIndex].Style.BackColor != Color.Thistle)
+                        //{
+                            PlanBoardColorManagement();
+                            if (e.RowIndex % OrderFactorsCount == 3)
                             {
-                                if (e.RowIndex % OrderFactorsCount == 3)
+                                buyer = planBoardDataGridView.Rows[e.RowIndex - 0].Cells[colIndex].Value.ToString();
+                                if (buyer.Contains(";"))
+                                    buyer = buyer.Split(';')[0].Trim();
+                            }
+                            else if (e.RowIndex % OrderFactorsCount == 4)
+                            {
+                                buyer = planBoardDataGridView.Rows[e.RowIndex - 1].Cells[colIndex].Value.ToString();
+                                if (buyer.Contains(";"))
+                                    buyer = buyer.Split(';')[0].Trim();
+                                style = planBoardDataGridView.Rows[e.RowIndex - 0].Cells[colIndex].Value.ToString();
+                                if (style.Contains(";"))
+                                    style = style.Split(';')[0].Trim();
+                            }
+                            else if (e.RowIndex % OrderFactorsCount == 5)
+                            {
+                                buyer = planBoardDataGridView.Rows[e.RowIndex - 2].Cells[colIndex].Value.ToString();
+                                if (buyer.Contains(";"))
+                                    buyer = buyer.Split(';')[0].Trim();
+                                style = planBoardDataGridView.Rows[e.RowIndex - 1].Cells[colIndex].Value.ToString();
+                                if (style.Contains(";"))
+                                    style = style.Split(';')[0].Trim();
+                                parts = planBoardDataGridView.Rows[e.RowIndex - 0].Cells[colIndex].Value.ToString();
+                                if (buyer.Contains(";"))
+                                    parts = parts.Split(';')[0].Trim();
+                            }
+                            else if (e.RowIndex % OrderFactorsCount == 6)
+                            {
+                                buyer = planBoardDataGridView.Rows[e.RowIndex - 3].Cells[colIndex].Value.ToString();
+                                if (buyer.Contains(";"))
+                                    buyer = buyer.Split(';')[0].Trim();
+                                style = planBoardDataGridView.Rows[e.RowIndex - 2].Cells[colIndex].Value.ToString();
+                                if (style.Contains(";"))
+                                    style = style.Split(';')[0].Trim();
+                                parts = planBoardDataGridView.Rows[e.RowIndex - 1].Cells[colIndex].Value.ToString();
+                                if (buyer.Contains(";"))
+                                    parts = parts.Split(';')[0].Trim();
+                                size = planBoardDataGridView.Rows[e.RowIndex - 0].Cells[colIndex].Value.ToString();
+                                if (buyer.Contains(";"))
+                                    size = size.Split(';')[0].Trim();
+                            }
+
+                            for (int i = 3; i < planBoardDataGridView.ColumnCount; i++)
+                            {
+                                for (int j = 3; j < planBoardDataGridView.Rows.Count; j = j + OrderFactorsCount)
                                 {
-                                    if (planBoardDataGridView.Rows[j].Cells[i].Value.ToString().Contains(buyer))
+                                    if (planBoardDataGridView.Rows[j].Cells[i].Value != null)
                                     {
-                                        if (planBoardDataGridView.Rows[j].Cells[i].Value.ToString() == buyer)
+                                        if (e.RowIndex % OrderFactorsCount == 3)
                                         {
-                                            ColorPlanBoard(j, i, Color.SlateBlue);
+                                            if (planBoardDataGridView.Rows[j].Cells[i].Value.ToString().Contains(buyer))
+                                            {
+                                                if (planBoardDataGridView.Rows[j].Cells[i].Value.ToString() == buyer)
+                                                {
+                                                    ColorPlanBoard(j, i, Color.SlateBlue);
+                                                }
+                                                else
+                                                {
+                                                    ColorPlanBoard(j, i, Color.Thistle);
+                                                }
+                                            }
                                         }
-                                        else
+                                        if (e.RowIndex % OrderFactorsCount == 4)
                                         {
-                                            ColorPlanBoard(j, i, Color.Thistle);
+                                            if (planBoardDataGridView.Rows[j].Cells[i].Value.ToString().Contains(buyer) && planBoardDataGridView.Rows[j + 1].Cells[i].Value.ToString().Contains(style))
+                                            {
+                                                if (planBoardDataGridView.Rows[j].Cells[i].Value.ToString() == buyer && planBoardDataGridView.Rows[j + 1].Cells[i].Value.ToString() == style)
+                                                {
+                                                    ColorPlanBoard(j, i, Color.SlateBlue);
+                                                }
+                                                else
+                                                {
+                                                    ColorPlanBoard(j, i, Color.Thistle);
+                                                }
+                                            }
                                         }
-                                    }
-                                }
-                                if (e.RowIndex % OrderFactorsCount == 4)
-                                {
-                                    if (planBoardDataGridView.Rows[j].Cells[i].Value.ToString().Contains(buyer) && planBoardDataGridView.Rows[j + 1].Cells[i].Value.ToString().Contains(style))
-                                    {
-                                        if (planBoardDataGridView.Rows[j].Cells[i].Value.ToString() == buyer && planBoardDataGridView.Rows[j + 1].Cells[i].Value.ToString() == style)
+                                        if (e.RowIndex % OrderFactorsCount == 5)
                                         {
-                                            ColorPlanBoard(j, i, Color.SlateBlue);
+                                            if (planBoardDataGridView.Rows[j].Cells[i].Value.ToString().Contains(buyer) && planBoardDataGridView.Rows[j + 1].Cells[i].Value.ToString().Contains(style) && planBoardDataGridView.Rows[j + 2].Cells[i].Value.ToString().Contains(parts))
+                                            {
+                                                if (planBoardDataGridView.Rows[j].Cells[i].Value.ToString() == buyer && planBoardDataGridView.Rows[j + 1].Cells[i].Value.ToString() == style && planBoardDataGridView.Rows[j + 2].Cells[i].Value.ToString() == parts)
+                                                {
+                                                    ColorPlanBoard(j, i, Color.SlateBlue);
+                                                }
+                                                else
+                                                {
+                                                    ColorPlanBoard(j, i, Color.Thistle);
+                                                }
+                                            }
                                         }
-                                        else
+                                        if (e.RowIndex % OrderFactorsCount == 6)
                                         {
-                                            ColorPlanBoard(j, i, Color.Thistle);
-                                        }
-                                    }
-                                }
-                                if (e.RowIndex % OrderFactorsCount == 5)
-                                {
-                                    if (planBoardDataGridView.Rows[j].Cells[i].Value.ToString().Contains(buyer) && planBoardDataGridView.Rows[j + 1].Cells[i].Value.ToString().Contains(style) && planBoardDataGridView.Rows[j + 2].Cells[i].Value.ToString().Contains(parts))
-                                    {
-                                        if (planBoardDataGridView.Rows[j].Cells[i].Value.ToString() == buyer && planBoardDataGridView.Rows[j + 1].Cells[i].Value.ToString() == style && planBoardDataGridView.Rows[j + 2].Cells[i].Value.ToString() == parts)
-                                        {
-                                            ColorPlanBoard(j, i, Color.SlateBlue);
-                                        }
-                                        else
-                                        {
-                                            ColorPlanBoard(j, i, Color.Thistle);
-                                        }
-                                    }
-                                }
-                                if (e.RowIndex % OrderFactorsCount == 6)
-                                {
-                                    if (planBoardDataGridView.Rows[j].Cells[i].Value.ToString().Contains(buyer) && planBoardDataGridView.Rows[j + 1].Cells[i].Value.ToString().Contains(style) && planBoardDataGridView.Rows[j + 2].Cells[i].Value.ToString().Contains(parts) && planBoardDataGridView.Rows[j + 3].Cells[i].Value.ToString().Contains(size))
-                                    {
-                                        if (planBoardDataGridView.Rows[j].Cells[i].Value.ToString() == buyer && planBoardDataGridView.Rows[j + 1].Cells[i].Value.ToString() == style && planBoardDataGridView.Rows[j + 2].Cells[i].Value.ToString() == parts && planBoardDataGridView.Rows[j + 3].Cells[i].Value.ToString() == size)
-                                        {
-                                            ColorPlanBoard(j, i, Color.SlateBlue);
-                                        }
-                                        else
-                                        {
-                                            ColorPlanBoard(j, i, Color.Thistle);
+                                            if (planBoardDataGridView.Rows[j].Cells[i].Value.ToString().Contains(buyer) && planBoardDataGridView.Rows[j + 1].Cells[i].Value.ToString().Contains(style) && planBoardDataGridView.Rows[j + 2].Cells[i].Value.ToString().Contains(parts) && planBoardDataGridView.Rows[j + 3].Cells[i].Value.ToString().Contains(size))
+                                            {
+                                                if (planBoardDataGridView.Rows[j].Cells[i].Value.ToString() == buyer && planBoardDataGridView.Rows[j + 1].Cells[i].Value.ToString() == style && planBoardDataGridView.Rows[j + 2].Cells[i].Value.ToString() == parts && planBoardDataGridView.Rows[j + 3].Cells[i].Value.ToString() == size)
+                                                {
+                                                    ColorPlanBoard(j, i, Color.SlateBlue);
+                                                }
+                                                else
+                                                {
+                                                    ColorPlanBoard(j, i, Color.Thistle);
+                                                }
+                                            }
                                         }
                                     }
                                 }
                             }
                         }
-                    }
+                    //}
+                    //else
+                    //{
+                    //    if (planBoardDataGridView.Rows[rowIndex].Cells[colIndex].Style.BackColor == Color.DarkOliveGreen || planBoardDataGridView.Rows[rowIndex].Cells[colIndex].Style.BackColor == Color.ForestGreen)
+                    //    {
+                    //        return;
+                    //    }
+                    //    PlanBoardColorManagement();
+                    //}
                 }
+                else
+                {
+                    PlanBoardColorManagement();
+                }
+            }
+            else
+            {
+                PlanBoardColorManagement();
             }
         }
 
@@ -1019,7 +1066,7 @@ namespace PlanningBoard
                         {
                             ColorPlanBoard(j, i, Color.DarkGray);
                         }
-                        
+
                     }
                     else
                     {
@@ -1055,7 +1102,10 @@ namespace PlanningBoard
             {
                 for (int j = 3; j < planBoardDataGridView.Rows.Count; j++)
                 {
-                    planBoardDataGridView.Rows[j].Cells[i].Style.BackColor = Color.White;
+                    if (planBoardDataGridView.Rows[3].Cells[i].Value.ToString() == "" && planBoardDataGridView.Rows[3].Cells[i].Value.ToString() == null)
+                    {
+                        planBoardDataGridView.Rows[j].Cells[i].Style.BackColor = Color.White;
+                    }
                 }
             }
             PlanBoardColorManagement();
@@ -1124,7 +1174,7 @@ namespace PlanningBoard
             Generate_Plan_Board();
         }
 
-        private void Search_Click(object sender, EventArgs e)
+        private void Search_Click(object sender, EventArgs e) 
         {
             Report reportForm = new Report();
             reportForm.ShowDialog();

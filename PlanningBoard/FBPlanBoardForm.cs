@@ -49,7 +49,7 @@ namespace PlanningBoard
         private void FBPlanBoardForm_Load(object sender, EventArgs e)
         {
             FBPlanDateDateTimePicker.Value = planDate;
-            Orderlabel.Text = "Order ID : " + orderids;
+            Orderlabel.Text = Flag == true ? "Backward Direction" : "Forward Direction";
         }
 
         private void LoadMachine()
@@ -91,7 +91,7 @@ namespace PlanningBoard
         {
             try
             {
-                string query = "SELECT * FROM"
+                //string query = "SELECT * FROM"
             }
             catch (Exception ee)
             {
@@ -121,22 +121,33 @@ namespace PlanningBoard
                 }
                 if(Flag == false)
                 {
-                    if (CommonFunctions.recordExist("SELECT * FROM PlanTable WHERE MachineNo = " + MachineNo + " AND TaskDate = '" + FBPlanDateDateTimePicker.Value.AddDays(-Convert.ToInt16(daysFBTextBox.Text)) + "'"))
+                    int daysAdded = Convert.ToInt16(daysFBTextBox.Text);
+                    while (!CommonFunctions.recordExist("SELECT * FROM WorkingDays WHERE MachineNo = " + MachineNo + " AND Active = 1 AND WorkDate = '" + FBPlanDateDateTimePicker.Value.AddDays(-daysAdded) + "'"))
+                    {
+                        daysAdded++;
+                    }
+                    if (CommonFunctions.recordExist("SELECT * FROM PlanTable WHERE MachineNo = " + MachineNo + " AND TaskDate = '" + FBPlanDateDateTimePicker.Value.AddDays(-daysAdded) + "'"))
                     {
                         MessageBox.Show("Invalid Forwarding Plan! Order already exists in that Date !!!!");
                         daysFBTextBox.Text = "";
                         return;
                     }
-                }
-                else
-                {
-                    if (CommonFunctions.recordExist("SELECT * FROM WorkingDays WHERE MachineNo = " + MachineNo + " AND WorkDate = '" + FBPlanDateDateTimePicker.Value.AddDays(Convert.ToInt16(daysFBTextBox.Text)) + "'"))
+                    if (CommonFunctions.recordExist("SELECT * FROM PlanTable WHERE MachineNo = " + MachineNo + " AND TaskDate < '" + FBPlanDateDateTimePicker.Value + "' AND TaskDate > '" + FBPlanDateDateTimePicker.Value.AddDays(-daysAdded) + "'"))
                     {
-                        MessageBox.Show("Invalid Backwording Plan!!!");
+                        MessageBox.Show("Invalid Forwarding Plan! You can not jump over another dates while forwarding !!!!");
                         daysFBTextBox.Text = "";
                         return;
                     }
                 }
+                //else
+                //{
+                //    if (CommonFunctions.recordExist("SELECT * FROM WorkingDays WHERE MachineNo = " + MachineNo + " AND WorkDate = '" + FBPlanDateDateTimePicker.Value.AddDays(Convert.ToInt16(daysFBTextBox.Text)) + "'"))
+                //    {
+                //        MessageBox.Show("Invalid Backwording Plan!!!");
+                //        daysFBTextBox.Text = "";
+                //        return;
+                //    }
+                //}
                 
                 ReGenerate_Board();
             }
@@ -331,7 +342,7 @@ namespace PlanningBoard
                 while (reader2.Read())
                 {
                     if (Convert.ToInt32(reader2["Capacity"]) != 0)
-                    {  
+                    {
                         //For Forward && Backward
                         if (GetDate != "")
                         {
@@ -349,8 +360,8 @@ namespace PlanningBoard
                         {
                             GetMinute = 0;
                             DateTime TempDate = DateTime.Now;
-                            
-                            int diff = FirstTime == true ? 0 : Flag == true ? (Convert.ToDateTime(reader2["TaskDate"]).Date - Convert.ToDateTime(GetDate).Date).Days - 1 : (Convert.ToDateTime(GetDate).Date - Convert.ToDateTime(reader2["TaskDate"]).Date).Days - 1;
+                            int diff = FirstTime == true ? 0 : (Convert.ToDateTime(reader2["TaskDate"]).Date - Convert.ToDateTime(GetDate).Date).Days;
+                            //int diff = FirstTime == true ? 0 : Flag == true ? (Convert.ToDateTime(reader2["TaskDate"]).Date - Convert.ToDateTime(GetDate).Date).Days - 1 : (Convert.ToDateTime(GetDate).Date - Convert.ToDateTime(reader2["TaskDate"]).Date).Days + 1;
                             DateDifference = FirstTime == true ? false : GetDateDifference(Convert.ToDateTime(GetDate), (Convert.ToDateTime(reader2["TaskDate"])), diff);
 
                             Getdays = GetCount == 1 ? CalculateDays(Convert.ToDateTime(reader2["TaskDate"]), PrevUpdatedDate, GetCount, FirstTime, Getdays, DateDifference) : Getdays;
@@ -394,7 +405,7 @@ namespace PlanningBoard
                         finally
                         {
                             DateDifference = false;
-                            DifferenceInDays = 0;
+                            DifferenceInDays = 1;
                             cn4.Close();
                             PrevUpdatedDate = Convert.ToDateTime(reader2["TaskDate"]).AddDays(Getdays);
                             
@@ -426,16 +437,52 @@ namespace PlanningBoard
 
             if (!FirstTime)
             {
-                PrevUpdatedDate = Flag == true ? PrevUpdatedDate.AddDays(1) : PrevUpdatedDate.AddDays(-1);
-                TempDate = Flag == true ? CurrentDate.AddDays(1) : CurrentDate.AddDays(-1);
-
-                while (!CommonFunctions.recordExist("select * from WorkingDays where MachineNo='"+MachineNo+"' and Active = 1 and WorkDate='" + PrevUpdatedDate + "'"))
+                if (DateDifference == false)
                 {
-                    PrevUpdatedDate = Flag == true ? PrevUpdatedDate.AddDays(1) : PrevUpdatedDate.AddDays(-1);
+                    PrevUpdatedDate = PrevUpdatedDate.AddDays(1);
+                    //PrevUpdatedDate = Flag == true ? PrevUpdatedDate.AddDays(1) : PrevUpdatedDate.AddDays(-1);
+                    TempDate = Flag == true ? CurrentDate.AddDays(1) : CurrentDate.AddDays(-1);
+                    if (!Flag)
+                    {
+                        while (!CommonFunctions.recordExist("select * from WorkingDays where MachineNo='" + MachineNo + "' and Active = 1 and WorkDate='" + PrevUpdatedDate + "'"))
+                        {
+                            PrevUpdatedDate = PrevUpdatedDate.AddDays(1);
+                            //PrevUpdatedDate = Flag == true ? PrevUpdatedDate.AddDays(1) : PrevUpdatedDate.AddDays(-1);
+                        }
+                    }
                 }
 
-                TempDate = DateDifference == true ? Flag == true ? PrevUpdatedDate.AddDays(DifferenceInDays) : PrevUpdatedDate.AddDays(-DifferenceInDays) // if DateDifference is true
-                           : Flag == true ? TempDate < PrevUpdatedDate ? PrevUpdatedDate : TempDate : TempDate > PrevUpdatedDate ? PrevUpdatedDate : TempDate; // if DateDifference is false
+                if (Flag)
+                {
+                    while (!CommonFunctions.recordExist("select * from WorkingDays where MachineNo='" + MachineNo + "' and Active = 1 and WorkDate='" + PrevUpdatedDate + "'"))
+                    {
+                        PrevUpdatedDate = PrevUpdatedDate.AddDays(1);
+                        //PrevUpdatedDate = Flag == true ? PrevUpdatedDate.AddDays(1) : PrevUpdatedDate.AddDays(-1);
+                    }
+                }
+
+                if (!DateDifference)
+                    TempDate = Flag == true ? TempDate < PrevUpdatedDate ? PrevUpdatedDate : TempDate : TempDate > PrevUpdatedDate ? PrevUpdatedDate : TempDate;
+
+                else
+                {
+                    while (DifferenceInDays > 1)
+                    {
+                        PrevUpdatedDate = PrevUpdatedDate.AddDays(1);
+                        if (CommonFunctions.recordExist("select * from WorkingDays where MachineNo='" + MachineNo + "' and Active = 1 and WorkDate='" + PrevUpdatedDate + "'"))
+                        {
+                            DifferenceInDays--;
+                        }
+                    }
+                    TempDate = PrevUpdatedDate.AddDays(1);
+                }
+
+                //TempDate = DateDifference == true ? PrevUpdatedDate.AddDays(DifferenceInDays) // if DateDifference is true
+                //           : Flag == true ? TempDate < PrevUpdatedDate ? PrevUpdatedDate : TempDate : TempDate > PrevUpdatedDate ? PrevUpdatedDate : TempDate;
+
+
+                //TempDate = DateDifference == true ? Flag == true ? PrevUpdatedDate.AddDays(DifferenceInDays) : PrevUpdatedDate.AddDays(-DifferenceInDays) // if DateDifference is true
+                //           : Flag == true ? TempDate < PrevUpdatedDate ? PrevUpdatedDate : TempDate : TempDate > PrevUpdatedDate ? PrevUpdatedDate : TempDate; // if DateDifference is false
             }
             else
             {
@@ -444,7 +491,11 @@ namespace PlanningBoard
 
             while (!CommonFunctions.recordExist("select * from WorkingDays where MachineNo='"+MachineNo+"' and Active = 1 and WorkDate='" + TempDate + "'"))
             {
-                TempDate = Flag == true ? TempDate.AddDays(1) : TempDate.AddDays(-1);
+                if(DateDifference)
+                    TempDate = TempDate.AddDays(1);
+                else
+                    TempDate = Flag == true ? TempDate.AddDays(1) : TempDate.AddDays(-1);
+                //TempDate = Flag == true ? TempDate.AddDays(1) : TempDate.AddDays(-1);
             }
 
             return Flag == true ? (TempDate.Date - CurrentDate.Date).Days : -(CurrentDate.Date - TempDate.Date).Days;
@@ -459,31 +510,41 @@ namespace PlanningBoard
 
             if (diff > 1)
             {
-                DifferenceInDays = 0;
-                DateTime tempDate = Flag == true ? PrevOldDate.AddDays(1) : PrevOldDate.AddDays(-1);
+                DifferenceInDays = 1;
+                DateTime tempDate = PrevOldDate.AddDays(1);
+                //DateTime tempDate = Flag == true ? PrevOldDate.AddDays(1) : PrevOldDate.AddDays(-1);
 
-                if (Flag) // Backward
+                while (tempDate < CurrentDate)
                 {
-                    while (tempDate < CurrentDate)
+                    if (CommonFunctions.recordExist("SELECT * FROM WorkingDays WHERE MachineNo = '" + MachineNo + "' and WorkDate = '" + tempDate + "' and Active = 1 "))
                     {
-                        if (CommonFunctions.recordExist("SELECT * FROM WorkingDays WHERE MachineNo = '"+MachineNo+"' and WorkDate = '" + tempDate + "' and Active = 1 "))
-                        {
-                            DifferenceInDays++;
-                        }
-                        tempDate = tempDate.AddDays(1);
+                        DifferenceInDays++;
                     }
+                    tempDate = tempDate.AddDays(1);
                 }
-                else // Forward
-                {
-                    while (tempDate > CurrentDate)
-                    {
-                        if (CommonFunctions.recordExist("SELECT * FROM WorkingDays WHERE MachineNo = '"+MachineNo+"' and WorkDate = '" + tempDate + "' and Active = 1 "))
-                        {
-                            DifferenceInDays++;
-                        }
-                        tempDate = tempDate.AddDays(-1);
-                    }
-                }
+
+                //if (Flag) // Backward
+                //{
+                //    while (tempDate < CurrentDate)
+                //    {
+                //        if (CommonFunctions.recordExist("SELECT * FROM WorkingDays WHERE MachineNo = '"+MachineNo+"' and WorkDate = '" + tempDate + "' and Active = 1 "))
+                //        {
+                //            DifferenceInDays++;
+                //        }
+                //        tempDate = tempDate.AddDays(1);
+                //    }
+                //}
+                //else // Forward
+                //{
+                //    while (tempDate > CurrentDate)
+                //    {
+                //        if (CommonFunctions.recordExist("SELECT * FROM WorkingDays WHERE MachineNo = '"+MachineNo+"' and WorkDate = '" + tempDate + "' and Active = 1 "))
+                //        {
+                //            DifferenceInDays++;
+                //        }
+                //        tempDate = tempDate.AddDays(-1);
+                //    }
+                //}
             }
             else
             {
