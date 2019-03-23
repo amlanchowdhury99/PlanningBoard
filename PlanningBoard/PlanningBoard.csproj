@@ -212,6 +212,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <EmbeddedResource Include="Report.resx">
       <DependentUpon>Report.cs</DependentUpon>
@@ -261,6 +262,11 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Resources\pinwheel2.gif" />
+    <Content Include="Resources\pinwheel.gif" />
+    <Content Include="Resources\5.gif" />
+    <Content Include="Resources\6.gif" />
+    <Content Include="Resources\831.gif" />
     <Content Include="Resources\LOGIN.JPG" />
     <Content Include="Resources\logout.png" />
   </ItemGroup>

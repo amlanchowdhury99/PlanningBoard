@@ -251,15 +251,21 @@ namespace PlanningBoard
             planBoardDataGridView.CurrentCellChanged += new EventHandler(planBoardDataGridView_CurrentCellChanged);
         }
 
-        private async void Generate_Plan_Board()
+        private void Generate_Plan_Board()
         {
-            // start the waiting animation
-            progressBar1.Visible = true;
-            progressBar1.Style = ProgressBarStyle.Marquee;
-
-            // simply start and await the loading task
+            PictureBox.CheckForIllegalCrossThreadCalls = false;
+            TextBox.CheckForIllegalCrossThreadCalls = false;
+            this.Invoke((MethodInvoker)delegate { pinwheel.Visible = true; });
+            Application.DoEvents();
+            planBoardDataGridView.Enabled = false;
             BtnGeneratePlan.Enabled = false;
-            await Task.Run(() => LoadWaiting());
+            BtnAddPlan.Enabled = false;
+            Search.Enabled = false;
+            Revert.Enabled = false;
+            MStatuscomboBox.Enabled = false;
+            MachineComboBox.Enabled = false;
+            this.Cursor = Cursors.WaitCursor;
+
 
             int DailyPlanQty = 0;
             string connectionStr = ConnectionManager.connectionString;
@@ -396,9 +402,16 @@ namespace PlanningBoard
             {
                 cn.Close();
                 ResetPlanBoardColor();
-                // re-enable things
+                this.Invoke((MethodInvoker)delegate { pinwheel.Visible = false; });
+                planBoardDataGridView.Enabled = true;
+                this.Cursor = Cursors.Default;
                 BtnGeneratePlan.Enabled = true;
-                progressBar1.Visible = false;
+                BtnAddPlan.Enabled = true;
+                Search.Enabled = true;
+                Revert.Enabled = true;
+                MStatuscomboBox.Enabled = true;
+                MachineComboBox.Enabled = true;
+                
             }
         }
 
@@ -733,7 +746,11 @@ namespace PlanningBoard
             fromDate = fromDateTimePicker.Value;
             toDate = toDateTimePicker.Value;
             GridInitialize();
-            Generate_Plan_Board();
+
+            ThreadStart myThreadStart = new ThreadStart(Generate_Plan_Board);
+            Thread myThread = new Thread(myThreadStart);
+            myThread.Start(); 
+            //Generate_Plan_Board();
         }
 
         private void LoadWaiting()
@@ -773,7 +790,10 @@ namespace PlanningBoard
                     toDateTimePicker.Value = planEndDate;
                 }
             }
-            Generate_Plan_Board();
+            ThreadStart myThreadStart = new ThreadStart(Generate_Plan_Board);
+            Thread myThread = new Thread(myThreadStart);
+            myThread.Start(); 
+            //Generate_Plan_Board();
         }
 
         private void resetPlanInfo()
@@ -842,7 +862,10 @@ namespace PlanningBoard
 
             FBPlanBoardForm fbplanform = new FBPlanBoardForm(false, mcNo, taskDate, orderIDs, false);
             fbplanform.ShowDialog();
-            Generate_Plan_Board();
+            ThreadStart myThreadStart = new ThreadStart(Generate_Plan_Board);
+            Thread myThread = new Thread(myThreadStart);
+            myThread.Start(); 
+            //Generate_Plan_Board();
         }
 
         private void backwardToolStripMenuItem_Click(object sender, EventArgs e)
@@ -853,7 +876,10 @@ namespace PlanningBoard
 
             FBPlanBoardForm fbplanform = new FBPlanBoardForm(true, mcNo, taskDate, orderIDs, false);
             fbplanform.ShowDialog();
-            Generate_Plan_Board();
+            ThreadStart myThreadStart = new ThreadStart(Generate_Plan_Board);
+            Thread myThread = new Thread(myThreadStart);
+            myThread.Start(); 
+            //Generate_Plan_Board();
         }
 
         private void planBoardDataGridView_CellMouseDown(object sender, DataGridViewCellMouseEventArgs e)
@@ -892,7 +918,10 @@ namespace PlanningBoard
                     EditMode = true;
                     ViewOrderInfo viewOrderInfo = new ViewOrderInfo(McNo, currentDate);
                     viewOrderInfo.ShowDialog();
-                    Generate_Plan_Board();
+                    ThreadStart myThreadStart = new ThreadStart(Generate_Plan_Board);
+                    Thread myThread = new Thread(myThreadStart);
+                    myThread.Start(); 
+                    //Generate_Plan_Board();
                 }
             }
         }
@@ -1026,6 +1055,14 @@ namespace PlanningBoard
                                 }
                             }
                         }
+                        else
+                        {
+                            if (planBoardDataGridView.Rows[rowIndex].Cells[colIndex].Style.BackColor == Color.SlateBlue || planBoardDataGridView.Rows[rowIndex].Cells[colIndex].Style.BackColor == Color.Thistle)
+                            {
+                                PlanBoardColorManagement();
+                            }
+                            //PlanBoardColorManagement();
+                        }
                     //}
                     //else
                     //{
@@ -1155,7 +1192,10 @@ namespace PlanningBoard
             int mcNo = Convert.ToInt32(planBoardDataGridView.Rows[rowIndex].Cells[0].Value);
             FBPlanBoardForm fbplanform = new FBPlanBoardForm(true, mcNo, taskDate, orderIDs, true);
             fbplanform.ShowDialog();
-            Generate_Plan_Board();
+            ThreadStart myThreadStart = new ThreadStart(Generate_Plan_Board);
+            Thread myThread = new Thread(myThreadStart);
+            myThread.Start(); 
+            //Generate_Plan_Board();
         }
 
         private void MStatuscomboBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -1171,7 +1211,10 @@ namespace PlanningBoard
 
             UpdateActualQtyForm updateActualQtyForm = new UpdateActualQtyForm(orderIDs, mcNo, taskDate);
             updateActualQtyForm.ShowDialog();
-            Generate_Plan_Board();
+            ThreadStart myThreadStart = new ThreadStart(Generate_Plan_Board);
+            Thread myThread = new Thread(myThreadStart);
+            myThread.Start(); 
+            //Generate_Plan_Board();
         }
 
         private void Search_Click(object sender, EventArgs e) 

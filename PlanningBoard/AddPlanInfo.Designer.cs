@@ -489,6 +489,7 @@
             // 
             // daysInHandTextBox
             // 
+            this.daysInHandTextBox.BackColor = System.Drawing.Color.Chocolate;
             this.daysInHandTextBox.Location = new System.Drawing.Point(53, 233);
             this.daysInHandTextBox.Name = "daysInHandTextBox";
             this.daysInHandTextBox.ReadOnly = true;
@@ -1022,7 +1023,7 @@
             // deleteToolStripMenuItem
             // 
             this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
-            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(107, 22);
             this.deleteToolStripMenuItem.Text = "Delete";
             this.deleteToolStripMenuItem.Click += new System.EventHandler(this.deleteToolStripMenuItem_Click);
             // 
@@ -1031,7 +1032,7 @@
             this.OrderInfoPBcontextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.deleteToolStripMenuItem});
             this.OrderInfoPBcontextMenuStrip.Name = "OrderInfoPBcontextMenuStrip";
-            this.OrderInfoPBcontextMenuStrip.Size = new System.Drawing.Size(153, 48);
+            this.OrderInfoPBcontextMenuStrip.Size = new System.Drawing.Size(108, 26);
             // 
             // ViewOrderInfo
             // 

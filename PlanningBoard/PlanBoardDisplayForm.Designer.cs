@@ -51,9 +51,11 @@
             this.updateActualQtyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
+            this.pinwheel = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.planBoardDataGridView)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.pBContextMenuStrip.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pinwheel)).BeginInit();
             this.SuspendLayout();
             // 
             // planBoardDataGridView
@@ -283,11 +285,21 @@
             // 
             // progressBar1
             // 
-            this.progressBar1.Location = new System.Drawing.Point(560, 273);
+            this.progressBar1.Location = new System.Drawing.Point(545, 227);
             this.progressBar1.Name = "progressBar1";
             this.progressBar1.Size = new System.Drawing.Size(100, 23);
             this.progressBar1.TabIndex = 2;
             this.progressBar1.Visible = false;
+            // 
+            // pinwheel
+            // 
+            this.pinwheel.Image = global::PlanningBoard.Properties.Resources._5;
+            this.pinwheel.Location = new System.Drawing.Point(563, 256);
+            this.pinwheel.Name = "pinwheel";
+            this.pinwheel.Size = new System.Drawing.Size(65, 65);
+            this.pinwheel.TabIndex = 3;
+            this.pinwheel.TabStop = false;
+            this.pinwheel.Visible = false;
             // 
             // PlanBoardDisplayForm
             // 
@@ -295,6 +307,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ButtonShadow;
             this.ClientSize = new System.Drawing.Size(1296, 599);
+            this.Controls.Add(this.pinwheel);
             this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.planBoardDataGridView);
@@ -306,6 +319,7 @@
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.pBContextMenuStrip.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pinwheel)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -334,6 +348,7 @@
         private System.Windows.Forms.Button Revert;
         private System.Windows.Forms.ProgressBar progressBar1;
         private System.ComponentModel.BackgroundWorker backgroundWorker1;
+        private System.Windows.Forms.PictureBox pinwheel;
 
     }
 }
