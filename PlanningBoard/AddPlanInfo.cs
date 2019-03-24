@@ -2049,7 +2049,10 @@ namespace PlanningBoard
 
                                     if (CommonFunctions.recordExist("SELECT * FROM PlanTable WHERE MachineNo = " + MachineNo + " AND TaskDate = '" + NewDate + "' AND OrderID = " + orderID)) // Check if same order exists on that day on PlanTable
                                     {
-                                        string query = "SELECT Capacity, Efficiency, (SELECT SUM(PlanQty) FROM PlanTable WHERE MachineNo = " + MachineNo + " AND OrderID != "+orderID+" AND TaskDate = '" + NewDate + "') As RemainingQty, PlanQty, (SELECT SUM(PlanQty) FROM PlanTable WHERE MachineNo = " + MachineNo + " AND TaskDate = '" + NewDate + "') AS TotalPlanQty, Minute FROM PlanTable WHERE MachineNo = " + MachineNo + " AND TaskDate = '" + NewDate + "' AND OrderID = " + orderID;
+                                        string query = "SELECT Capacity, Efficiency,"
+                                        +" (SELECT SUM(PlanQty) FROM PlanTable WHERE MachineNo = " + MachineNo + " AND OrderID != "+orderID+" AND TaskDate = '" + NewDate + "') As RemainingQty,"
+                                        +" PlanQty, (SELECT SUM(PlanQty) FROM PlanTable WHERE MachineNo = " + MachineNo + " AND TaskDate = '" + NewDate + "') AS TotalPlanQty,"
+                                        +" Minute FROM PlanTable WHERE MachineNo = " + MachineNo + " AND TaskDate = '" + NewDate + "' AND OrderID = " + orderID;
                                         SqlDataReader reader = CommonFunctions.GetFromDB(query);
                                         try
                                         {
@@ -2068,12 +2071,12 @@ namespace PlanningBoard
                                             if (capacity > TotalPlanQty)
                                             {
                                                 int currentPlanQty = Convert.ToInt32(orderWisePlandataGridView.Rows[e.RowIndex].Cells[4].Value);
-                                                double UpdatedEfficiency = (double)(efficiency + Convert.ToInt32(orderWisePlandataGridView.Rows[e.RowIndex].Cells[6].Value)) / 2.00;
-                                                int newCapacity = Convert.ToInt32(Math.Floor((double)((minute * (UpdatedEfficiency / 100.00)) / Convert.ToDouble(samTextBox.Text))));
-                                                int newPlanQty = currentPlanQty + planQty > newCapacity ? currentPlanQty - ((currentPlanQty + planQty) - newCapacity) : currentPlanQty + planQty;
+                                                //double UpdatedEfficiency = (double)(efficiency + Convert.ToInt32(orderWisePlandataGridView.Rows[e.RowIndex].Cells[6].Value)) / 2.00;
+                                                //int newCapacity = Convert.ToInt32(Math.Floor((double)((minute * (UpdatedEfficiency / 100.00)) / Convert.ToDouble(samTextBox.Text))));
+                                                int newPlanQty = currentPlanQty + planQty > capacity ? currentPlanQty - ((currentPlanQty + planQty) - capacity) : currentPlanQty + planQty;
 
                                                 orderWisePlandataGridView.Rows[e.RowIndex].Cells[1].Value = NewDate.ToString("dd/MM/yyyy");
-                                                orderWisePlandataGridView.Rows[e.RowIndex].Cells[2].Value = newCapacity;
+                                                orderWisePlandataGridView.Rows[e.RowIndex].Cells[2].Value = capacity;
                                                 orderWisePlandataGridView.Rows[e.RowIndex].Cells[3].Value = remainingQty;
                                                 orderWisePlandataGridView.Rows[e.RowIndex].Cells[4].Value = newPlanQty;
                                                 orderWisePlandataGridView.Rows[e.RowIndex].Cells[5].Value = minute;
@@ -2098,7 +2101,8 @@ namespace PlanningBoard
                                     }
                                     else
                                     {
-                                        string query = "SELECT Capacity, (SELECT SUM(PlanQty) FROM PlanTable WHERE MachineNo = " + MachineNo + " AND TaskDate = '" + NewDate + "') As TotalPlanQty FROM PlanTable WHERE MachineNo = " + MachineNo + " AND TaskDate = '" + NewDate + "' order by TaskDate desc, Id asc";
+                                        string query = "SELECT Capacity, Minute, (SELECT SUM(PlanQty) FROM PlanTable WHERE MachineNo = " + MachineNo + " AND TaskDate = '" + NewDate + "') As TotalPlanQty"
+                                        +" FROM PlanTable WHERE MachineNo = " + MachineNo + " AND TaskDate = '" + NewDate + "' order by TaskDate desc, Id asc";
                                         SqlDataReader reader = CommonFunctions.GetFromDB(query);
                                         try
                                         {
@@ -2109,12 +2113,12 @@ namespace PlanningBoard
                                                 {
                                                     capacity = Convert.ToInt32(reader["Capacity"]);
                                                     TotalPlanQty = Convert.ToInt32(reader["TotalPlanQty"]);
+                                                    minute = Convert.ToInt32(reader["Minute"]);
                                                 }
 
                                                 if (capacity > TotalPlanQty)
                                                 {
-                                                    query = "SELECT (SELECT Count(Id) FROM PlanTable WHERE MachineNo = " + MachineNo + " AND TaskDate = '" + NewDate + "') As RecordCount, (SELECT SUM(SAM) FROM PlanTable WHERE MachineNo = " + MachineNo +
-                                                            " AND TaskDate = '" + NewDate + "' AND OrderID != " + orderID + ") AS RestTotalSAM, SUM(Efficiency) AS RestTotalEfficiency FROM PlanTable WHERE MachineNo = " + MachineNo + " AND TaskDate = '" + NewDate + "'";
+                                                    query = "SELECT Count(Id) AS RecordCount, SUM(SAM) AS RestTotalSAM, SUM(Efficiency) AS RestTotalEfficiency FROM PlanTable WHERE MachineNo = " + MachineNo + " AND TaskDate = '" + NewDate + "'";
                                                     SqlDataReader reader1 = CommonFunctions.GetFromDB(query);
 
                                                     int NewCapacity = 0;
@@ -2126,7 +2130,7 @@ namespace PlanningBoard
                                                             int RestTotalEfficiency = reader1.IsDBNull(reader1.GetOrdinal("RestTotalEfficiency")) == true ? 0 : Convert.ToInt32(reader1["RestTotalEfficiency"]);
                                                             double UpdatedSam = (RestTotalSAM + Convert.ToDouble(samTextBox.Text)) / (Convert.ToInt32(reader1["RecordCount"]) + 1);
                                                             double UpdatedEfficiency = (double)(RestTotalEfficiency + Convert.ToInt32(orderWisePlandataGridView.Rows[e.RowIndex].Cells[6].Value)) / (Convert.ToInt32(reader1["RecordCount"]) + 1);
-                                                            NewCapacity = Convert.ToInt32(Math.Floor((double)((Convert.ToInt32(orderWisePlandataGridView.Rows[e.RowIndex].Cells[5].Value) * (UpdatedEfficiency / 100.00)) / UpdatedSam)));
+                                                            NewCapacity = Convert.ToInt32(Math.Floor((double)((minute * (UpdatedEfficiency / 100.00)) / UpdatedSam)));
                                                         }
                                                         if (TotalPlanQty + currentPlanQty <= NewCapacity)
                                                         {
@@ -2134,6 +2138,7 @@ namespace PlanningBoard
                                                             orderWisePlandataGridView.Rows[e.RowIndex].Cells[2].Value = NewCapacity;
                                                             orderWisePlandataGridView.Rows[e.RowIndex].Cells[3].Value = TotalPlanQty;
                                                             orderWisePlandataGridView.Rows[e.RowIndex].Cells[4].Value = currentPlanQty;
+                                                            orderWisePlandataGridView.Rows[e.RowIndex].Cells[5].Value = minute;
                                                         }
                                                         else
                                                         {
