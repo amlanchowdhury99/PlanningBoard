@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PlanningBoard;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,9 +16,9 @@ public class clsResize
         _fontsize = _form_.Font.Size; //Font size
     }
 
-    private float _fontsize  { get; set; }
+    private float _fontsize { get; set; }
 
-    private System.Drawing.SizeF _formSize {get;set; }
+    private System.Drawing.SizeF _formSize { get; set; }
 
     private Form form { get; set; }
 
@@ -35,7 +36,7 @@ public class clsResize
 
     public void _resize() //Set the resize
     {
-        double _form_ratio_width = (double)form.ClientSize.Width /(double)_formSize.Width; //ratio could be greater or less than 1
+        double _form_ratio_width = (double)form.ClientSize.Width / (double)_formSize.Width; //ratio could be greater or less than 1
         double _form_ratio_height = (double)form.ClientSize.Height / (double)_formSize.Height; // this one too
         var _controls = _get_all_controls(form); //reenumerate the control collection
         int _pos = -1;//do not change this value unless you know what you are doing
@@ -47,7 +48,7 @@ public class clsResize
                 (int)(_arr_control_storage[_pos].Height * _form_ratio_height)); //use for sizing
 
             System.Drawing.Point _controlposition = new System.Drawing.Point((int)
-            (_arr_control_storage[_pos].X * _form_ratio_width),(int) (_arr_control_storage[_pos].Y * _form_ratio_height));//use for location
+            (_arr_control_storage[_pos].X * _form_ratio_width), (int)(_arr_control_storage[_pos].Y * _form_ratio_height));//use for location
 
             //set bounds
             control.Bounds = new System.Drawing.Rectangle(_controlposition, _controlSize); //Put together
@@ -60,10 +61,16 @@ public class clsResize
 
 
             //Font AutoSize
-            control.Font = new System.Drawing.Font(form.Font.FontFamily,
-             (float)(((Convert.ToDouble(_fontsize) * _form_ratio_width) / 2) +
-              ((Convert.ToDouble(_fontsize) * _form_ratio_height) / 2)));
+            try
+            {
+                control.Font = new System.Drawing.Font(form.Font.FontFamily,
+                 (float)(((Convert.ToDouble(_fontsize) * _form_ratio_width) / 2) +
+                  ((Convert.ToDouble(_fontsize) * _form_ratio_height) / 2)));
+            }
+            catch
+            {
 
+            }
         }
     }
 
@@ -84,15 +91,15 @@ public class clsResize
             else
                 dgv.Columns[i].Width = ((dgv.Width - intRowHeader - Hscrollbarwidth) / dgv.ColumnCount);
         }
-    } 
+    }
 
 
-      
+
 
     private static IEnumerable<Control> _get_all_controls(Control c)
     {
         return c.Controls.Cast<Control>().SelectMany(item =>
-            _get_all_controls(item)).Concat(c.Controls.Cast<Control>()).Where(control => 
+            _get_all_controls(item)).Concat(c.Controls.Cast<Control>()).Where(control =>
             control.Name != string.Empty);
     }
 }

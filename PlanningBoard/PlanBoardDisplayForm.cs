@@ -16,14 +16,15 @@ using System.Configuration;
 using System.Text.RegularExpressions;
 using System.Drawing.Drawing2D;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Net.Http;
-//System.Drawing.Color.FromArgb(0, 128, 255);
+
 namespace PlanningBoard
 {
     public partial class PlanBoardDisplayForm : Form
     {
         public Dictionary<int, string> MachineDiaList = new Dictionary<int, string>();
+        //public Dictionary<int, int> PlanIndex = new Dictionary<int, int>();
+        List<KeyValuePair<int, int>> PlanIndex = new List<KeyValuePair<int, int>>();
         ArrayList MachineList = new ArrayList();
         public static DateTime fromDate = DateTime.Now.Date;
         public static DateTime toDate = DateTime.Now.Date;
@@ -36,6 +37,7 @@ namespace PlanningBoard
         public static string orderQuantity = "";
         public static string plnQuantity = "";
         public static string sam = "";
+        public static string po = "";
         public static string style = "";
         public static string size = "";
         public static string dia = "";
@@ -48,14 +50,14 @@ namespace PlanningBoard
         public static string ActualProduction = "";
         public static int rowIndex = -1;
         public static int colIndex = -1;
-        public int OrderFactorsCount = 12;
+        public int OrderFactorsCount = 13;
         public static Boolean EditMode = false;
 
         public static DateTime planStartDate = DateTime.Now.Date;
         public static DateTime planEndDate = DateTime.Now.Date;
         public List<int> gridMachineRowStartIndex = new List<int>();
         public int extraCols = 0;
-        public static List<string> Paras = new List<string>() { "STYLE :", "PARTS :", "SIZE :", "SAM :", "EFFICIENCY :", "CAPACITY :", "PLAN QTY :", "CHD :", "ORDER-QTY :", "ACTUAL PRODUCTION :", "ORDER ID :" };
+        public static List<string> Paras = new List<string>() { "STYLE :", "PURCHASE ORDER :", "PARTS :", "SIZE :", "SAM :", "EFFICIENCY :", "CAPACITY :", "PLAN QTY :", "CHD :", "ORDER-QTY :", "ACTUAL PRODUCTION :", "ORDER ID :" };
 
         public PlanBoardDisplayForm()
         {
@@ -69,6 +71,7 @@ namespace PlanningBoard
             _form_resize = new clsResize(this);
             this.Load += _Load;
             this.Resize += _Resize;
+            this.planBoardDataGridView.DoubleBuffered(true);
 
         }
 
@@ -245,7 +248,6 @@ namespace PlanningBoard
             }
 
             AddCommonRows();
-            //FetchDateFromDB();
             SetGridColor();
             planBoardDataGridView.CellPainting += new DataGridViewCellPaintingEventHandler(planBoardDataGridView_CellPainting);
             planBoardDataGridView.CurrentCellChanged += new EventHandler(planBoardDataGridView_CurrentCellChanged);
@@ -256,7 +258,7 @@ namespace PlanningBoard
             PictureBox.CheckForIllegalCrossThreadCalls = false;
             TextBox.CheckForIllegalCrossThreadCalls = false;
             this.Invoke((MethodInvoker)delegate { pinwheel.Visible = true; });
-            Application.DoEvents();
+            
             planBoardDataGridView.Enabled = false;
             BtnGeneratePlan.Enabled = false;
             BtnAddPlan.Enabled = false;
@@ -264,16 +266,15 @@ namespace PlanningBoard
             Revert.Enabled = false;
             MStatuscomboBox.Enabled = false;
             MachineComboBox.Enabled = false;
-            this.Cursor = Cursors.WaitCursor;
+            
+            Application.DoEvents();
 
 
             int DailyPlanQty = 0;
             string connectionStr = ConnectionManager.connectionString;
-            SqlCommand cm = new SqlCommand();
-            SqlConnection cn = new SqlConnection(connectionStr);
-            cn.Open();
-            cm.Connection = cn;
+            SqlCommand cm = new SqlCommand(); SqlConnection cn = new SqlConnection(connectionStr); cn.Open(); cm.Connection = cn;
             Queue MachineNoList = new Queue();
+            PlanIndex.Clear();
 
             try
             {
@@ -303,6 +304,7 @@ namespace PlanningBoard
                         {
                             string Buyer = "";
                             string Style = "";
+                            string Po = "";
                             string Parts = "";
                             string Size = "";
                             string SAM = "";
@@ -326,22 +328,8 @@ namespace PlanningBoard
                                 if (Convert.ToInt16(reader["Capacity"]) != 0)
                                 {
                                     Buyer = Buyer == "" ? Convert.ToString(reader["BuyerName"]) : Buyer + ";" + Convert.ToString(reader["BuyerName"]);
-
-                                    if (Style1 == "")
-                                    {
-                                        if (Style != "")
-                                            Style = Style + ";" + Convert.ToString(reader["StyleName"]);
-                                        else
-                                            Style = Convert.ToString(reader["StyleName"]);
-                                    }
-                                    else if (Style1 != Convert.ToString(reader["StyleName"]))
-                                    {
-                                        if (Style != "")
-                                            Style = Style + ";" + Convert.ToString(reader["StyleName"]);
-                                        else
-                                            Style = Convert.ToString(reader["StyleName"]);
-                                    }
-
+                                    Style = Style == "" ? Convert.ToString(reader["StyleName"]) : Style + ";" + Convert.ToString(reader["StyleName"]);
+                                    Po = Po == "" ? Convert.ToString(reader["PurchaseOrderNo"]) : Po + ";" + Convert.ToString(reader["PurchaseOrderNo"]);
                                     Parts = Parts == "" ? Convert.ToString(reader["PartName"]) : Parts + ";" + Convert.ToString(reader["PartName"]);
                                     Size = Size == "" ? Convert.ToString(reader["SizeName"]) : Size + ";" + Convert.ToString(reader["SizeName"]);
                                     SAM = SAM == "" ? Convert.ToString(reader["SAM"]) : SAM + ";" + Convert.ToString(reader["SAM"]);
@@ -351,17 +339,23 @@ namespace PlanningBoard
                                     DateTime SetTime = Convert.ToDateTime(reader["ShipmentDate"]);
                                     CHD = CHD == "" ? SetTime.ToString("dd/MM/yyyy") : CHD + ";" + SetTime.ToString("dd/MM/yyyy");
                                     OrderQty = OrderQty == "" ? Convert.ToString(reader["OrderQty"]) : OrderQty + ";" + Convert.ToString(reader["OrderQty"]);
-                                    ActualQty = reader.IsDBNull(reader.GetOrdinal("ActualQty")) == true ? "0" : ActualQty == "" ? Convert.ToString(reader["ActualQty"]) : ActualQty + "-" + Convert.ToString(reader["ActualQty"]);
+                                    ActualQty = reader.IsDBNull(reader.GetOrdinal("ActualQty")) == true ? "0" : ActualQty == "" ? Convert.ToString(reader["ActualQty"]) : ActualQty + "," + Convert.ToString(reader["ActualQty"]);
                                     OrderIDList = OrderIDList == "" ? Convert.ToString(reader["OrderID"]) : OrderIDList + "," + Convert.ToString(reader["OrderID"]);
 
-                                    Style1 = Convert.ToString(reader["StyleName"]);
                                     DailyPlanQty = DailyPlanQty + Convert.ToInt32(reader["PlanQty"]);
                                 }
+                            }
+
+                            if (Buyer != "")
+                            {
+                                PlanIndex.Add(new KeyValuePair<int, int>(x, y));
                             }
 
                             planBoardDataGridView.Rows[x].Cells[y].Value = Buyer;
                             x++;
                             planBoardDataGridView.Rows[x].Cells[y].Value = Style;
+                            x++;
+                            planBoardDataGridView.Rows[x].Cells[y].Value = Po;
                             x++;
                             planBoardDataGridView.Rows[x].Cells[y].Value = Parts;
                             x++;
@@ -391,6 +385,9 @@ namespace PlanningBoard
                         }
                     }
                     planBoardDataGridView.Rows[0].Cells[y].Value = DailyPlanQty;
+
+                    planBoardDataGridView.Rows[2].Frozen = true;
+                    planBoardDataGridView.Columns[2].Frozen = true;
                 }
             }
             catch (Exception ex)
@@ -402,15 +399,15 @@ namespace PlanningBoard
             {
                 cn.Close();
                 ResetPlanBoardColor();
-                this.Invoke((MethodInvoker)delegate { pinwheel.Visible = false; });
+                
                 planBoardDataGridView.Enabled = true;
-                this.Cursor = Cursors.Default;
                 BtnGeneratePlan.Enabled = true;
                 BtnAddPlan.Enabled = true;
                 Search.Enabled = true;
                 Revert.Enabled = true;
                 MStatuscomboBox.Enabled = true;
                 MachineComboBox.Enabled = true;
+                this.Invoke((MethodInvoker)delegate { pinwheel.Visible = false; });
                 
             }
         }
@@ -451,84 +448,6 @@ namespace PlanningBoard
         private void SetColWidth()
         {
             planBoardDataGridView.Columns[2].Width = 170;
-        }
-
-        private void FetchDateFromDB()
-        {
-            try
-            {
-                string query = "";
-                SqlDataReader reader = null;
-                for (DateTime date = fromDateTimePicker.Value; date <= fromDateTimePicker.Value; date = date.AddDays(1))
-                {
-                    foreach (var item in MachineDiaList)
-                    {
-                        style = " ";
-                        part = " ";
-                        size = " ";
-                        sam = " ";
-                        eff = " ";
-                        capacity = " ";
-                        orderQuantity = " ";
-                        rowIndex = -1;
-                        colIndex = -1;
-                        shipDate = " ";
-                        plnQuantity = " ";
-                        ActualProduction = " ";
-                        query = "SELECT * FROM PlanTable WHERE MachineNo = " + item.Key + " AND Dia = " + item.Value + " AND TaskDate = '" + DateTime.ParseExact(date.ToString(), "dd/MM/yyyy", null) + "'";
-                        reader = CommonFunctions.GetFromDB(query);
-                        if (reader.HasRows)
-                        {
-                            while (reader.Read())
-                            {
-                                style = style + "+" + reader["Style"].ToString();
-                                part = part + "+" + reader["Part"].ToString();
-                                size = size + "+" + reader["Size"].ToString();
-                                sam = sam + "+" + reader["SAM"].ToString();
-                                eff = eff + "+" + reader["Efficiency"].ToString();
-                                capacity = capacity + "+" + reader["Capacity"].ToString();
-                                plnQuantity = plnQuantity + "+" + reader["PlanQuantity"].ToString();
-                                shipDate = shipDate + "+" + reader["CHD"].ToString();
-                                orderQuantity = orderQuantity + "+" + reader["OrderQty"].ToString();
-                                colIndex = (int)reader["ColIndex"];
-                            }
-                            SetValueMachineWise(item.Key);
-                        }
-                    }
-                }
-
-            }
-            catch (Exception ex)
-            {
-
-            }
-            finally
-            {
-
-            }
-        }
-
-        private void SetValueMachineWise(int McNo)
-        {
-            for (int i = 3; i < planBoardDataGridView.Rows.Count; i = i + OrderFactorsCount)
-            {
-                if ((string)planBoardDataGridView.Rows[i].Cells[0].Value == McNo.ToString())
-                {
-                    int col = Convert.ToInt32(colIndex);
-                    planBoardDataGridView.Rows[i].Cells[col].Value = style;
-                    planBoardDataGridView.Rows[i + 1].Cells[col].Value = part;
-                    planBoardDataGridView.Rows[i + 2].Cells[col].Value = size;
-                    planBoardDataGridView.Rows[i + 3].Cells[col].Value = sam;
-                    planBoardDataGridView.Rows[i + 4].Cells[col].Value = eff;
-                    planBoardDataGridView.Rows[i + 5].Cells[col].Value = capacity;
-                    planBoardDataGridView.Rows[i + 6].Cells[col].Value = plnQuantity;
-                    planBoardDataGridView.Rows[i + 7].Cells[col].Value = shipDate;
-                    planBoardDataGridView.Rows[i + 8].Cells[col].Value = orderQuantity;
-                    planBoardDataGridView.Rows[i + 9].Cells[col].Value = ActualProduction;
-                    planBoardDataGridView.Rows[i + 10].Cells[col].Value = ActualProduction;
-                    planBoardDataGridView.Rows[i + 11].Cells[col].Value = ActualProduction;
-                }
-            }
         }
 
         private void AddCommonRows()
@@ -715,6 +634,16 @@ namespace PlanningBoard
 
         private void BtnGeneratePlan_Click(object sender, EventArgs e)
         {
+            //if (!CreateRestorePint())
+            //{
+            //    MessageBox.Show("Connection Error!!! Please Try Again!!!");
+            //    planBoardDataGridView.Rows.Clear();
+            //    return;
+            //}
+
+            planBoardDataGridView.Rows.Clear();
+            planBoardDataGridView.Columns.Clear();
+            gridMachineRowStartIndex.Clear();
 
             if (MachineList.Count < 2)
             {
@@ -742,6 +671,7 @@ namespace PlanningBoard
                 toDateTimePicker.Focus();
                 return;
             }
+
             LoadMachineOnPlanBoard();
             fromDate = fromDateTimePicker.Value;
             toDate = toDateTimePicker.Value;
@@ -753,6 +683,62 @@ namespace PlanningBoard
             //Generate_Plan_Board();
         }
 
+        private Boolean CreateRestorePint()
+        {
+            //string connectionStr = ConnectionManager.connectionStringSavePoint;
+            //SqlCommand cm = new SqlCommand();
+            //SqlConnection cn = new SqlConnection(connectionStr);
+            //cm.Connection = cn;
+            //cn.Open();
+
+            //try
+            //{
+            //    string query = "BEGIN TRAN SELECT * FROM PlanTable SAVE TRAN SAVEPLANTABLE";
+            //    cm.CommandText = query;
+            //    SqlDataReader reader = cm.ExecuteReader();
+            //    return reader.HasRows == true ? true : false;
+            //}
+
+            //catch (Exception e)
+            //{
+            //    MessageBox.Show("" + e.ToString());
+            //    return false;
+            //}
+
+            //finally
+            //{
+            //    cn.Close();
+            //}
+            return true;
+        }
+
+        private Boolean ReleaseRestorePoint()
+        {
+            //string connectionStr = ConnectionManager.connectionStringSavePoint;
+            //SqlCommand cm = new SqlCommand();
+            //SqlConnection cn = new SqlConnection(connectionStr);
+            //cm.Connection = cn;
+            //cn.Open();
+            //try
+            //{
+            //    string query = "RELEASE SAVEPOINT SAVEPLANTABLE";
+            //    cm.CommandText = query;
+            //    return cm.ExecuteNonQuery() > 0 ? true : false;
+            //}
+
+            //catch (Exception e)
+            //{
+            //    MessageBox.Show("" + e.ToString());
+            //    return false;
+            //}
+
+            //finally
+            //{
+            //    cn.Close();
+            //}
+            return true;
+        }
+
         private void LoadWaiting()
         {
             // some work takes 5 sec
@@ -761,13 +747,6 @@ namespace PlanningBoard
 
         private void BtnAddPlan_Click(object sender, EventArgs e)
         {
-            //Home frm = Application.OpenForms.OfType<Home>().FirstOrDefault();
-            //if (frm != null)
-            //{
-            //    frm.BringToFront();
-            //    frm.ShowOrderInfo();
-            //}
-
             if (planBoardDataGridView.Rows.Count < 1)
             {
                 MessageBox.Show("PLease Generate Plan Board First!!!");
@@ -859,12 +838,16 @@ namespace PlanningBoard
             DateTime taskDate = DateTime.ParseExact(planBoardDataGridView.Rows[1].Cells[colIndex].Value.ToString(), "dd/MM/yyyy", System.Globalization.CultureInfo.InvariantCulture);
             orderIDs = planBoardDataGridView.Rows[rowIndex + OrderFactorsCount - 1].Cells[colIndex].Value.ToString();
             int mcNo = Convert.ToInt32(planBoardDataGridView.Rows[rowIndex].Cells[0].Value);
-
-            FBPlanBoardForm fbplanform = new FBPlanBoardForm(false, mcNo, taskDate, orderIDs, false);
+            int diaNo = Convert.ToInt32(planBoardDataGridView.Rows[rowIndex].Cells[1].Value);
+            FBPlanBoardForm fbplanform = new FBPlanBoardForm(false, mcNo, diaNo, taskDate, orderIDs, false);
             fbplanform.ShowDialog();
-            ThreadStart myThreadStart = new ThreadStart(Generate_Plan_Board);
-            Thread myThread = new Thread(myThreadStart);
-            myThread.Start(); 
+
+            if (FBPlanBoardForm.ChangeFlag)
+            {
+                ThreadStart myThreadStart = new ThreadStart(Generate_Plan_Board);
+                Thread myThread = new Thread(myThreadStart);
+                myThread.Start(); 
+            }
             //Generate_Plan_Board();
         }
 
@@ -873,12 +856,16 @@ namespace PlanningBoard
             DateTime taskDate = DateTime.ParseExact(planBoardDataGridView.Rows[1].Cells[colIndex].Value.ToString(), "dd/MM/yyyy", System.Globalization.CultureInfo.InvariantCulture);
             orderIDs = planBoardDataGridView.Rows[rowIndex + OrderFactorsCount - 1].Cells[colIndex].Value.ToString();
             int mcNo = Convert.ToInt32(planBoardDataGridView.Rows[rowIndex].Cells[0].Value);
-
-            FBPlanBoardForm fbplanform = new FBPlanBoardForm(true, mcNo, taskDate, orderIDs, false);
+            int diaNo = Convert.ToInt32(planBoardDataGridView.Rows[rowIndex].Cells[1].Value);
+            FBPlanBoardForm fbplanform = new FBPlanBoardForm(true, mcNo, diaNo, taskDate, orderIDs, false);
             fbplanform.ShowDialog();
-            ThreadStart myThreadStart = new ThreadStart(Generate_Plan_Board);
-            Thread myThread = new Thread(myThreadStart);
-            myThread.Start(); 
+
+            if (FBPlanBoardForm.ChangeFlag)
+            {
+                ThreadStart myThreadStart = new ThreadStart(Generate_Plan_Board);
+                Thread myThread = new Thread(myThreadStart);
+                myThread.Start(); 
+            }
             //Generate_Plan_Board();
         }
 
@@ -886,8 +873,57 @@ namespace PlanningBoard
         {
             if (e.RowIndex % OrderFactorsCount == 3 && e.ColumnIndex > 2 && (planBoardDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString() != null && planBoardDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString() != "") && e.Button == MouseButtons.Right)
             {
+                Boolean result = true;
                 rowIndex = e.RowIndex;
                 colIndex = e.ColumnIndex;
+
+                DateTime CurrentPlanDate = DateTime.ParseExact(planBoardDataGridView.Rows[1].Cells[colIndex].Value.ToString(), "dd/MM/yyyy", null);
+                string ActualQty = planBoardDataGridView.Rows[rowIndex + OrderFactorsCount - 2].Cells[colIndex].Value.ToString();
+                int mcNo = Convert.ToInt32(planBoardDataGridView.Rows[rowIndex].Cells[0].Value);
+
+                CurrentPlanDate = CurrentPlanDate.AddDays(1);
+                while (!CommonFunctions.recordExist("SELECT * FROM WorkingDays WHERE MachineNo = " + mcNo + " AND Active = 1 AND WorkDate = '" + CurrentPlanDate + "'"))
+                {
+                    CurrentPlanDate = CurrentPlanDate.AddDays(1);
+                }
+
+                if (CurrentPlanDate > DateTime.Now.Date)
+                {
+                    this.pBContextMenuStrip.Items[0].Enabled = true;
+                    this.pBContextMenuStrip.Items[1].Enabled = true;
+                    this.pBContextMenuStrip.Items[2].Enabled = true;
+                    this.pBContextMenuStrip.Items[3].Enabled = true;
+
+                    var tempActualQty = ActualQty.Split(',');
+                    result = Array.Exists(tempActualQty, element => Convert.ToUInt32(element) > 0);
+
+                    if (result)
+                    {
+                        this.pBContextMenuStrip.Items[0].Visible = false;
+                        this.pBContextMenuStrip.Items[1].Visible = false;
+                        this.pBContextMenuStrip.Items[2].Visible = false;
+                    }
+                    else
+                    {
+                        this.pBContextMenuStrip.Items[0].Visible = true;
+                        this.pBContextMenuStrip.Items[1].Visible = true;
+                        this.pBContextMenuStrip.Items[2].Visible = true;
+                    }
+                }
+                else if (CurrentPlanDate == DateTime.Now.Date)
+                {
+                    this.pBContextMenuStrip.Items[0].Visible = false;
+                    this.pBContextMenuStrip.Items[1].Visible = false;
+                    this.pBContextMenuStrip.Items[2].Visible = false;
+                }
+                else
+                {
+                    this.pBContextMenuStrip.Items[0].Enabled = false;
+                    this.pBContextMenuStrip.Items[1].Enabled = false;
+                    this.pBContextMenuStrip.Items[2].Enabled = false;
+                    this.pBContextMenuStrip.Items[3].Enabled = false; 
+                }
+
                 this.pBContextMenuStrip.Show(this.planBoardDataGridView, e.Location);
                 pBContextMenuStrip.Show(Cursor.Position);
             }
@@ -932,6 +968,7 @@ namespace PlanningBoard
             {
                 string buyer = "";
                 string style = "";
+                string po = "";
                 string parts = "";
                 string size = "";
 
@@ -941,11 +978,11 @@ namespace PlanningBoard
                 if (planBoardDataGridView.Rows[e.RowIndex].Cells[colIndex].Value != null && planBoardDataGridView.Rows[e.RowIndex].Cells[colIndex].Value.ToString() != "")
                 {
                     //planBoardDataGridView.Rows[e.RowIndex].Cells[colIndex].Style.BackColor != Color.SlateBlue && planBoardDataGridView.Rows[e.RowIndex].Cells[colIndex].Style.BackColor != Color.Thistle
-                    if (rowIndex % OrderFactorsCount < 7)
+                    if (rowIndex % OrderFactorsCount < 8)
                     {
                         //if (planBoardDataGridView.Rows[e.RowIndex].Cells[colIndex].Style.BackColor != Color.SlateBlue && planBoardDataGridView.Rows[e.RowIndex].Cells[colIndex].Style.BackColor != Color.Thistle)
                         //{
-                            PlanBoardColorManagement();
+                            ResetPlanBoardColor();
                             if (e.RowIndex % OrderFactorsCount == 3)
                             {
                                 buyer = planBoardDataGridView.Rows[e.RowIndex - 0].Cells[colIndex].Value.ToString();
@@ -969,9 +1006,9 @@ namespace PlanningBoard
                                 style = planBoardDataGridView.Rows[e.RowIndex - 1].Cells[colIndex].Value.ToString();
                                 if (style.Contains(";"))
                                     style = style.Split(';')[0].Trim();
-                                parts = planBoardDataGridView.Rows[e.RowIndex - 0].Cells[colIndex].Value.ToString();
-                                if (buyer.Contains(";"))
-                                    parts = parts.Split(';')[0].Trim();
+                                po = planBoardDataGridView.Rows[e.RowIndex - 0].Cells[colIndex].Value.ToString();
+                                if (po.Contains(";"))
+                                    po = po.Split(';')[0].Trim();
                             }
                             else if (e.RowIndex % OrderFactorsCount == 6)
                             {
@@ -981,11 +1018,29 @@ namespace PlanningBoard
                                 style = planBoardDataGridView.Rows[e.RowIndex - 2].Cells[colIndex].Value.ToString();
                                 if (style.Contains(";"))
                                     style = style.Split(';')[0].Trim();
-                                parts = planBoardDataGridView.Rows[e.RowIndex - 1].Cells[colIndex].Value.ToString();
+                                po = planBoardDataGridView.Rows[e.RowIndex - 1].Cells[colIndex].Value.ToString();
+                                if (po.Contains(";"))
+                                    po = po.Split(';')[0].Trim();
+                                parts = planBoardDataGridView.Rows[e.RowIndex - 0].Cells[colIndex].Value.ToString();
+                                if (parts.Contains(";"))
+                                    parts = parts.Split(';')[0].Trim();
+                            }
+                            else if (e.RowIndex % OrderFactorsCount == 7)
+                            {
+                                buyer = planBoardDataGridView.Rows[e.RowIndex - 4].Cells[colIndex].Value.ToString();
                                 if (buyer.Contains(";"))
+                                    buyer = buyer.Split(';')[0].Trim();
+                                style = planBoardDataGridView.Rows[e.RowIndex - 3].Cells[colIndex].Value.ToString();
+                                if (style.Contains(";"))
+                                    style = style.Split(';')[0].Trim();
+                                po = planBoardDataGridView.Rows[e.RowIndex - 2].Cells[colIndex].Value.ToString();
+                                if (po.Contains(";"))
+                                    po = po.Split(';')[0].Trim();
+                                parts = planBoardDataGridView.Rows[e.RowIndex - 1].Cells[colIndex].Value.ToString();
+                                if (parts.Contains(";"))
                                     parts = parts.Split(';')[0].Trim();
                                 size = planBoardDataGridView.Rows[e.RowIndex - 0].Cells[colIndex].Value.ToString();
-                                if (buyer.Contains(";"))
+                                if (size.Contains(";"))
                                     size = size.Split(';')[0].Trim();
                             }
 
@@ -993,13 +1048,19 @@ namespace PlanningBoard
                             {
                                 for (int j = 3; j < planBoardDataGridView.Rows.Count; j = j + OrderFactorsCount)
                                 {
+                                    string buyerCell = planBoardDataGridView.Rows[j].Cells[i].Value.ToString();
+                                    string styleCell = planBoardDataGridView.Rows[j + 1].Cells[i].Value.ToString();
+                                    string poCell = planBoardDataGridView.Rows[j + 2].Cells[i].Value.ToString();
+                                    string partCell = planBoardDataGridView.Rows[j + 3].Cells[i].Value.ToString();
+                                    string sizeCell = planBoardDataGridView.Rows[j + 4].Cells[i].Value.ToString();
+
                                     if (planBoardDataGridView.Rows[j].Cells[i].Value != null)
                                     {
                                         if (e.RowIndex % OrderFactorsCount == 3)
                                         {
-                                            if (planBoardDataGridView.Rows[j].Cells[i].Value.ToString().Contains(buyer))
+                                            if (buyerCell.Contains(buyer))
                                             {
-                                                if (planBoardDataGridView.Rows[j].Cells[i].Value.ToString() == buyer)
+                                                if (buyerCell == buyer)
                                                 {
                                                     ColorPlanBoard(j, i, Color.SlateBlue);
                                                 }
@@ -1011,9 +1072,9 @@ namespace PlanningBoard
                                         }
                                         if (e.RowIndex % OrderFactorsCount == 4)
                                         {
-                                            if (planBoardDataGridView.Rows[j].Cells[i].Value.ToString().Contains(buyer) && planBoardDataGridView.Rows[j + 1].Cells[i].Value.ToString().Contains(style))
+                                            if (buyerCell.Contains(buyer) && styleCell.Contains(style))
                                             {
-                                                if (planBoardDataGridView.Rows[j].Cells[i].Value.ToString() == buyer && planBoardDataGridView.Rows[j + 1].Cells[i].Value.ToString() == style)
+                                                if (buyerCell == buyer && styleCell == style)
                                                 {
                                                     ColorPlanBoard(j, i, Color.SlateBlue);
                                                 }
@@ -1025,9 +1086,9 @@ namespace PlanningBoard
                                         }
                                         if (e.RowIndex % OrderFactorsCount == 5)
                                         {
-                                            if (planBoardDataGridView.Rows[j].Cells[i].Value.ToString().Contains(buyer) && planBoardDataGridView.Rows[j + 1].Cells[i].Value.ToString().Contains(style) && planBoardDataGridView.Rows[j + 2].Cells[i].Value.ToString().Contains(parts))
+                                            if (buyerCell.Contains(buyer) && styleCell.Contains(style) && poCell.Contains(po))
                                             {
-                                                if (planBoardDataGridView.Rows[j].Cells[i].Value.ToString() == buyer && planBoardDataGridView.Rows[j + 1].Cells[i].Value.ToString() == style && planBoardDataGridView.Rows[j + 2].Cells[i].Value.ToString() == parts)
+                                                if (buyerCell == buyer && styleCell == style && poCell == po)
                                                 {
                                                     ColorPlanBoard(j, i, Color.SlateBlue);
                                                 }
@@ -1039,9 +1100,23 @@ namespace PlanningBoard
                                         }
                                         if (e.RowIndex % OrderFactorsCount == 6)
                                         {
-                                            if (planBoardDataGridView.Rows[j].Cells[i].Value.ToString().Contains(buyer) && planBoardDataGridView.Rows[j + 1].Cells[i].Value.ToString().Contains(style) && planBoardDataGridView.Rows[j + 2].Cells[i].Value.ToString().Contains(parts) && planBoardDataGridView.Rows[j + 3].Cells[i].Value.ToString().Contains(size))
+                                            if (buyerCell.Contains(buyer) && styleCell.Contains(style) && poCell.Contains(po) && partCell.Contains(parts))
                                             {
-                                                if (planBoardDataGridView.Rows[j].Cells[i].Value.ToString() == buyer && planBoardDataGridView.Rows[j + 1].Cells[i].Value.ToString() == style && planBoardDataGridView.Rows[j + 2].Cells[i].Value.ToString() == parts && planBoardDataGridView.Rows[j + 3].Cells[i].Value.ToString() == size)
+                                                if (buyerCell == buyer && styleCell == style && poCell == po && partCell == parts)
+                                                {
+                                                    ColorPlanBoard(j, i, Color.SlateBlue);
+                                                }
+                                                else
+                                                {
+                                                    ColorPlanBoard(j, i, Color.Thistle);
+                                                }
+                                            }
+                                        }
+                                        if (e.RowIndex % OrderFactorsCount == 7)
+                                        {
+                                            if (buyerCell.Contains(buyer) && styleCell.Contains(style) && poCell.Contains(po) && partCell.Contains(parts) && sizeCell.Contains(size))
+                                            {
+                                                if (buyerCell == buyer && styleCell == style && poCell == po && partCell == parts && sizeCell == size)
                                                 {
                                                     ColorPlanBoard(j, i, Color.SlateBlue);
                                                 }
@@ -1059,32 +1134,41 @@ namespace PlanningBoard
                         {
                             if (planBoardDataGridView.Rows[rowIndex].Cells[colIndex].Style.BackColor == Color.SlateBlue || planBoardDataGridView.Rows[rowIndex].Cells[colIndex].Style.BackColor == Color.Thistle)
                             {
-                                PlanBoardColorManagement();
+                                SetPlanBoradDefaultColor();
                             }
-                            //PlanBoardColorManagement();
                         }
-                    //}
-                    //else
-                    //{
-                    //    if (planBoardDataGridView.Rows[rowIndex].Cells[colIndex].Style.BackColor == Color.DarkOliveGreen || planBoardDataGridView.Rows[rowIndex].Cells[colIndex].Style.BackColor == Color.ForestGreen)
-                    //    {
-                    //        return;
-                    //    }
-                    //    PlanBoardColorManagement();
-                    //}
                 }
                 else
                 {
-                    PlanBoardColorManagement();
+                    SetPlanBoradDefaultColor();
                 }
             }
             else
             {
-                PlanBoardColorManagement();
+                SetPlanBoradDefaultColor();
             }
         }
 
-        private void PlanBoardColorManagement()
+        private void SetPlanBoradDefaultColor()
+        {
+            foreach (KeyValuePair<int, int> item in PlanIndex)
+            {
+                var capVal = planBoardDataGridView.Rows[item.Key + 7].Cells[item.Value].Value.ToString();
+                var qtyVal = planBoardDataGridView.Rows[item.Key + 8].Cells[item.Value].Value.ToString();
+                int capacity = capVal.Contains(';') == true ? Convert.ToInt32(capVal.Split(';')[capVal.Split(';').Length - 1].Trim()) : Convert.ToInt32(capVal);
+                int plnQty = qtyVal.Contains(';') == true ? qtyVal.Split(new[] { ';' }).Select(x => int.Parse(x.Trim())).Sum() : Convert.ToInt32(qtyVal);
+                if (plnQty == capacity)
+                {
+                    ColorPlanBoard(item.Key, item.Value, Color.DarkOliveGreen);
+                }
+                else
+                {
+                    ColorPlanBoard(item.Key, item.Value, Color.ForestGreen);
+                }
+            }
+        }
+
+        private void ResetPlanBoardColor()
         {
             for (int i = 3; i < planBoardDataGridView.ColumnCount; i++)
             {
@@ -1103,12 +1187,11 @@ namespace PlanningBoard
                         {
                             ColorPlanBoard(j, i, Color.DarkGray);
                         }
-
                     }
                     else
                     {
-                        var capVal = planBoardDataGridView.Rows[j + 6].Cells[i].Value.ToString();
-                        var qtyVal = planBoardDataGridView.Rows[j + 7].Cells[i].Value.ToString();
+                        var capVal = planBoardDataGridView.Rows[j + 7].Cells[i].Value.ToString();
+                        var qtyVal = planBoardDataGridView.Rows[j + 8].Cells[i].Value.ToString();
                         int capacity = capVal.Contains(';') == true ? Convert.ToInt32(capVal.Split(';')[capVal.Split(';').Length - 1].Trim()) : Convert.ToInt32(capVal);
                         int plnQty = qtyVal.Contains(';') == true ? qtyVal.Split(new[] { ';' }).Select(x => int.Parse(x.Trim())).Sum() : Convert.ToInt32(qtyVal);
                         if (plnQty == capacity)
@@ -1133,19 +1216,19 @@ namespace PlanningBoard
             }
         }
 
-        private void ResetPlanBoardColor()
+        private void ResetsPlanBoardColor()
         {
-            for (int i = 3; i < planBoardDataGridView.ColumnCount; i++)
-            {
-                for (int j = 3; j < planBoardDataGridView.Rows.Count; j++)
-                {
-                    if (planBoardDataGridView.Rows[3].Cells[i].Value.ToString() == "" && planBoardDataGridView.Rows[3].Cells[i].Value.ToString() == null)
-                    {
-                        planBoardDataGridView.Rows[j].Cells[i].Style.BackColor = Color.White;
-                    }
-                }
-            }
-            PlanBoardColorManagement();
+            //for (int i = 3; i < planBoardDataGridView.ColumnCount; i++)
+            //{
+            //    for (int j = 3; j < planBoardDataGridView.Rows.Count; j++)
+            //    {
+            //        if (planBoardDataGridView.Rows[3].Cells[i].Value.ToString() == "" && planBoardDataGridView.Rows[3].Cells[i].Value.ToString() == null)
+            //        {
+            //            planBoardDataGridView.Rows[j].Cells[i].Style.BackColor = Color.White;
+            //        }
+            //    }
+            //}
+            //PlanBoardColorManagement();
         }
 
         private void GenerateExcelBtn_Click(object sender, EventArgs e)
@@ -1190,11 +1273,16 @@ namespace PlanningBoard
             DateTime taskDate = DateTime.ParseExact(planBoardDataGridView.Rows[1].Cells[colIndex].Value.ToString(), "dd/MM/yyyy", System.Globalization.CultureInfo.InvariantCulture);
             orderIDs = planBoardDataGridView.Rows[rowIndex + OrderFactorsCount - 1].Cells[colIndex].Value.ToString();
             int mcNo = Convert.ToInt32(planBoardDataGridView.Rows[rowIndex].Cells[0].Value);
-            FBPlanBoardForm fbplanform = new FBPlanBoardForm(true, mcNo, taskDate, orderIDs, true);
+            int diaNo = Convert.ToInt32(planBoardDataGridView.Rows[rowIndex].Cells[1].Value);
+            FBPlanBoardForm fbplanform = new FBPlanBoardForm(true, mcNo, diaNo, taskDate, orderIDs, true);
             fbplanform.ShowDialog();
-            ThreadStart myThreadStart = new ThreadStart(Generate_Plan_Board);
-            Thread myThread = new Thread(myThreadStart);
-            myThread.Start(); 
+
+            if (FBPlanBoardForm.ChangeFlag)
+            {
+                ThreadStart myThreadStart = new ThreadStart(Generate_Plan_Board);
+                Thread myThread = new Thread(myThreadStart);
+                myThread.Start();
+            } 
             //Generate_Plan_Board();
         }
 
@@ -1208,12 +1296,15 @@ namespace PlanningBoard
             DateTime taskDate = DateTime.ParseExact(planBoardDataGridView.Rows[1].Cells[colIndex].Value.ToString(), "dd/MM/yyyy", System.Globalization.CultureInfo.InvariantCulture);
             orderIDs = planBoardDataGridView.Rows[rowIndex + OrderFactorsCount - 1].Cells[colIndex].Value.ToString();
             int mcNo = Convert.ToInt32(planBoardDataGridView.Rows[rowIndex].Cells[0].Value);
-
-            UpdateActualQtyForm updateActualQtyForm = new UpdateActualQtyForm(orderIDs, mcNo, taskDate);
+            UpdateActualQtyForm updateActualQtyForm = new UpdateActualQtyForm(orderIDs, mcNo, taskDate, false);
             updateActualQtyForm.ShowDialog();
-            ThreadStart myThreadStart = new ThreadStart(Generate_Plan_Board);
-            Thread myThread = new Thread(myThreadStart);
-            myThread.Start(); 
+
+            if (UpdateActualQtyForm.ChangeFlag)
+            {
+                ThreadStart myThreadStart = new ThreadStart(Generate_Plan_Board);
+                Thread myThread = new Thread(myThreadStart);
+                myThread.Start();
+            }
             //Generate_Plan_Board();
         }
 
@@ -1223,5 +1314,74 @@ namespace PlanningBoard
             reportForm.ShowDialog();
         }
 
+        private void Revert_Click(object sender, EventArgs e)
+        {
+            //string connectionStr = ConnectionManager.connectionStringSavePoint;
+            //SqlCommand cm = new SqlCommand();
+            //SqlConnection cn = new SqlConnection(connectionStr);
+            //cm.Connection = cn;
+            //cn.Open();
+            //try
+            //{
+            //    string query = "ROLLBACK TRAN SAVEPLANTABLE";
+            //    cm.CommandText = query;
+            //    SqlDataReader reader = cm.ExecuteReader();
+            //    if (reader.HasRows)
+            //    {
+            //        BtnGeneratePlan.PerformClick();
+            //    }
+            //}
+
+            //catch (Exception ex)
+            //{
+            //    MessageBox.Show("" + ex.ToString());
+            //}
+
+            //finally
+            //{
+            //    cn.Close();
+            //}
+        }
+
+        private void PlanBoardDisplayForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            //if (ReleaseRestorePoint())
+            //{
+            //    MessageBox.Show("Connection Error!!! Please Try Again!!!");
+            //    e.Cancel = false;
+            //    return;
+            //}
+            //else
+            //{
+            //    e.Cancel = true;
+            //}
+        }
+
+        private void noProductionToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            DateTime taskDate = DateTime.ParseExact(planBoardDataGridView.Rows[1].Cells[colIndex].Value.ToString(), "dd/MM/yyyy", System.Globalization.CultureInfo.InvariantCulture);
+            orderIDs = planBoardDataGridView.Rows[rowIndex + OrderFactorsCount - 1].Cells[colIndex].Value.ToString();
+            int mcNo = Convert.ToInt32(planBoardDataGridView.Rows[rowIndex].Cells[0].Value);
+            UpdateActualQtyForm updateActualQtyForm = new UpdateActualQtyForm(orderIDs, mcNo, taskDate, true);
+            updateActualQtyForm.ShowDialog();
+
+            if (UpdateActualQtyForm.ChangeFlag)
+            {
+                ThreadStart myThreadStart = new ThreadStart(Generate_Plan_Board);
+                Thread myThread = new Thread(myThreadStart);
+                myThread.Start();
+            }
+        }
+
+    }
+
+    public static class ExtensionMethods
+    {
+        public static void DoubleBuffered(this DataGridView dgv, bool setting)
+        {
+            Type dgvType = dgv.GetType();
+            PropertyInfo pi = dgvType.GetProperty("DoubleBuffered", BindingFlags.Instance | BindingFlags.NonPublic);
+            pi.SetValue(dgv, setting, null);
+        }
     }
 }

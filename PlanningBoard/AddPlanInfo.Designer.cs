@@ -38,8 +38,9 @@
             this.Size = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Dia = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Part = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.PO = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Qty = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Date = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.KnitCloseDate = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.SAM = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Efficiency = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Status = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -93,6 +94,7 @@
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.orderWisePlandataGridView = new System.Windows.Forms.DataGridView();
             this.dataGridViewTextBoxColumn2 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.MachineNumber = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.TaskDate = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Capacity = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.BookedQty = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -101,11 +103,11 @@
             this.Eff = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ReadMode = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.MachineComboBox = new PlanningBoard.CheckComboBox();
             this.label10 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
             this.remarkTextBox = new System.Windows.Forms.TextBox();
             this.dayDiffTextBox = new System.Windows.Forms.TextBox();
-            this.MachineComboBox = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.planDateTimePicker = new System.Windows.Forms.DateTimePicker();
             this.label2 = new System.Windows.Forms.Label();
@@ -164,8 +166,9 @@
             this.Size,
             this.Dia,
             this.Part,
+            this.PO,
             this.Qty,
-            this.Date,
+            this.KnitCloseDate,
             this.SAM,
             this.Efficiency,
             this.Status,
@@ -224,6 +227,12 @@
             this.Part.ReadOnly = true;
             this.Part.Width = 60;
             // 
+            // PO
+            // 
+            this.PO.HeaderText = "PO";
+            this.PO.Name = "PO";
+            this.PO.ReadOnly = true;
+            // 
             // Qty
             // 
             this.Qty.HeaderText = "Qty";
@@ -231,12 +240,13 @@
             this.Qty.ReadOnly = true;
             this.Qty.Width = 90;
             // 
-            // Date
+            // KnitCloseDate
             // 
-            this.Date.HeaderText = "Date";
-            this.Date.Name = "Date";
-            this.Date.ReadOnly = true;
-            this.Date.Width = 90;
+            this.KnitCloseDate.HeaderText = "Knit Close Date";
+            this.KnitCloseDate.Name = "KnitCloseDate";
+            this.KnitCloseDate.ReadOnly = true;
+            this.KnitCloseDate.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.KnitCloseDate.Width = 120;
             // 
             // SAM
             // 
@@ -257,7 +267,7 @@
             this.Status.HeaderText = "Status";
             this.Status.Name = "Status";
             this.Status.ReadOnly = true;
-            this.Status.Width = 80;
+            this.Status.Width = 70;
             // 
             // ID
             // 
@@ -782,6 +792,7 @@
             this.orderWisePlandataGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.orderWisePlandataGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.dataGridViewTextBoxColumn2,
+            this.MachineNumber,
             this.TaskDate,
             this.Capacity,
             this.BookedQty,
@@ -811,7 +822,15 @@
             this.dataGridViewTextBoxColumn2.Name = "dataGridViewTextBoxColumn2";
             this.dataGridViewTextBoxColumn2.ReadOnly = true;
             this.dataGridViewTextBoxColumn2.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.dataGridViewTextBoxColumn2.Width = 50;
+            this.dataGridViewTextBoxColumn2.Width = 40;
+            // 
+            // MachineNumber
+            // 
+            this.MachineNumber.HeaderText = "MC No";
+            this.MachineNumber.Name = "MachineNumber";
+            this.MachineNumber.ReadOnly = true;
+            this.MachineNumber.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
+            this.MachineNumber.Width = 70;
             // 
             // TaskDate
             // 
@@ -819,7 +838,7 @@
             this.TaskDate.Name = "TaskDate";
             this.TaskDate.ReadOnly = true;
             this.TaskDate.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.TaskDate.Width = 95;
+            this.TaskDate.Width = 80;
             // 
             // Capacity
             // 
@@ -827,7 +846,7 @@
             this.Capacity.Name = "Capacity";
             this.Capacity.ReadOnly = true;
             this.Capacity.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.Capacity.Width = 75;
+            this.Capacity.Width = 70;
             // 
             // BookedQty
             // 
@@ -835,14 +854,14 @@
             this.BookedQty.Name = "BookedQty";
             this.BookedQty.ReadOnly = true;
             this.BookedQty.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.BookedQty.Width = 110;
+            this.BookedQty.Width = 80;
             // 
             // PlanQty
             // 
             this.PlanQty.HeaderText = "PlanQty";
             this.PlanQty.Name = "PlanQty";
             this.PlanQty.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.PlanQty.Width = 80;
+            this.PlanQty.Width = 70;
             // 
             // Minute
             // 
@@ -850,7 +869,7 @@
             this.Minute.Name = "Minute";
             this.Minute.ReadOnly = true;
             this.Minute.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.Minute.Width = 60;
+            this.Minute.Width = 50;
             // 
             // Eff
             // 
@@ -870,11 +889,11 @@
             // panel2
             // 
             this.panel2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel2.Controls.Add(this.MachineComboBox);
             this.panel2.Controls.Add(this.label10);
             this.panel2.Controls.Add(this.label11);
             this.panel2.Controls.Add(this.remarkTextBox);
             this.panel2.Controls.Add(this.dayDiffTextBox);
-            this.panel2.Controls.Add(this.MachineComboBox);
             this.panel2.Controls.Add(this.label1);
             this.panel2.Controls.Add(this.planDateTimePicker);
             this.panel2.Controls.Add(this.label2);
@@ -888,6 +907,18 @@
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(244, 194);
             this.panel2.TabIndex = 36;
+            // 
+            // MachineComboBox
+            // 
+            this.MachineComboBox.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+            this.MachineComboBox.FormattingEnabled = true;
+            this.MachineComboBox.Location = new System.Drawing.Point(92, 11);
+            this.MachineComboBox.Name = "MachineComboBox";
+            this.MachineComboBox.Size = new System.Drawing.Size(121, 22);
+            this.MachineComboBox.TabIndex = 51;
+            this.MachineComboBox.Text = "Select Machines";
+            this.MachineComboBox.CheckStateChanged += new System.EventHandler(this.MachineComboBox_CheckStateChanged);
+            this.MachineComboBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.MachineComboBox_KeyPress);
             // 
             // label10
             // 
@@ -924,16 +955,6 @@
             this.dayDiffTextBox.ReadOnly = true;
             this.dayDiffTextBox.Size = new System.Drawing.Size(121, 21);
             this.dayDiffTextBox.TabIndex = 37;
-            // 
-            // MachineComboBox
-            // 
-            this.MachineComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.MachineComboBox.FormattingEnabled = true;
-            this.MachineComboBox.Location = new System.Drawing.Point(92, 8);
-            this.MachineComboBox.Name = "MachineComboBox";
-            this.MachineComboBox.Size = new System.Drawing.Size(121, 23);
-            this.MachineComboBox.TabIndex = 34;
-            this.MachineComboBox.SelectedIndexChanged += new System.EventHandler(this.MachineComboBox_SelectedIndexChanged);
             // 
             // label1
             // 
@@ -1044,6 +1065,7 @@
             this.Controls.Add(this.CloseBtn);
             this.Controls.Add(this.entryGroupBox);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.None;
+            this.MaximizeBox = false;
             this.Name = "ViewOrderInfo";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "ViewOrderInfo";
@@ -1116,7 +1138,6 @@
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.Label label11;
         private System.Windows.Forms.TextBox remarkTextBox;
-        private System.Windows.Forms.ComboBox MachineComboBox;
         private System.Windows.Forms.Label label1;
         public System.Windows.Forms.DateTimePicker planDateTimePicker;
         private System.Windows.Forms.Label label2;
@@ -1132,22 +1153,27 @@
         private System.Windows.Forms.Label label22;
         private System.Windows.Forms.Button ApplyEffButton;
         private System.Windows.Forms.TextBox LCText;
+        private System.Windows.Forms.Label labelShow;
+        private System.Windows.Forms.Label labelAlert;
+        private System.Windows.Forms.Button UpdateButton;
+        private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;
+        private System.Windows.Forms.ContextMenuStrip OrderInfoPBcontextMenuStrip;
+        private CheckComboBox MachineComboBox;
         private System.Windows.Forms.DataGridViewTextBoxColumn SL;
         private System.Windows.Forms.DataGridViewTextBoxColumn Buyer;
         private System.Windows.Forms.DataGridViewTextBoxColumn Style;
         private System.Windows.Forms.DataGridViewTextBoxColumn Size;
         private System.Windows.Forms.DataGridViewTextBoxColumn Dia;
         private System.Windows.Forms.DataGridViewTextBoxColumn Part;
+        private System.Windows.Forms.DataGridViewTextBoxColumn PO;
         private System.Windows.Forms.DataGridViewTextBoxColumn Qty;
-        private System.Windows.Forms.DataGridViewTextBoxColumn Date;
+        private System.Windows.Forms.DataGridViewTextBoxColumn KnitCloseDate;
         private System.Windows.Forms.DataGridViewTextBoxColumn SAM;
         private System.Windows.Forms.DataGridViewTextBoxColumn Efficiency;
         private System.Windows.Forms.DataGridViewTextBoxColumn Status;
         private System.Windows.Forms.DataGridViewTextBoxColumn ID;
-        private System.Windows.Forms.Label labelShow;
-        private System.Windows.Forms.Label labelAlert;
-        private System.Windows.Forms.Button UpdateButton;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn2;
+        private System.Windows.Forms.DataGridViewTextBoxColumn MachineNumber;
         private System.Windows.Forms.DataGridViewTextBoxColumn TaskDate;
         private System.Windows.Forms.DataGridViewTextBoxColumn Capacity;
         private System.Windows.Forms.DataGridViewTextBoxColumn BookedQty;
@@ -1155,7 +1181,5 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Minute;
         private System.Windows.Forms.DataGridViewTextBoxColumn Eff;
         private System.Windows.Forms.DataGridViewTextBoxColumn ReadMode;
-        private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;
-        private System.Windows.Forms.ContextMenuStrip OrderInfoPBcontextMenuStrip;
     }
 }

@@ -72,7 +72,7 @@ namespace PlanningBoard
                 planBoardDataGridView.Rows.Clear();
                 planBoardDataGridView.Columns.Clear();
                 planBoardDataGridView.Columns.Add("SL", "SL");
-                if (!isDetailed)
+                if (isDetailed)
                 {
                     planBoardDataGridView.Columns.Add("MachineNo", "MachineNo");
                     planBoardDataGridView.Columns.Add("MachineStatus", "MachineStatus");
@@ -82,7 +82,7 @@ namespace PlanningBoard
                 planBoardDataGridView.Columns.Add("Size", "Size");
                 planBoardDataGridView.Columns.Add("Dia", "Dia");
                 planBoardDataGridView.Columns.Add("Part", "Part");
-                planBoardDataGridView.Columns.Add("ShipmentDate", "ShipmentDate");
+                planBoardDataGridView.Columns.Add("ShipmentDate", "KnitCloseDate");
                 if (isDetailed)
                 {
                     planBoardDataGridView.Columns.Add("ProductionDate", "ProductionDate");
@@ -103,8 +103,8 @@ namespace PlanningBoard
                 {
                     planBoardDataGridView.Columns.Add("TotalPlanQty", "TotalPlanQty");
                     planBoardDataGridView.Columns.Add("TotalActualQty", "TotalActualQty");
-                    planBoardDataGridView.Columns.Add("OrderQtyLeft", "OrderQtyLeft");
                     planBoardDataGridView.Columns.Add("PlanQtyLeft", "PlanQtyLeft");
+                    planBoardDataGridView.Columns.Add("OrderQtyLeft", "OrderQtyLeft");
                 }
 
                 foreach (DataGridViewColumn col in planBoardDataGridView.Columns)
@@ -125,21 +125,23 @@ namespace PlanningBoard
                         while (reader.Read())
                         {
                             S1 = SL.ToString();
-                            S2 = reader["BuyerName"].ToString();
-                            S3 = reader["StyleName"].ToString();
-                            S4 = reader["SizeName"].ToString();
-                            S5 = reader["Dia"].ToString();
-                            S6 = reader["PartName"].ToString();
-                            S7 = Convert.ToDateTime(reader["ShipmentDate"]).ToString("dd/MM/yyyy");
-                            S8 = Convert.ToDateTime(reader["TaskDate"]).ToString("dd/MM/yyyy");
-                            S9 = reader["OrderQty"].ToString();
-                            S10 = orderStatusComboBox.Text;
-                            S11 = reader["SAM"].ToString();
-                            S12 = reader["Efficiency"].ToString();
-                            S13 = reader["PlanQty"].ToString();
-                            S14 = reader.IsDBNull(reader.GetOrdinal("ActualQty")) == true ? "0" : reader["ActualQty"].ToString();
+                            S2 = reader["MachineNo"].ToString();
+                            S3 = MStatuscomboBox.Text;
+                            S4 = reader["BuyerName"].ToString();
+                            S5 = reader["StyleName"].ToString();
+                            S6 = reader["SizeName"].ToString();
+                            S7 = reader["Dia"].ToString();
+                            S8 = reader["PartName"].ToString();
+                            S9 = Convert.ToDateTime(reader["ShipmentDate"]).ToString("dd/MM/yyyy");
+                            S10 = Convert.ToDateTime(reader["TaskDate"]).ToString("dd/MM/yyyy");
+                            S11 = reader["OrderQty"].ToString();
+                            S12 = orderStatusComboBox.Text;
+                            S13 = reader["SAM"].ToString();
+                            S14 = reader["Efficiency"].ToString();
+                            S15 = reader["PlanQty"].ToString();
+                            S16 = reader.IsDBNull(reader.GetOrdinal("ActualQty")) == true ? "0" : reader["ActualQty"].ToString();
 
-                            planBoardDataGridView.Rows.Add(S1, S2, S3, S4, S5, S6, S7, S8, S9, S10, S11, S12, S13, S14 );
+                            planBoardDataGridView.Rows.Add(S1, S2, S3, S4, S5, S6, S7, S8, S9, S10, S11, S12, S13, S14, S15, S16);
 
                             SL++;
                         }
@@ -155,11 +157,11 @@ namespace PlanningBoard
                             {
                                 if (count != 0)
                                 {
-                                    S12 = totalPlanQty.ToString();
-                                    S13 = totalActualQty.ToString();
-                                    S14 = (Convert.ToInt32(reader["OrderQty"]) - totalPlanQty).ToString();
-                                    S15 = (Convert.ToInt32(reader["OrderQty"]) - totalActualQty).ToString();
-                                    planBoardDataGridView.Rows.Add(S1, S2, S3, S4, S5, S6, S7, S8, S9, S10, S11, S12, S13, S14, S15);
+                                    S10 = totalPlanQty.ToString();
+                                    S11 = totalActualQty.ToString();
+                                    S12 = (orderQty - totalPlanQty).ToString();
+                                    S13 = (orderQty - totalActualQty).ToString();  
+                                    planBoardDataGridView.Rows.Add(S1, S2, S3, S4, S5, S6, S7, S8, S9, S10, S11, S12, S13);
                                     totalPlanQty = 0;
                                     totalActualQty = 0;
                                     SL++;
@@ -173,27 +175,25 @@ namespace PlanningBoard
                             }
 
                             S1 = SL.ToString();
-                            S2 = reader["MachineNo"].ToString();
-                            S3 = MStatuscomboBox.Text;
-                            S4 = reader["BuyerName"].ToString();
-                            S5 = reader["StyleName"].ToString();
-                            S6 = reader["SizeName"].ToString();
-                            S7 = reader["Dia"].ToString();
-                            S8 = reader["PartName"].ToString();
-                            S9 = Convert.ToDateTime(reader["ShipmentDate"]).ToString("dd/MM/yyyy");
-                            S10 = reader["OrderQty"].ToString();
-                            orderQty = Convert.ToInt32(S10);
-                            S11 = orderStatusComboBox.Text;
+                            S2 = reader["BuyerName"].ToString();
+                            S3 = reader["StyleName"].ToString();
+                            S4 = reader["SizeName"].ToString();
+                            S5 = reader["Dia"].ToString();
+                            S6 = reader["PartName"].ToString();
+                            S7 = Convert.ToDateTime(reader["ShipmentDate"]).ToString("dd/MM/yyyy");
+                            S8 = reader["OrderQty"].ToString();
+                            orderQty = Convert.ToInt32(S8);
+                            S9 = orderStatusComboBox.Text;
 
                             totalPlanQty = totalPlanQty + Convert.ToInt32(reader["PlanQty"]);
                             totalActualQty = totalActualQty + (reader.IsDBNull(reader.GetOrdinal("ActualQty")) == true ? 0 : Convert.ToInt32(reader["ActualQty"]));
                         }
 
-                        S12 = totalPlanQty.ToString();
-                        S13 = totalActualQty.ToString();
-                        S14 = (orderQty - totalPlanQty).ToString();
-                        S15 = (orderQty - totalActualQty).ToString();
-                        planBoardDataGridView.Rows.Add(S1, S2, S3, S4, S5, S6, S7, S8, S9, S10, S11, S12, S13, S14, S15);
+                        S10 = totalPlanQty.ToString();
+                        S11 = totalActualQty.ToString();
+                        S12 = (orderQty - totalPlanQty).ToString();
+                        S13 = (orderQty - totalActualQty).ToString();
+                        planBoardDataGridView.Rows.Add(S1, S2, S3, S4, S5, S6, S7, S8, S9, S10, S11, S12, S13);
                         totalPlanQty = 0;
                         totalActualQty = 0;
                         SL++;
@@ -874,6 +874,24 @@ namespace PlanningBoard
         private void orderStatusComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void Reset_Click(object sender, EventArgs e)
+        {
+            mcNo = "";
+            mcStatus = "";
+            buyer = "";
+            style = "";
+            size = "";
+            dia = "";
+            part = "";
+            shipFromDate = "";
+            shipToDate = "";
+            proFromDate = "";
+            proToDate = "";
+            FirstTime = true;
+            LoadComboBox();
+            LoadDatePicker();
         }
     }
 }

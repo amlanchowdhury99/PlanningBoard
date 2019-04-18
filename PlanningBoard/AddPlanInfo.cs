@@ -16,6 +16,7 @@ namespace PlanningBoard
 {
     public partial class ViewOrderInfo : Form
     {
+        ArrayList mcNo = new ArrayList();
         public Dictionary<int, string> MachineList = new Dictionary<int, string>();
         public Dictionary<int, string> BuyerList = new Dictionary<int, string>();
         public Dictionary<int, string> StyleList = new Dictionary<int, string>();
@@ -49,6 +50,7 @@ namespace PlanningBoard
         public Boolean LCFlag = false;
         public Boolean AutoFlag = false;
         public int MachineNo = -1;
+        public DateTime shipDate = DateTime.Now;
 
         public int LC1 = 0;
         public int LC2 = 0;
@@ -91,8 +93,11 @@ namespace PlanningBoard
             labelAlert.Text = "This Order has Already Been Used!!!";
             MachineNo = McNo;
             EffList.Clear();
-            if(PlanBoardDisplayForm.EditMode)
+            MachineComboBox.CheckStateChanged += new System.EventHandler(MachineComboBox_CheckStateChanged);
+            if (PlanBoardDisplayForm.EditMode)
+            {
                 CurrentTaskDate = DateTime.ParseExact(Date, "dd/MM/yyyy", null);
+            }   
         }
 
         private void ViewOrderInfo_Load(object sender, EventArgs e)
@@ -107,7 +112,7 @@ namespace PlanningBoard
                 resetButton.Enabled = false;
                 ApplyEffButton.Enabled = false;
                 LCText.Enabled = false;
-                orderWisePlandataGridView.Columns[1].ReadOnly = false;
+                orderWisePlandataGridView.Columns[2].ReadOnly = false;
 
                 orderWisePlandataGridView.Controls.Add(TaskDateDTP);
                 TaskDateDTP.Visible = false;
@@ -161,10 +166,10 @@ namespace PlanningBoard
             try
             {
                 int SL = 1;
-                int S1 = 1; string S2 = ""; string S3 = ""; string S4 = ""; string S5 = ""; string S6 = ""; double S7 = 0.00; string S8 = ""; double S9 = 0.00; double S10 = 0.00; string S11 = "";
+                int S1 = 1; string S2 = ""; string S3 = ""; string S4 = ""; string S5 = ""; string S6 = ""; string S7 = ""; string S8 = ""; string S9 = ""; string S10 = ""; string S11 = ""; string S12 = "";
                 string query = "SELECT Id,  FROM Order_Info WHERE Id IN (" + PlanBoardDisplayForm.orderIDs + ")";
-                query = " SELECT a.Id, a.Quantity, a.ShipmentDate, a.SAM, a.Efficiency, a.Status, b.BuyerName, c.StyleName, d.SizeName, e.Dia, f.PartName FROM (SELECT * FROM Order_Info WHERE Id IN (" + PlanBoardDisplayForm.orderIDs + ")) a, Buyer b, Style c, Size d, Dia e, BodyPart f " +
-                    "WHERE a.Buyer = b.Id AND a.Style = c.Id AND a.Size = d.Id AND a.Dia = e.Id AND a.BodyPart = f.Id order by ShipmentDate asc";
+                query = " SELECT a.Id, a.PurchaseOrderNo, a.Quantity, a.ShipmentDate, a.SAM, a.Efficiency, a.Status, b.BuyerName, c.StyleName, d.SizeName, e.Dia, f.PartName FROM (SELECT * FROM Order_Info WHERE Id IN (" + PlanBoardDisplayForm.orderIDs + ")) a, Buyer b, Style c, Size d, Dia e, BodyPart f " +
+                    "WHERE a.Buyer = b.Id AND a.Style = c.Id AND a.Size = d.Id AND a.Dia = e.Id AND a.BodyPart = f.Id order by a.ShipmentDate asc";
                 SqlDataReader reader = CommonFunctions.GetFromDB(query);
                 if (reader.HasRows)
                 {
@@ -178,13 +183,14 @@ namespace PlanningBoard
                         S4 = reader.IsDBNull(reader.GetOrdinal("SizeName")) == true ? "Not Defined" : reader["SizeName"].ToString();
                         S5 = reader.IsDBNull(reader.GetOrdinal("Dia")) == true ? "Not Defined" : reader["Dia"].ToString();
                         S6 = reader.IsDBNull(reader.GetOrdinal("PartName")) == true ? "Not Defined" : reader["PartName"].ToString();
-                        S7 = reader.IsDBNull(reader.GetOrdinal("Quantity")) == true ? 0000 : Convert.ToDouble(reader["Quantity"]);
-                        S8 = reader.IsDBNull(reader.GetOrdinal("ShipmentDate")) == true ? "0/0/0000" : Convert.ToDateTime(reader["ShipmentDate"]).ToString("dd/MM/yyyy");
-                        S9 = reader.IsDBNull(reader.GetOrdinal("SAM")) == true ? 0.00 : Convert.ToDouble(reader["SAM"]);
-                        S10 = reader.IsDBNull(reader.GetOrdinal("Efficiency")) == true ? 0.00 : Convert.ToDouble(reader["Efficiency"]);
-                        S11 = Enum.GetName(typeof(VariableDecleration_Class.Status), reader.IsDBNull(reader.GetOrdinal("Status")) == true ? (int)VariableDecleration_Class.Status.Pending : Convert.ToInt32(reader["Status"]));
+                        S7 = reader.IsDBNull(reader.GetOrdinal("PurchaseOrderNo")) == true ? "" : Convert.ToString(reader["PurchaseOrderNo"]);
+                        S8 = reader.IsDBNull(reader.GetOrdinal("Quantity")) == true ? 0000.ToString() : Convert.ToString(reader["Quantity"]);
+                        S9 = reader.IsDBNull(reader.GetOrdinal("ShipmentDate")) == true ? "0/0/0000" : Convert.ToDateTime(reader["ShipmentDate"]).ToString("dd/MM/yyyy");
+                        S10 = reader.IsDBNull(reader.GetOrdinal("SAM")) == true ? 0.00.ToString() : Convert.ToString(reader["SAM"]);
+                        S11 = reader.IsDBNull(reader.GetOrdinal("Efficiency")) == true ? 0.00.ToString() : Convert.ToString(reader["Efficiency"]);
+                        S12 = Enum.GetName(typeof(VariableDecleration_Class.Status), reader.IsDBNull(reader.GetOrdinal("Status")) == true ? (int)VariableDecleration_Class.Status.Pending : Convert.ToInt32(reader["Status"]));
 
-                        orderInfoDetailsdataGridView.Rows.Add(S1, S2, S3, S4, S5, S6, S7, S8, S9, S10, S11, (int)reader["Id"]);
+                        orderInfoDetailsdataGridView.Rows.Add(S1, S2, S3, S4, S5, S6, S7, S8, S9, S10, S11, S12, (int)reader["Id"]);
                         SL++;
                     }
                 }
@@ -207,7 +213,7 @@ namespace PlanningBoard
             try
             {
                 int SL = 1;
-                int S1 = 1; string S2 = ""; string S3 = ""; string S4 = ""; string S5 = ""; string S6 = ""; double S7 = 0.00; string S8 = ""; double S9 = 0.00; double S10 = 0.00; string S11 = "";
+                int S1 = 1; string S2 = ""; string S3 = ""; string S4 = ""; string S5 = ""; string S6 = ""; string S7 = ""; string S8 = ""; string S9 = ""; string S10 = ""; string S11 = ""; string S12 = "";
 
                 if (hiddenTextBox.Text != "")
                 {
@@ -235,159 +241,161 @@ namespace PlanningBoard
 
                 if (buyerName > 0 && styleName == 0 && sizeNo == 0 && dia == 0 && bodyPart == 0)
                 {
-                    query = " SELECT a.Id, a.Quantity, a.ShipmentDate, a.SAM, a.Efficiency, a.Status, b.BuyerName, c.StyleName, d.SizeName, e.Dia, f.PartName FROM (SELECT * FROM Order_Info WHERE Buyer = " + buyerName + ") a, Buyer b, Style c, Size d, Dia e, BodyPart f " +
-                    "WHERE a.Buyer = b.Id AND a.Style = c.Id AND a.Size = d.Id AND a.Dia = e.Id AND a.BodyPart = f.Id order by ShipmentDate asc";
+                    query = " SELECT a.Id, a.PurchaseOrderNo, a.Quantity, a.ShipmentDate, a.SAM, a.Efficiency, a.Status, b.BuyerName, c.StyleName, d.SizeName, e.Dia, f.PartName FROM (SELECT * FROM Order_Info WHERE Buyer = " + buyerName + ") a, Buyer b, Style c, Size d, Dia e, BodyPart f " +
+                    "WHERE a.Buyer = b.Id AND a.Style = c.Id AND a.Size = d.Id AND a.Dia = e.Id AND a.BodyPart = f.Id";
                 }
                 if (styleName > 0 && buyerName == 0 && sizeNo == 0 && dia == 0 && bodyPart == 0)
                 {
-                    query = " SELECT a.Id, a.Quantity, a.ShipmentDate, a.SAM, a.Efficiency, a.Status, b.BuyerName, c.StyleName, d.SizeName, e.Dia, f.PartName FROM (SELECT * FROM Order_Info WHERE Style = " + styleName + ") a, Buyer b, Style c, Size d, Dia e, BodyPart f " +
-                    "WHERE a.Buyer = b.Id AND a.Style = c.Id AND a.Size = d.Id AND a.Dia = e.Id AND a.BodyPart = f.Id order by ShipmentDate asc";
+                    query = " SELECT a.Id, a.PurchaseOrderNo, a.Quantity, a.ShipmentDate, a.SAM, a.Efficiency, a.Status, b.BuyerName, c.StyleName, d.SizeName, e.Dia, f.PartName FROM (SELECT * FROM Order_Info WHERE Style = " + styleName + ") a, Buyer b, Style c, Size d, Dia e, BodyPart f " +
+                    "WHERE a.Buyer = b.Id AND a.Style = c.Id AND a.Size = d.Id AND a.Dia = e.Id AND a.BodyPart = f.Id";
                 }
                 if (sizeNo > 0 && styleName == 0 && buyerName == 0 && dia == 0 && bodyPart == 0)
                 {
-                    query = " SELECT a.Id, a.Quantity, a.ShipmentDate, a.SAM, a.Efficiency, a.Status, b.BuyerName, c.StyleName, d.SizeName, e.Dia, f.PartName FROM (SELECT * FROM Order_Info WHERE Size = " + sizeNo + ") a, Buyer b, Style c, Size d, Dia e, BodyPart f " +
-                    "WHERE a.Buyer = b.Id AND a.Style = c.Id AND a.Size = d.Id AND a.Dia = e.Id AND a.BodyPart = f.Id order by ShipmentDate asc";
+                    query = " SELECT a.Id, a.PurchaseOrderNo, a.Quantity, a.ShipmentDate, a.SAM, a.Efficiency, a.Status, b.BuyerName, c.StyleName, d.SizeName, e.Dia, f.PartName FROM (SELECT * FROM Order_Info WHERE Size = " + sizeNo + ") a, Buyer b, Style c, Size d, Dia e, BodyPart f " +
+                    "WHERE a.Buyer = b.Id AND a.Style = c.Id AND a.Size = d.Id AND a.Dia = e.Id AND a.BodyPart = f.Id";
                 }
                 if (dia > 0 && styleName == 0 && buyerName == 0 && sizeNo == 0 && bodyPart == 0)
                 {
-                    query = " SELECT a.Id, a.Quantity, a.ShipmentDate, a.SAM, a.Efficiency, a.Status, b.BuyerName, c.StyleName, d.SizeName, e.Dia, f.PartName FROM (SELECT * FROM Order_Info WHERE Dia = " + dia + ") a, Buyer b, Style c, Size d, Dia e, BodyPart f " +
-                    "WHERE a.Buyer = b.Id AND a.Style = c.Id AND a.Size = d.Id AND a.Dia = e.Id AND a.BodyPart = f.Id order by ShipmentDate asc";
+                    query = " SELECT a.Id, a.PurchaseOrderNo, a.Quantity, a.ShipmentDate, a.SAM, a.Efficiency, a.Status, b.BuyerName, c.StyleName, d.SizeName, e.Dia, f.PartName FROM (SELECT * FROM Order_Info WHERE Dia = " + dia + ") a, Buyer b, Style c, Size d, Dia e, BodyPart f " +
+                    "WHERE a.Buyer = b.Id AND a.Style = c.Id AND a.Size = d.Id AND a.Dia = e.Id AND a.BodyPart = f.Id";
                 }
                 if (bodyPart > 0 && styleName == 0 && buyerName == 0 && sizeNo == 0 && dia == 0)
                 {
-                    query = " SELECT a.Id, a.Quantity, a.ShipmentDate, a.SAM, a.Efficiency, a.Status, b.BuyerName, c.StyleName, d.SizeName, e.Dia, f.PartName FROM (SELECT * FROM Order_Info WHERE BodyPart = " + bodyPart + ") a, Buyer b, Style c, Size d, Dia e, BodyPart f " +
-                    "WHERE a.Buyer = b.Id AND a.Style = c.Id AND a.Size = d.Id AND a.Dia = e.Id AND a.BodyPart = f.Id order by ShipmentDate asc";
+                    query = " SELECT a.Id, a.PurchaseOrderNo, a.Quantity, a.ShipmentDate, a.SAM, a.Efficiency, a.Status, b.BuyerName, c.StyleName, d.SizeName, e.Dia, f.PartName FROM (SELECT * FROM Order_Info WHERE BodyPart = " + bodyPart + ") a, Buyer b, Style c, Size d, Dia e, BodyPart f " +
+                    "WHERE a.Buyer = b.Id AND a.Style = c.Id AND a.Size = d.Id AND a.Dia = e.Id AND a.BodyPart = f.Id";
                 }
                 if (buyerName > 0 && styleName > 0 && sizeNo == 0 && dia == 0 && bodyPart == 0)
                 {
-                    query = " SELECT a.Id, a.Quantity, a.ShipmentDate, a.SAM, a.Efficiency, a.Status, b.BuyerName, c.StyleName, d.SizeName, e.Dia, f.PartName FROM (SELECT * FROM Order_Info WHERE Buyer = " + buyerName + " AND Style = " + styleName + ") a, Buyer b, Style c, Size d, Dia e, BodyPart f " +
-                    "WHERE a.Buyer = b.Id AND a.Style = c.Id AND a.Size = d.Id AND a.Dia = e.Id AND a.BodyPart = f.Id order by ShipmentDate asc";
+                    query = " SELECT a.Id, a.PurchaseOrderNo, a.Quantity, a.ShipmentDate, a.SAM, a.Efficiency, a.Status, b.BuyerName, c.StyleName, d.SizeName, e.Dia, f.PartName FROM (SELECT * FROM Order_Info WHERE Buyer = " + buyerName + " AND Style = " + styleName + ") a, Buyer b, Style c, Size d, Dia e, BodyPart f " +
+                    "WHERE a.Buyer = b.Id AND a.Style = c.Id AND a.Size = d.Id AND a.Dia = e.Id AND a.BodyPart = f.Id";
                 }
                 if (buyerName > 0 && styleName > 0 && sizeNo > 0 && dia == 0 && bodyPart == 0)
                 {
-                    query = " SELECT a.Id, a.Quantity, a.ShipmentDate, a.SAM, a.Efficiency, a.Status, b.BuyerName, c.StyleName, d.SizeName, e.Dia, f.PartName FROM (SELECT * FROM Order_Info WHERE Buyer = " + buyerName + " AND Style = " + styleName + " AND Size = " + sizeNo + ") a, Buyer b, Style c, Size d, Dia e, BodyPart f " +
-                    "WHERE a.Buyer = b.Id AND a.Style = c.Id AND a.Size = d.Id AND a.Dia = e.Id AND a.BodyPart = f.Id order by ShipmentDate asc";
+                    query = " SELECT a.Id, a.PurchaseOrderNo, a.Quantity, a.ShipmentDate, a.SAM, a.Efficiency, a.Status, b.BuyerName, c.StyleName, d.SizeName, e.Dia, f.PartName FROM (SELECT * FROM Order_Info WHERE Buyer = " + buyerName + " AND Style = " + styleName + " AND Size = " + sizeNo + ") a, Buyer b, Style c, Size d, Dia e, BodyPart f " +
+                    "WHERE a.Buyer = b.Id AND a.Style = c.Id AND a.Size = d.Id AND a.Dia = e.Id AND a.BodyPart = f.Id";
                 }
                 if (buyerName > 0 && styleName > 0 && sizeNo > 0 && dia > 0 && bodyPart == 0)
                 {
-                    query = " SELECT a.Id, a.Quantity, a.ShipmentDate, a.SAM, a.Efficiency, a.Status, b.BuyerName, c.StyleName, d.SizeName, e.Dia, f.PartName FROM (SELECT * FROM Order_Info WHERE Buyer = " + buyerName + " AND Style = " + styleName + " AND Size = " + sizeNo + " AND Dia = " + dia + ") a, Buyer b, Style c, Size d, Dia e, BodyPart f " +
-                    "WHERE a.Buyer = b.Id AND a.Style = c.Id AND a.Size = d.Id AND a.Dia = e.Id AND a.BodyPart = f.Id order by ShipmentDate asc";
+                    query = " SELECT a.Id, a.PurchaseOrderNo, a.Quantity, a.ShipmentDate, a.SAM, a.Efficiency, a.Status, b.BuyerName, c.StyleName, d.SizeName, e.Dia, f.PartName FROM (SELECT * FROM Order_Info WHERE Buyer = " + buyerName + " AND Style = " + styleName + " AND Size = " + sizeNo + " AND Dia = " + dia + ") a, Buyer b, Style c, Size d, Dia e, BodyPart f " +
+                    "WHERE a.Buyer = b.Id AND a.Style = c.Id AND a.Size = d.Id AND a.Dia = e.Id AND a.BodyPart = f.Id";
                 }
                 if (buyerName > 0 && sizeNo > 0 && styleName == 0 && dia == 0 && bodyPart == 0)
                 {
-                    query = " SELECT a.Id, a.Quantity, a.ShipmentDate, a.SAM, a.Efficiency, a.Status, b.BuyerName, c.StyleName, d.SizeName, e.Dia, f.PartName FROM (SELECT * FROM Order_Info WHERE Buyer = " + buyerName + " AND Size = " + sizeNo + ") a, Buyer b, Style c, Size d, Dia e, BodyPart f " +
-                    "WHERE a.Buyer = b.Id AND a.Style = c.Id AND a.Size = d.Id AND a.Dia = e.Id AND a.BodyPart = f.Id order by ShipmentDate asc";
+                    query = " SELECT a.Id, a.PurchaseOrderNo, a.Quantity, a.ShipmentDate, a.SAM, a.Efficiency, a.Status, b.BuyerName, c.StyleName, d.SizeName, e.Dia, f.PartName FROM (SELECT * FROM Order_Info WHERE Buyer = " + buyerName + " AND Size = " + sizeNo + ") a, Buyer b, Style c, Size d, Dia e, BodyPart f " +
+                    "WHERE a.Buyer = b.Id AND a.Style = c.Id AND a.Size = d.Id AND a.Dia = e.Id AND a.BodyPart = f.Id";
                 }
                 if (buyerName > 0 && dia > 0 && styleName == 0 && sizeNo == 0 && bodyPart == 0)
                 {
-                    query = " SELECT a.Id, a.Quantity, a.ShipmentDate, a.SAM, a.Efficiency, a.Status, b.BuyerName, c.StyleName, d.SizeName, e.Dia, f.PartName FROM (SELECT * FROM Order_Info WHERE Buyer = " + buyerName + " AND Dia = " + dia + ") a, Buyer b, Style c, Size d, Dia e, BodyPart f " +
-                    "WHERE a.Buyer = b.Id AND a.Style = c.Id AND a.Size = d.Id AND a.Dia = e.Id AND a.BodyPart = f.Id order by ShipmentDate asc";
+                    query = " SELECT a.Id, a.PurchaseOrderNo, a.Quantity, a.ShipmentDate, a.SAM, a.Efficiency, a.Status, b.BuyerName, c.StyleName, d.SizeName, e.Dia, f.PartName FROM (SELECT * FROM Order_Info WHERE Buyer = " + buyerName + " AND Dia = " + dia + ") a, Buyer b, Style c, Size d, Dia e, BodyPart f " +
+                    "WHERE a.Buyer = b.Id AND a.Style = c.Id AND a.Size = d.Id AND a.Dia = e.Id AND a.BodyPart = f.Id";
                 }
                 if (buyerName > 0 && bodyPart > 0 && styleName == 0 && sizeNo == 0 && dia == 0)
                 {
-                    query = " SELECT a.Id, a.Quantity, a.ShipmentDate, a.SAM, a.Efficiency, a.Status, b.BuyerName, c.StyleName, d.SizeName, e.Dia, f.PartName FROM (SELECT * FROM Order_Info WHERE Buyer = " + buyerName + " AND BodyPart = " + bodyPart + ") a, Buyer b, Style c, Size d, Dia e, BodyPart f " +
-                    "WHERE a.Buyer = b.Id AND a.Style = c.Id AND a.Size = d.Id AND a.Dia = e.Id AND a.BodyPart = f.Id order by ShipmentDate asc";
+                    query = " SELECT a.Id, a.PurchaseOrderNo, a.Quantity, a.ShipmentDate, a.SAM, a.Efficiency, a.Status, b.BuyerName, c.StyleName, d.SizeName, e.Dia, f.PartName FROM (SELECT * FROM Order_Info WHERE Buyer = " + buyerName + " AND BodyPart = " + bodyPart + ") a, Buyer b, Style c, Size d, Dia e, BodyPart f " +
+                    "WHERE a.Buyer = b.Id AND a.Style = c.Id AND a.Size = d.Id AND a.Dia = e.Id AND a.BodyPart = f.Id";
                 }
                 if (buyerName > 0 && styleName > 0 && bodyPart > 0 && sizeNo == 0 && dia == 0)
                 {
-                    query = " SELECT a.Id, a.Quantity, a.ShipmentDate, a.SAM, a.Efficiency, a.Status, b.BuyerName, c.StyleName, d.SizeName, e.Dia, f.PartName FROM (SELECT * FROM Order_Info WHERE Buyer = " + buyerName + " AND Style = " + styleName + " AND BodyPart = " + bodyPart + ") a, Buyer b, Style c, Size d, Dia e, BodyPart f " +
-                    "WHERE a.Buyer = b.Id AND a.Style = c.Id AND a.Size = d.Id AND a.Dia = e.Id AND a.BodyPart = f.Id order by ShipmentDate asc";
+                    query = " SELECT a.Id, a.PurchaseOrderNo, a.Quantity, a.ShipmentDate, a.SAM, a.Efficiency, a.Status, b.BuyerName, c.StyleName, d.SizeName, e.Dia, f.PartName FROM (SELECT * FROM Order_Info WHERE Buyer = " + buyerName + " AND Style = " + styleName + " AND BodyPart = " + bodyPart + ") a, Buyer b, Style c, Size d, Dia e, BodyPart f " +
+                    "WHERE a.Buyer = b.Id AND a.Style = c.Id AND a.Size = d.Id AND a.Dia = e.Id AND a.BodyPart = f.Id";
                 }
                 if (buyerName > 0 && sizeNo > 0 && bodyPart > 0 && styleName == 0 && dia == 0)
                 {
-                    query = " SELECT a.Id, a.Quantity, a.ShipmentDate, a.SAM, a.Efficiency, a.Status, b.BuyerName, c.StyleName, d.SizeName, e.Dia, f.PartName FROM (SELECT * FROM Order_Info WHERE Buyer = " + buyerName + " AND Size = " + sizeNo + " AND BodyPart = " + bodyPart + ") a, Buyer b, Style c, Size d, Dia e, BodyPart f " +
-                    "WHERE a.Buyer = b.Id AND a.Style = c.Id AND a.Size = d.Id AND a.Dia = e.Id AND a.BodyPart = f.Id order by ShipmentDate asc";
+                    query = " SELECT a.Id, a.PurchaseOrderNo, a.Quantity, a.ShipmentDate, a.SAM, a.Efficiency, a.Status, b.BuyerName, c.StyleName, d.SizeName, e.Dia, f.PartName FROM (SELECT * FROM Order_Info WHERE Buyer = " + buyerName + " AND Size = " + sizeNo + " AND BodyPart = " + bodyPart + ") a, Buyer b, Style c, Size d, Dia e, BodyPart f " +
+                    "WHERE a.Buyer = b.Id AND a.Style = c.Id AND a.Size = d.Id AND a.Dia = e.Id AND a.BodyPart = f.Id";
                 }
                 if (buyerName > 0 && dia > 0 && bodyPart > 0 && styleName == 0 && sizeNo == 0)
                 {
-                    query = " SELECT a.Id, a.Quantity, a.ShipmentDate, a.SAM, a.Efficiency, a.Status, b.BuyerName, c.StyleName, d.SizeName, e.Dia, f.PartName FROM (SELECT * FROM Order_Info WHERE Buyer = " + buyerName + " AND Dia = " + dia + " AND BodyPart = " + bodyPart + ") a, Buyer b, Style c, Size d, Dia e, BodyPart f " +
-                    "WHERE a.Buyer = b.Id AND a.Style = c.Id AND a.Size = d.Id AND a.Dia = e.Id AND a.BodyPart = f.Id order by ShipmentDate asc";
+                    query = " SELECT a.Id, a.PurchaseOrderNo, a.Quantity, a.ShipmentDate, a.SAM, a.Efficiency, a.Status, b.BuyerName, c.StyleName, d.SizeName, e.Dia, f.PartName FROM (SELECT * FROM Order_Info WHERE Buyer = " + buyerName + " AND Dia = " + dia + " AND BodyPart = " + bodyPart + ") a, Buyer b, Style c, Size d, Dia e, BodyPart f " +
+                    "WHERE a.Buyer = b.Id AND a.Style = c.Id AND a.Size = d.Id AND a.Dia = e.Id AND a.BodyPart = f.Id";
                 }
                 if (buyerName > 0 && styleName > 0 && dia > 0 && bodyPart == 0 && sizeNo == 0)
                 {
-                    query = " SELECT a.Id, a.Quantity, a.ShipmentDate, a.SAM, a.Efficiency, a.Status, b.BuyerName, c.StyleName, d.SizeName, e.Dia, f.PartName FROM (SELECT * FROM Order_Info WHERE Buyer = " + buyerName + " AND Dia = " + dia + " AND Style = " + styleName + ") a, Buyer b, Style c, Size d, Dia e, BodyPart f " +
-                    "WHERE a.Buyer = b.Id AND a.Style = c.Id AND a.Size = d.Id AND a.Dia = e.Id AND a.BodyPart = f.Id order by ShipmentDate asc";
+                    query = " SELECT a.Id, a.PurchaseOrderNo, a.Quantity, a.ShipmentDate, a.SAM, a.Efficiency, a.Status, b.BuyerName, c.StyleName, d.SizeName, e.Dia, f.PartName FROM (SELECT * FROM Order_Info WHERE Buyer = " + buyerName + " AND Dia = " + dia + " AND Style = " + styleName + ") a, Buyer b, Style c, Size d, Dia e, BodyPart f " +
+                    "WHERE a.Buyer = b.Id AND a.Style = c.Id AND a.Size = d.Id AND a.Dia = e.Id AND a.BodyPart = f.Id";
                 }
                 if (buyerName > 0 && sizeNo > 0 && dia > 0 && bodyPart == 0 && styleName == 0)
                 {
-                    query = " SELECT a.Id, a.Quantity, a.ShipmentDate, a.SAM, a.Efficiency, a.Status, b.BuyerName, c.StyleName, d.SizeName, e.Dia, f.PartName FROM (SELECT * FROM Order_Info WHERE Buyer = " + buyerName + " AND Dia = " + dia + " AND Size = " + sizeNo + ") a, Buyer b, Style c, Size d, Dia e, BodyPart f " +
-                    "WHERE a.Buyer = b.Id AND a.Style = c.Id AND a.Size = d.Id AND a.Dia = e.Id AND a.BodyPart = f.Id order by ShipmentDate asc";
+                    query = " SELECT a.Id, a.PurchaseOrderNo, a.Quantity, a.ShipmentDate, a.SAM, a.Efficiency, a.Status, b.BuyerName, c.StyleName, d.SizeName, e.Dia, f.PartName FROM (SELECT * FROM Order_Info WHERE Buyer = " + buyerName + " AND Dia = " + dia + " AND Size = " + sizeNo + ") a, Buyer b, Style c, Size d, Dia e, BodyPart f " +
+                    "WHERE a.Buyer = b.Id AND a.Style = c.Id AND a.Size = d.Id AND a.Dia = e.Id AND a.BodyPart = f.Id";
                 }
                 if (buyerName > 0 && styleName > 0 && dia > 0 && bodyPart > 0 && sizeNo == 0)
                 {
-                    query = " SELECT a.Id, a.Quantity, a.ShipmentDate, a.SAM, a.Efficiency, a.Status, b.BuyerName, c.StyleName, d.SizeName, e.Dia, f.PartName FROM (SELECT * FROM Order_Info WHERE Buyer = " + buyerName + " AND Dia = " + dia + " AND Style = " + styleName + " AND BodyPart = " + bodyPart + ") a, Buyer b, Style c, Size d, Dia e, BodyPart f " +
-                    "WHERE a.Buyer = b.Id AND a.Style = c.Id AND a.Size = d.Id AND a.Dia = e.Id AND a.BodyPart = f.Id order by ShipmentDate asc";
+                    query = " SELECT a.Id, a.PurchaseOrderNo, a.Quantity, a.ShipmentDate, a.SAM, a.Efficiency, a.Status, b.BuyerName, c.StyleName, d.SizeName, e.Dia, f.PartName FROM (SELECT * FROM Order_Info WHERE Buyer = " + buyerName + " AND Dia = " + dia + " AND Style = " + styleName + " AND BodyPart = " + bodyPart + ") a, Buyer b, Style c, Size d, Dia e, BodyPart f " +
+                    "WHERE a.Buyer = b.Id AND a.Style = c.Id AND a.Size = d.Id AND a.Dia = e.Id AND a.BodyPart = f.Id";
                 }
                 if (buyerName > 0 && sizeNo > 0 && dia > 0 && bodyPart > 0 && styleName == 0)
                 {
-                    query = " SELECT a.Id, a.Quantity, a.ShipmentDate, a.SAM, a.Efficiency, a.Status, b.BuyerName, c.StyleName, d.SizeName, e.Dia, f.PartName FROM (SELECT * FROM Order_Info WHERE Buyer = " + buyerName + " AND Dia = " + dia + " AND Size = " + sizeNo + " AND BodyPart = " + bodyPart + ") a, Buyer b, Style c, Size d, Dia e, BodyPart f " +
-                    "WHERE a.Buyer = b.Id AND a.Style = c.Id AND a.Size = d.Id AND a.Dia = e.Id AND a.BodyPart = f.Id order by ShipmentDate asc";
+                    query = " SELECT a.Id, a.PurchaseOrderNo, a.Quantity, a.ShipmentDate, a.SAM, a.Efficiency, a.Status, b.BuyerName, c.StyleName, d.SizeName, e.Dia, f.PartName FROM (SELECT * FROM Order_Info WHERE Buyer = " + buyerName + " AND Dia = " + dia + " AND Size = " + sizeNo + " AND BodyPart = " + bodyPart + ") a, Buyer b, Style c, Size d, Dia e, BodyPart f " +
+                    "WHERE a.Buyer = b.Id AND a.Style = c.Id AND a.Size = d.Id AND a.Dia = e.Id AND a.BodyPart = f.Id";
                 }
                 if (buyerName > 0 && styleName > 0 && sizeNo > 0 && bodyPart > 0 && dia == 0)
                 {
-                    query = " SELECT a.Id, a.Quantity, a.ShipmentDate, a.SAM, a.Efficiency, a.Status, b.BuyerName, c.StyleName, d.SizeName, e.Dia, f.PartName FROM (SELECT * FROM Order_Info WHERE Buyer = " + buyerName + " AND Style = " + styleName + " AND Size = " + sizeNo + " AND BodyPart = " + bodyPart + ") a, Buyer b, Style c, Size d, Dia e, BodyPart f " +
-                    "WHERE a.Buyer = b.Id AND a.Style = c.Id AND a.Size = d.Id AND a.Dia = e.Id AND a.BodyPart = f.Id order by ShipmentDate asc";
+                    query = " SELECT a.Id, a.PurchaseOrderNo, a.Quantity, a.ShipmentDate, a.SAM, a.Efficiency, a.Status, b.BuyerName, c.StyleName, d.SizeName, e.Dia, f.PartName FROM (SELECT * FROM Order_Info WHERE Buyer = " + buyerName + " AND Style = " + styleName + " AND Size = " + sizeNo + " AND BodyPart = " + bodyPart + ") a, Buyer b, Style c, Size d, Dia e, BodyPart f " +
+                    "WHERE a.Buyer = b.Id AND a.Style = c.Id AND a.Size = d.Id AND a.Dia = e.Id AND a.BodyPart = f.Id";
                 }
                 if (styleName > 0 && sizeNo > 0 && bodyPart == 0 && buyerName == 0 && dia == 0)
                 {
-                    query = " SELECT a.Id, a.Quantity, a.ShipmentDate, a.SAM, a.Efficiency, a.Status, b.BuyerName, c.StyleName, d.SizeName, e.Dia, f.PartName FROM (SELECT * FROM Order_Info WHERE Style = " + styleName + " AND Size = " + sizeNo + ") a, Buyer b, Style c, Size d, Dia e, BodyPart f " +
-                    "WHERE a.Buyer = b.Id AND a.Style = c.Id AND a.Size = d.Id AND a.Dia = e.Id AND a.BodyPart = f.Id order by ShipmentDate asc";
+                    query = " SELECT a.Id, a.PurchaseOrderNo, a.Quantity, a.ShipmentDate, a.SAM, a.Efficiency, a.Status, b.BuyerName, c.StyleName, d.SizeName, e.Dia, f.PartName FROM (SELECT * FROM Order_Info WHERE Style = " + styleName + " AND Size = " + sizeNo + ") a, Buyer b, Style c, Size d, Dia e, BodyPart f " +
+                    "WHERE a.Buyer = b.Id AND a.Style = c.Id AND a.Size = d.Id AND a.Dia = e.Id AND a.BodyPart = f.Id";
                 }
                 if (styleName > 0 && sizeNo > 0 && dia > 0 && bodyPart == 0 && buyerName == 0)
                 {
-                    query = " SELECT a.Id, a.Quantity, a.ShipmentDate, a.SAM, a.Efficiency, a.Status, b.BuyerName, c.StyleName, d.SizeName, e.Dia, f.PartName FROM (SELECT * FROM Order_Info WHERE Style = " + styleName + " AND Size = " + sizeNo + " AND Dia = " + dia + ") a, Buyer b, Style c, Size d, Dia e, BodyPart f " +
-                    "WHERE a.Buyer = b.Id AND a.Style = c.Id AND a.Size = d.Id AND a.Dia = e.Id AND a.BodyPart = f.Id order by ShipmentDate asc";
+                    query = " SELECT a.Id, a.PurchaseOrderNo, a.Quantity, a.ShipmentDate, a.SAM, a.Efficiency, a.Status, b.BuyerName, c.StyleName, d.SizeName, e.Dia, f.PartName FROM (SELECT * FROM Order_Info WHERE Style = " + styleName + " AND Size = " + sizeNo + " AND Dia = " + dia + ") a, Buyer b, Style c, Size d, Dia e, BodyPart f " +
+                    "WHERE a.Buyer = b.Id AND a.Style = c.Id AND a.Size = d.Id AND a.Dia = e.Id AND a.BodyPart = f.Id";
                 }
                 if (styleName > 0 && sizeNo > 0 && dia > 0 && bodyPart > 0 && buyerName == 0)
                 {
-                    query = " SELECT a.Id, a.Quantity, a.ShipmentDate, a.SAM, a.Efficiency, a.Status, b.BuyerName, c.StyleName, d.SizeName, e.Dia, f.PartName FROM (SELECT * FROM Order_Info WHERE Style = " + styleName + " AND Size = " + sizeNo + " AND Dia = " + dia + " AND BodyPart = " + bodyPart + ") a, Buyer b, Style c, Size d, Dia e, BodyPart f " +
-                    "WHERE a.Buyer = b.Id AND a.Style = c.Id AND a.Size = d.Id AND a.Dia = e.Id AND a.BodyPart = f.Id order by ShipmentDate asc";
+                    query = " SELECT a.Id, a.PurchaseOrderNo, a.Quantity, a.ShipmentDate, a.SAM, a.Efficiency, a.Status, b.BuyerName, c.StyleName, d.SizeName, e.Dia, f.PartName FROM (SELECT * FROM Order_Info WHERE Style = " + styleName + " AND Size = " + sizeNo + " AND Dia = " + dia + " AND BodyPart = " + bodyPart + ") a, Buyer b, Style c, Size d, Dia e, BodyPart f " +
+                    "WHERE a.Buyer = b.Id AND a.Style = c.Id AND a.Size = d.Id AND a.Dia = e.Id AND a.BodyPart = f.Id";
                 }
                 if (styleName > 0 && dia > 0 && bodyPart == 0 && buyerName == 0 && sizeNo == 0)
                 {
-                    query = " SELECT a.Id, a.Quantity, a.ShipmentDate, a.SAM, a.Efficiency, a.Status, b.BuyerName, c.StyleName, d.SizeName, e.Dia, f.PartName FROM (SELECT * FROM Order_Info WHERE Style = " + styleName + " AND Dia = " + dia + ") a, Buyer b, Style c, Size d, Dia e, BodyPart f " +
-                    "WHERE a.Buyer = b.Id AND a.Style = c.Id AND a.Size = d.Id AND a.Dia = e.Id AND a.BodyPart = f.Id order by ShipmentDate asc";
+                    query = " SELECT a.Id, a.PurchaseOrderNo, a.Quantity, a.ShipmentDate, a.SAM, a.Efficiency, a.Status, b.BuyerName, c.StyleName, d.SizeName, e.Dia, f.PartName FROM (SELECT * FROM Order_Info WHERE Style = " + styleName + " AND Dia = " + dia + ") a, Buyer b, Style c, Size d, Dia e, BodyPart f " +
+                    "WHERE a.Buyer = b.Id AND a.Style = c.Id AND a.Size = d.Id AND a.Dia = e.Id AND a.BodyPart = f.Id";
                 }
                 if (styleName > 0 && bodyPart > 0 && buyerName == 0 && sizeNo == 0 && dia == 0)
                 {
-                    query = " SELECT a.Id, a.Quantity, a.ShipmentDate, a.SAM, a.Efficiency, a.Status, b.BuyerName, c.StyleName, d.SizeName, e.Dia, f.PartName FROM (SELECT * FROM Order_Info WHERE Style = " + styleName + " AND BodyPart = " + bodyPart + ") a, Buyer b, Style c, Size d, Dia e, BodyPart f " +
-                    "WHERE a.Buyer = b.Id AND a.Style = c.Id AND a.Size = d.Id AND a.Dia = e.Id AND a.BodyPart = f.Id order by ShipmentDate asc";
+                    query = " SELECT a.Id, a.PurchaseOrderNo, a.Quantity, a.ShipmentDate, a.SAM, a.Efficiency, a.Status, b.BuyerName, c.StyleName, d.SizeName, e.Dia, f.PartName FROM (SELECT * FROM Order_Info WHERE Style = " + styleName + " AND BodyPart = " + bodyPart + ") a, Buyer b, Style c, Size d, Dia e, BodyPart f " +
+                    "WHERE a.Buyer = b.Id AND a.Style = c.Id AND a.Size = d.Id AND a.Dia = e.Id AND a.BodyPart = f.Id";
                 }
                 if (styleName > 0 && sizeNo > 0 && bodyPart > 0 && buyerName == 0 && dia == 0)
                 {
-                    query = " SELECT a.Id, a.Quantity, a.ShipmentDate, a.SAM, a.Efficiency, a.Status, b.BuyerName, c.StyleName, d.SizeName, e.Dia, f.PartName FROM (SELECT * FROM Order_Info WHERE Buyer = " + buyerName + " AND Style = " + styleName + " AND Size = " + sizeNo + " AND BodyPart = " + bodyPart + ") a, Buyer b, Style c, Size d, Dia e, BodyPart f " +
-                    "WHERE a.Buyer = b.Id AND a.Style = c.Id AND a.Size = d.Id AND a.Dia = e.Id AND a.BodyPart = f.Id order by ShipmentDate asc";
+                    query = " SELECT a.Id, a.PurchaseOrderNo, a.Quantity, a.ShipmentDate, a.SAM, a.Efficiency, a.Status, b.BuyerName, c.StyleName, d.SizeName, e.Dia, f.PartName FROM (SELECT * FROM Order_Info WHERE Buyer = " + buyerName + " AND Style = " + styleName + " AND Size = " + sizeNo + " AND BodyPart = " + bodyPart + ") a, Buyer b, Style c, Size d, Dia e, BodyPart f " +
+                    "WHERE a.Buyer = b.Id AND a.Style = c.Id AND a.Size = d.Id AND a.Dia = e.Id AND a.BodyPart = f.Id";
                 }
                 if (styleName > 0 && dia > 0 && bodyPart > 0 && buyerName == 0 && sizeNo == 0)
                 {
-                    query = " SELECT a.Id, a.Quantity, a.ShipmentDate, a.SAM, a.Efficiency, a.Status, b.BuyerName, c.StyleName, d.SizeName, e.Dia, f.PartName FROM (SELECT * FROM Order_Info WHERE Buyer = " + buyerName + " AND Style = " + styleName + " AND Dia = " + dia + " AND BodyPart = " + bodyPart + ") a, Buyer b, Style c, Size d, Dia e, BodyPart f " +
-                    "WHERE a.Buyer = b.Id AND a.Style = c.Id AND a.Size = d.Id AND a.Dia = e.Id AND a.BodyPart = f.Id order by ShipmentDate asc";
+                    query = " SELECT a.Id, a.PurchaseOrderNo, a.Quantity, a.ShipmentDate, a.SAM, a.Efficiency, a.Status, b.BuyerName, c.StyleName, d.SizeName, e.Dia, f.PartName FROM (SELECT * FROM Order_Info WHERE Buyer = " + buyerName + " AND Style = " + styleName + " AND Dia = " + dia + " AND BodyPart = " + bodyPart + ") a, Buyer b, Style c, Size d, Dia e, BodyPart f " +
+                    "WHERE a.Buyer = b.Id AND a.Style = c.Id AND a.Size = d.Id AND a.Dia = e.Id AND a.BodyPart = f.Id";
                 }
                 if (sizeNo > 0 && dia > 0 && bodyPart == 0 && buyerName == 0 && styleName == 0)
                 {
-                    query = " SELECT a.Id, a.Quantity, a.ShipmentDate, a.SAM, a.Efficiency, a.Status, b.BuyerName, c.StyleName, d.SizeName, e.Dia, f.PartName FROM (SELECT * FROM Order_Info WHERE Size = " + sizeNo + " AND Dia = " + dia + ") a, Buyer b, Style c, Size d, Dia e, BodyPart f " +
-                    "WHERE a.Buyer = b.Id AND a.Style = c.Id AND a.Size = d.Id AND a.Dia = e.Id AND a.BodyPart = f.Id order by ShipmentDate asc";
+                    query = " SELECT a.Id, a.PurchaseOrderNo, a.Quantity, a.ShipmentDate, a.SAM, a.Efficiency, a.Status, b.BuyerName, c.StyleName, d.SizeName, e.Dia, f.PartName FROM (SELECT * FROM Order_Info WHERE Size = " + sizeNo + " AND Dia = " + dia + ") a, Buyer b, Style c, Size d, Dia e, BodyPart f " +
+                    "WHERE a.Buyer = b.Id AND a.Style = c.Id AND a.Size = d.Id AND a.Dia = e.Id AND a.BodyPart = f.Id";
                 }
                 if (sizeNo > 0 && dia > 0 && bodyPart > 0 && buyerName == 0 && styleName == 0)
                 {
-                    query = " SELECT a.Id, a.Quantity, a.ShipmentDate, a.SAM, a.Efficiency, a.Status, b.BuyerName, c.StyleName, d.SizeName, e.Dia, f.PartName FROM (SELECT * FROM Order_Info WHERE Size = " + sizeNo + " AND Dia = " + dia + " AND BodyPart = " + bodyPart + ") a, Buyer b, Style c, Size d, Dia e, BodyPart f " +
-                    "WHERE a.Buyer = b.Id AND a.Style = c.Id AND a.Size = d.Id AND a.Dia = e.Id AND a.BodyPart = f.Id order by ShipmentDate asc";
+                    query = " SELECT a.Id, a.PurchaseOrderNo, a.Quantity, a.ShipmentDate, a.SAM, a.Efficiency, a.Status, b.BuyerName, c.StyleName, d.SizeName, e.Dia, f.PartName FROM (SELECT * FROM Order_Info WHERE Size = " + sizeNo + " AND Dia = " + dia + " AND BodyPart = " + bodyPart + ") a, Buyer b, Style c, Size d, Dia e, BodyPart f " +
+                    "WHERE a.Buyer = b.Id AND a.Style = c.Id AND a.Size = d.Id AND a.Dia = e.Id AND a.BodyPart = f.Id";
                 }
                 if (sizeNo > 0 && bodyPart > 0 && buyerName == 0 && styleName == 0 && dia == 0)
                 {
-                    query = " SELECT a.Id, a.Quantity, a.ShipmentDate, a.SAM, a.Efficiency, a.Status, b.BuyerName, c.StyleName, d.SizeName, e.Dia, f.PartName FROM (SELECT * FROM Order_Info WHERE Size = " + sizeNo + " AND BodyPart = " + bodyPart + ") a, Buyer b, Style c, Size d, Dia e, BodyPart f " +
-                    "WHERE a.Buyer = b.Id AND a.Style = c.Id AND a.Size = d.Id AND a.Dia = e.Id AND a.BodyPart = f.Id order by ShipmentDate asc";
+                    query = " SELECT a.Id, a.PurchaseOrderNo, a.Quantity, a.ShipmentDate, a.SAM, a.Efficiency, a.Status, b.BuyerName, c.StyleName, d.SizeName, e.Dia, f.PartName FROM (SELECT * FROM Order_Info WHERE Size = " + sizeNo + " AND BodyPart = " + bodyPart + ") a, Buyer b, Style c, Size d, Dia e, BodyPart f " +
+                    "WHERE a.Buyer = b.Id AND a.Style = c.Id AND a.Size = d.Id AND a.Dia = e.Id AND a.BodyPart = f.Id";
                 }
                 if (dia > 0 && bodyPart > 0 && buyerName == 0 && styleName == 0 && sizeNo == 0)
                 {
-                    query = " SELECT a.Id, a.Quantity, a.ShipmentDate, a.SAM, a.Efficiency, a.Status, b.BuyerName, c.StyleName, d.SizeName, e.Dia, f.PartName FROM (SELECT * FROM Order_Info WHERE Dia = " + dia + " AND BodyPart = " + bodyPart + ") a, Buyer b, Style c, Size d, Dia e, BodyPart f " +
-                    "WHERE a.Buyer = b.Id AND a.Style = c.Id AND a.Size = d.Id AND a.Dia = e.Id AND a.BodyPart = f.Id order by ShipmentDate asc";
+                    query = " SELECT a.Id, a.PurchaseOrderNo, a.Quantity, a.ShipmentDate, a.SAM, a.Efficiency, a.Status, b.BuyerName, c.StyleName, d.SizeName, e.Dia, f.PartName FROM (SELECT * FROM Order_Info WHERE Dia = " + dia + " AND BodyPart = " + bodyPart + ") a, Buyer b, Style c, Size d, Dia e, BodyPart f " +
+                    "WHERE a.Buyer = b.Id AND a.Style = c.Id AND a.Size = d.Id AND a.Dia = e.Id AND a.BodyPart = f.Id";
                 }
                 if (buyerName > 0 && styleName > 0 && sizeNo > 0 && dia > 0 && bodyPart > 0)
                 {
-                    query = " SELECT a.Id, a.Quantity, a.ShipmentDate, a.SAM, a.Efficiency, a.Status, b.BuyerName, c.StyleName, d.SizeName, e.Dia, f.PartName FROM (SELECT * FROM Order_Info WHERE Buyer = " + buyerName + " AND Style = " + styleName + " AND Size = " + sizeNo + " AND Dia = " + dia + " AND BodyPart = " + bodyPart + ") a, Buyer b, Style c, Size d, Dia e, BodyPart f " +
-                    "WHERE a.Buyer = b.Id AND a.Style = c.Id AND a.Size = d.Id AND a.Dia = e.Id AND a.BodyPart = f.Id order by ShipmentDate asc";
+                    query = " SELECT a.Id, a.PurchaseOrderNo, a.Quantity, a.ShipmentDate, a.SAM, a.Efficiency, a.Status, b.BuyerName, c.StyleName, d.SizeName, e.Dia, f.PartName FROM (SELECT * FROM Order_Info WHERE Buyer = " + buyerName + " AND Style = " + styleName + " AND Size = " + sizeNo + " AND Dia = " + dia + " AND BodyPart = " + bodyPart + ") a, Buyer b, Style c, Size d, Dia e, BodyPart f " +
+                    "WHERE a.Buyer = b.Id AND a.Style = c.Id AND a.Size = d.Id AND a.Dia = e.Id AND a.BodyPart = f.Id";
                 }
+
+                query = query + " AND a.ShipmentDate >= '" + DateTime.Now.Date + "' order by a.ShipmentDate asc";
 
                 SqlDataReader reader = CommonFunctions.GetFromDB(query);
 
@@ -405,13 +413,14 @@ namespace PlanningBoard
                             S4 = reader.IsDBNull(reader.GetOrdinal("SizeName")) == true ? "Not Defined" : reader["SizeName"].ToString();
                             S5 = reader.IsDBNull(reader.GetOrdinal("Dia")) == true ? "Not Defined" : reader["Dia"].ToString();
                             S6 = reader.IsDBNull(reader.GetOrdinal("PartName")) == true ? "Not Defined" : reader["PartName"].ToString();
-                            S7 = reader.IsDBNull(reader.GetOrdinal("Quantity")) == true ? 0000 : Convert.ToDouble(reader["Quantity"]);
-                            S8 = reader.IsDBNull(reader.GetOrdinal("ShipmentDate")) == true ? "0/0/0000" : Convert.ToDateTime(reader["ShipmentDate"]).ToString("dd/MM/yyyy");
-                            S9 = reader.IsDBNull(reader.GetOrdinal("SAM")) == true ? 0.00 : Convert.ToDouble(reader["SAM"]);
-                            S10 = reader.IsDBNull(reader.GetOrdinal("Efficiency")) == true ? 0.00 : Convert.ToDouble(reader["Efficiency"]);
-                            S11 = Enum.GetName(typeof(VariableDecleration_Class.Status), reader.IsDBNull(reader.GetOrdinal("Status")) == true ? (int)VariableDecleration_Class.Status.Pending : Convert.ToInt32(reader["Status"]));
+                            S7 = reader.IsDBNull(reader.GetOrdinal("PurchaseOrderNo")) == true ? "" : Convert.ToString(reader["PurchaseOrderNo"]);
+                            S8 = reader.IsDBNull(reader.GetOrdinal("Quantity")) == true ? 0000.ToString() : Convert.ToString(reader["Quantity"]);
+                            S9 = reader.IsDBNull(reader.GetOrdinal("ShipmentDate")) == true ? "0/0/0000" : Convert.ToDateTime(reader["ShipmentDate"]).ToString("dd/MM/yyyy");
+                            S10 = reader.IsDBNull(reader.GetOrdinal("SAM")) == true ? 0.00.ToString() : Convert.ToString(reader["SAM"]);
+                            S11 = reader.IsDBNull(reader.GetOrdinal("Efficiency")) == true ? 0.00.ToString() : Convert.ToString(reader["Efficiency"]);
+                            S12 = Enum.GetName(typeof(VariableDecleration_Class.Status), reader.IsDBNull(reader.GetOrdinal("Status")) == true ? (int)VariableDecleration_Class.Status.Pending : Convert.ToInt32(reader["Status"]));
 
-                            orderInfoDetailsdataGridView.Rows.Add(S1, S2, S3, S4, S5, S6, S7, S8, S9, S10, S11, (int)reader["Id"]);
+                            orderInfoDetailsdataGridView.Rows.Add(S1, S2, S3, S4, S5, S6, S7, S8, S9, S10, S11, S12, (int)reader["Id"]);
                             SL++;
                         }
                     }
@@ -440,37 +449,30 @@ namespace PlanningBoard
             LoadDia();
             LoadSize();
             LoadPart();
-            LoadMachine();
         }
 
         private void LoadMachine()
         {
             try
             {
-                MachineList.Add(0, "---Select M/C---");
-                string query = "SELECT * FROM Machine_Info WHERE Status != "+0+" order by MachineNo asc";
+                if (diaComboBox.SelectedIndex < 1)
+                {
+                    return;
+                }
+
+                int dia = ((KeyValuePair<int, string>)diaComboBox.SelectedItem).Key;
+                string query = "SELECT * FROM Machine_Info WHERE Status = 1 AND MachineDia = " + dia + " order by MachineNo asc";
 
                 SqlDataReader reader = CommonFunctions.GetFromDB(query);
+                MachineComboBox.Items.Clear();
+                mcNo.Clear();
                 if (reader.HasRows)
                 {
                     while (reader.Read())
                     {
-                        if (!MachineList.Keys.Contains(Convert.ToInt32(reader["Id"])))
-                        {
-                            MachineList.Add(Convert.ToInt32(reader["Id"]), (reader["MachineNo"]).ToString());
-                        }
-                        else
-                        {
-                            MachineList[Convert.ToInt32(reader["Id"])] = reader["MachineNo"].ToString();
-                        }
+                        mcNo.Add(Convert.ToInt32(reader["MachineNo"]));
+                        MachineComboBox.Items.Add(new PlanningBoard.CheckComboBoxItem(reader["MachineNo"].ToString(), true));
                     }
-                    MachineComboBox.DataSource = new BindingSource(MachineList, null);
-                    MachineComboBox.DisplayMember = "Value";
-                    MachineComboBox.ValueMember = "Key";
-                }
-                if (PlanBoardDisplayForm.EditMode)
-                {
-                    MachineComboBox.Enabled = false;
                 }
             }
             catch (Exception e)
@@ -481,7 +483,6 @@ namespace PlanningBoard
             finally
             {
                 CommonFunctions.connection.Close();
-
             }
         }
 
@@ -706,7 +707,7 @@ namespace PlanningBoard
             try
             {
                 orderWisePlandataGridView.Rows.Clear();
-                int SL = 1; int S1 = 1; string S2 = ""; int S3 = 0; int S4 = 0; int S5 = 0; int S6 = 0; double S7 = 0.0; Boolean S8 = false;
+                int SL = 1; int S1 = 1; string S2 = ""; string S3 = ""; string S4 = ""; string S5 = ""; string S6 = ""; string S7 = ""; string S8 = ""; Boolean S9 = false;
                 string query = "";
                 var queue = new Queue<DateTime>();
                 //DateTime taskDate = DateTime.Now;
@@ -740,15 +741,17 @@ namespace PlanningBoard
                         while (reader.Read())
                         {
                             S1 = SL;
-                            S2 = Convert.ToDateTime(reader["TaskDate"]).ToString("dd/MM/yyyy");
-                            S3 = (int)reader["Capacity"];
-                            S4 = reader.IsDBNull(reader.GetOrdinal("RestPlanQty")) == true ? 0 : (int)reader["RestPlanQty"];
-                            S5 = Convert.ToInt32(reader["PlanQty"]);
-                            S6 = Convert.ToInt32(reader["Minute"]);
-                            S7 = (int)reader["Efficiency"];
-                            S8 = Convert.ToInt32(reader["Active"]) == 0 ? true : false;
-                            orderWisePlandataGridView.Rows.Add(S1, S2, S3, S4, S5, S6, S7, S8);
-                            if (S8)
+                            S2 = Convert.ToString(reader["MachineNo"]);
+                            S3 = Convert.ToDateTime(reader["TaskDate"]).ToString("dd/MM/yyyy");
+                            S4 = Convert.ToString(reader["Capacity"]);
+                            S5 = reader.IsDBNull(reader.GetOrdinal("RestPlanQty")) == true ? "0" : Convert.ToString(reader["RestPlanQty"]);
+                            S6 = Convert.ToString(reader["PlanQty"]);
+                            S7 = Convert.ToString(reader["Minute"]);
+                            S8 = Convert.ToString(reader["Efficiency"]);
+                            S9 = Convert.ToInt32(reader["Active"]) == 0 ? true : false;
+                            orderWisePlandataGridView.Rows.Add(S1, S2, S3, S4, S5, S6, S7, S8, S9);
+                            orderWisePlandataGridView.Rows[S1 - 1].Cells[7].ReadOnly = true;
+                            if (S9)
                             {
                                 orderWisePlandataGridView.Rows[S1 - 1].Cells[4].ReadOnly = true;
                                 orderWisePlandataGridView.Rows[S1 - 1].Cells[6].ReadOnly = true;
@@ -776,14 +779,12 @@ namespace PlanningBoard
         {
             try
             {
-                //int PlanQtySum = 0;
-                int BookedQtySum = 0;
                 newOrderQtyTextBox.ReadOnly = false;
                 AddPlanButton.Enabled = true;
                 ApplyEffButton.Enabled = true;
-                int SL = 1; int S1 = 1; string S2 = ""; int S3 = 0; int S4 = 0; int S5 = 0; int S6 = 0; double S7 = 0.0; Boolean S8 = false;
+                DateTime date = DateTime.Now;
 
-                //newDaysTextBox.Text = ((Convert.ToDouble(newOrderQtyTextBox.Text)) / (Convert.ToDouble(avgCapcityTextBox.Text))).ToString("###,###.00");
+                int j = 0; int SL = 1; int S1 = 1; string S2 = ""; string S3 = ""; int S4 = 0; int S5 = 0; int S6 = 0; int S7 = 0; double S8 = 0.0; Boolean S9 = false;
 
                 String query = "";
                 SqlDataReader reader = null;
@@ -791,7 +792,7 @@ namespace PlanningBoard
                 DateTime toDate;
                 if (AutoFlag)
                 {
-                    toDate = DateTime.MaxValue.Date;
+                    toDate = DateTime.MaxValue.Date.AddDays(-1);
                 }
                 else
                 {
@@ -833,9 +834,9 @@ namespace PlanningBoard
                         newOrderQtyTextBox.ReadOnly = true;
                         AddPlanButton.Enabled = false;
                         ApplyEffButton.Enabled = false;
-                        S8 = true;
+                        S9 = true;
 
-                        for (DateTime date = fromDate; date <= toDate; date = date.AddDays(1))
+                        for (date = fromDate; date <= toDate; date = date.AddDays(1))
                         {
                             query = " SELECT MachineNo, OrderID, TaskDate, PlanQty, (SELECT SUM(PlanQty) FROM PlanTable WHERE TaskDate = '" + date + "' AND OrderID != " + orderID + ") As RestPlanQty, Minute, Capacity, Efficiency, RemainingQty FROM PlanTable WHERE TaskDate = '" + date + "' AND OrderID = " + orderID;
                             reader = CommonFunctions.GetFromDB(query);
@@ -844,16 +845,17 @@ namespace PlanningBoard
                                 while (reader.Read())
                                 {
                                     S1 = SL;
-                                    S2 = Convert.ToDateTime(reader["TaskDate"]).ToString("dd/MM/yyyy");
-                                    S3 = (int)reader["Capacity"];
-                                    S4 = reader.IsDBNull(reader.GetOrdinal("RestPlanQty")) == true ? 0 : (int)reader["RestPlanQty"];
-                                    S5 = Convert.ToInt32(reader["PlanQty"]);
-                                    S6 = Convert.ToInt32(reader["Minute"]);
-                                    S7 = (int)reader["Efficiency"];
-                                    temp = temp - S4;
-                                    orderWisePlandataGridView.Rows.Add(S1, S2, S3, S4, S5, S6, S7, S8);
-                                    orderWisePlandataGridView.Rows[S1 - 1].Cells[4].ReadOnly = true;
-                                    orderWisePlandataGridView.Rows[S1 - 1].Cells[6].ReadOnly = true;
+                                    S2 = Convert.ToString(reader["MachineNo"]);
+                                    S3 = Convert.ToDateTime(reader["TaskDate"]).ToString("dd/MM/yyyy");
+                                    S4 = (int)reader["Capacity"];
+                                    S5 = reader.IsDBNull(reader.GetOrdinal("RestPlanQty")) == true ? 0 : (int)reader["RestPlanQty"];
+                                    S6 = Convert.ToInt32(reader["PlanQty"]);
+                                    S7 = Convert.ToInt32(reader["Minute"]);
+                                    S8 = (int)reader["Efficiency"];
+                                    temp = temp - S5;
+                                    orderWisePlandataGridView.Rows.Add(S1, S2, S3, S4, S5, S6, S7, S8, S9);
+                                    orderWisePlandataGridView.Rows[S1 - 1].Cells[5].ReadOnly = true;
+                                    orderWisePlandataGridView.Rows[S1 - 1].Cells[7].ReadOnly = true;
                                     SL++;
                                 }
                             }
@@ -868,283 +870,319 @@ namespace PlanningBoard
                 
                 else
                 {
-                    for (DateTime date = fromDate; date <= toDate; date = date.AddDays(1))
+                    if (mcNo.Count > 0)
                     {
-                        query = "SELECT * FROM PlanTable WHERE MachineNo = " + MachineNo + " AND TaskDate = '" + date.Date + "'";
-                        if (CommonFunctions.recordExist(query))
+                        int i = 0;
+                        while (i < mcNo.Count && temp > 0)
                         {
-                            query = "SELECT * FROM PlanTable WHERE MachineNo = " + MachineNo + " AND TaskDate = '" + date.Date + "' AND OrderID = " + orderID;
-                            if (CommonFunctions.recordExist(query))
-                            {
-                                query = "SELECT MachineNo, OrderID, TaskDate, Capacity, PlanQty, RemainingQty, Efficiency, Minute, (SELECT SUM(PlanQty) FROM PlanTable WHERE MachineNo = " + MachineNo +
-                                        " AND TaskDate = '" + date.Date + "' AND OrderID != " + orderID + ") As RestPlanQty, (SELECT SUM(SAM) FROM PlanTable WHERE MachineNo = " + MachineNo +
-                                        " AND TaskDate = '" + date.Date + "' AND OrderID != " + orderID + ") As TotalSAM, (SELECT COUNT(Efficiency) FROM PlanTable WHERE MachineNo = " + MachineNo +
-                                        " AND TaskDate = '" + date.Date + "' AND OrderID != " + orderID + ") As RestEfficiencyNumber, (SELECT SUM(Efficiency) FROM PlanTable WHERE MachineNo = " + MachineNo +
-                                        " AND TaskDate = '" + date.Date + "' AND OrderID != " + orderID + ") As TotalRestEfficiency, (SELECT TOP 1 Active FROM WorkingDays WHERE MachineNo = "
-                                        + MachineNo + " AND WorkDate = '" + date.Date + "') AS Active FROM PlanTable WHERE MachineNo = "
-                                        + MachineNo + " AND TaskDate = '" + date.Date + "' AND OrderID = " + orderID;
+                            MachineNo = Convert.ToInt32(mcNo[i]);
+                            int tempMachine = 0;
+                            date = fromDate;
 
-                                reader = CommonFunctions.GetFromDB(query);
-                                if (reader.HasRows)
+                            while (date <= toDate && temp > 0)
+                            {
+                                if (MachineNo != tempMachine)
                                 {
-                                    while (reader.Read())
+                                    tempMachine = MachineNo;
+                                    j = 0;
+                                    LcCount = 0;
+                                }
+                                query = "SELECT * FROM PlanTable WHERE MachineNo = " + MachineNo + " AND TaskDate = '" + date.Date + "'";
+                                if (CommonFunctions.recordExist(query))
+                                {
+                                    query = "SELECT * FROM PlanTable WHERE MachineNo = " + MachineNo + " AND TaskDate = '" + date.Date + "' AND OrderID = " + orderID;
+                                    if (CommonFunctions.recordExist(query))
                                     {
-                                        S1 = SL;
-                                        S2 = Convert.ToDateTime(reader["TaskDate"]).ToString("dd/MM/yyyy");
-                                        S4 = reader.IsDBNull(reader.GetOrdinal("RestPlanQty")) == true ? 0 : (int)reader["RestPlanQty"];
-                                        S6 = Convert.ToInt32(reader["Minute"]);
-                                        if (MachineNo == Convert.ToInt32(reader["MachineNo"]) && orderID == Convert.ToInt32(reader["OrderID"]))
+                                        query = "SELECT MachineNo, OrderID, TaskDate, Capacity, PlanQty, RemainingQty, Efficiency, Minute, (SELECT SUM(PlanQty) FROM PlanTable WHERE MachineNo = " + MachineNo +
+                                                " AND TaskDate = '" + date.Date + "' AND OrderID != " + orderID + ") As RestPlanQty, (SELECT SUM(SAM) FROM PlanTable WHERE MachineNo = " + MachineNo +
+                                                " AND TaskDate = '" + date.Date + "' AND OrderID != " + orderID + ") As TotalSAM, (SELECT COUNT(Efficiency) FROM PlanTable WHERE MachineNo = " + MachineNo +
+                                                " AND TaskDate = '" + date.Date + "' AND OrderID != " + orderID + ") As RestEfficiencyNumber, (SELECT SUM(Efficiency) FROM PlanTable WHERE MachineNo = " + MachineNo +
+                                                " AND TaskDate = '" + date.Date + "' AND OrderID != " + orderID + ") As TotalRestEfficiency, (SELECT TOP 1 Active FROM WorkingDays WHERE MachineNo = "
+                                                + MachineNo + " AND WorkDate = '" + date.Date + "') AS Active FROM PlanTable WHERE MachineNo = "
+                                                + MachineNo + " AND TaskDate = '" + date.Date + "' AND OrderID = " + orderID;
+
+                                        reader = CommonFunctions.GetFromDB(query);
+                                        if (reader.HasRows)
                                         {
-                                            S3 = (int)reader["Capacity"];
-                                            //if (S3 == Convert.ToInt32(reader["PlanQty"]))
-                                            //{
-                                            S5 = Convert.ToInt32(reader["PlanQty"]);
-                                            //}
-                                            //else
-                                            //{
-                                            //    S5 = S3 - S4 < 0 ? 0 : S3 - S4;
-                                            //}
-                                            S7 = (int)reader["Efficiency"];
-                                            //temp = temp - S4;
-                                            S8 = true;
+                                            while (reader.Read())
+                                            {
+                                                S1 = SL;
+                                                S2 = Convert.ToString(reader["MachineNo"]);
+                                                S3 = Convert.ToDateTime(reader["TaskDate"]).ToString("dd/MM/yyyy");
+                                                S5 = reader.IsDBNull(reader.GetOrdinal("RestPlanQty")) == true ? 0 : (int)reader["RestPlanQty"];
+                                                S7 = Convert.ToInt32(reader["Minute"]);
+                                                if (MachineNo == Convert.ToInt32(reader["MachineNo"]) && orderID == Convert.ToInt32(reader["OrderID"]))
+                                                {
+                                                    S4 = (int)reader["Capacity"];
+                                                    S6 = Convert.ToInt32(reader["PlanQty"]);
+                                                    S8 = (int)reader["Efficiency"];
+                                                    S9 = true;
+                                                }
+                                            }
                                         }
                                     }
-                                }
-                            }
-                            else
-                            {
-                                query = "SELECT SUM(PlanQty) AS RestPlanQty, (SELECT SUM(SAM) FROM PlanTable WHERE MachineNo = " + MachineNo +
-                                        " AND TaskDate = '" + date.Date + "' AND OrderID != " + orderID + ") As TotalSAM, Count(*) AS RestEfficiencyNumber, SUM(Efficiency) AS TotalRestEfficiency, SUM(Minute) AS TotalRestMinute, (SELECT TOP 1 Minute FROM WorkingDays WHERE MachineNo = "
-                                        + MachineNo + " AND WorkDate = '" + date.Date + "') AS Minute, (SELECT TOP 1 Active FROM WorkingDays WHERE MachineNo = "
-                                        + MachineNo + " AND WorkDate = '" + date.Date + "') AS Active FROM PlanTable WHERE MachineNo = "
-                                        + MachineNo + " AND TaskDate = '" + date.Date + "'";
-                                reader = CommonFunctions.GetFromDB(query);
-                                if (reader.HasRows)
-                                {
-                                    newOrderQtyTextBox.ReadOnly = false;
-                                    AddPlanButton.Enabled = true;
-                                    ApplyEffButton.Enabled = true;
-
-                                    while (reader.Read())
+                                    else
                                     {
-                                        S8 = false;
-                                        S1 = SL;
-                                        S2 = date.ToString("dd/MM/yyyy");
-                                        S4 = reader.IsDBNull(reader.GetOrdinal("RestPlanQty")) == true ? 0 : (int)reader["RestPlanQty"];
-
-                                        Double RestEfficiencyNumber = reader.IsDBNull(reader.GetOrdinal("RestEfficiencyNumber")) == true ? 0 : Convert.ToDouble(reader["RestEfficiencyNumber"]);
-
-                                        Double TotalRestEfficiency = reader.IsDBNull(reader.GetOrdinal("TotalRestEfficiency")) == true ? 0 : Convert.ToDouble(reader["TotalRestEfficiency"]);
-                                        Double TotalSam = reader.IsDBNull(reader.GetOrdinal("TotalSAM")) == true ? 0 + Convert.ToDouble(samTextBox.Text) : (Convert.ToDouble(reader["TotalSAM"]) + Convert.ToDouble(samTextBox.Text));
-                                        Double AVGSAM = TotalSam / (RestEfficiencyNumber + 1);
-                                        
-                                        int TotalMinute = reader.IsDBNull(reader.GetOrdinal("TotalRestMinute")) == true ? 0 + Convert.ToInt32(reader["Minute"]) : Convert.ToInt32(reader["TotalRestMinute"]) + Convert.ToInt32(reader["Minute"]);
-                                        Double AVGMinute = Math.Floor(TotalMinute / (RestEfficiencyNumber + 1));
-                                        S6 = Convert.ToInt32(AVGMinute);
-
-                                        if (LCFlag)
+                                        query = "SELECT SUM(PlanQty) AS RestPlanQty, (SELECT SUM(SAM) FROM PlanTable WHERE MachineNo = " + MachineNo +
+                                                " AND TaskDate = '" + date.Date + "' AND OrderID != " + orderID + ") As TotalSAM, Count(*) AS RestEfficiencyNumber, SUM(Efficiency) AS TotalRestEfficiency, SUM(Minute) AS TotalRestMinute, (SELECT TOP 1 Minute FROM WorkingDays WHERE MachineNo = "
+                                                + MachineNo + " AND WorkDate = '" + date.Date + "') AS Minute, (SELECT TOP 1 Active FROM WorkingDays WHERE MachineNo = "
+                                                + MachineNo + " AND WorkDate = '" + date.Date + "') AS Active FROM PlanTable WHERE MachineNo = "
+                                                + MachineNo + " AND TaskDate = '" + date.Date + "'";
+                                        reader = CommonFunctions.GetFromDB(query);
+                                        if (reader.HasRows)
                                         {
-                                            if (LcArray != null && LcCount < LcArray.Length)
+                                            newOrderQtyTextBox.ReadOnly = false;
+                                            AddPlanButton.Enabled = true;
+                                            ApplyEffButton.Enabled = true;
+
+                                            while (reader.Read())
                                             {
-                                                Double AvgEff = (Convert.ToDouble((TotalRestEfficiency + Convert.ToDouble(LcArray[LcCount])) / (RestEfficiencyNumber + 1)));
+                                                S9 = false;
+                                                S1 = SL;
+                                                S2 = MachineNo.ToString();
+                                                S3 = date.ToString("dd/MM/yyyy");
+                                                S5 = reader.IsDBNull(reader.GetOrdinal("RestPlanQty")) == true ? 0 : (int)reader["RestPlanQty"];
+
+                                                Double RestEfficiencyNumber = reader.IsDBNull(reader.GetOrdinal("RestEfficiencyNumber")) == true ? 0 : Convert.ToDouble(reader["RestEfficiencyNumber"]);
+
+                                                Double TotalRestEfficiency = reader.IsDBNull(reader.GetOrdinal("TotalRestEfficiency")) == true ? 0 : Convert.ToDouble(reader["TotalRestEfficiency"]);
+                                                Double TotalSam = reader.IsDBNull(reader.GetOrdinal("TotalSAM")) == true ? 0 + Convert.ToDouble(samTextBox.Text) : (Convert.ToDouble(reader["TotalSAM"]) + Convert.ToDouble(samTextBox.Text));
+                                                Double AVGSAM = TotalSam / (RestEfficiencyNumber + 1);
+
+                                                int TotalMinute = reader.IsDBNull(reader.GetOrdinal("TotalRestMinute")) == true ? 0 + Convert.ToInt32(reader["Minute"]) : Convert.ToInt32(reader["TotalRestMinute"]) + Convert.ToInt32(reader["Minute"]);
+                                                Double AVGMinute = Math.Floor(TotalMinute / (RestEfficiencyNumber + 1));
+                                                S7 = Convert.ToInt32(AVGMinute);
+
+                                                if (LCFlag)
+                                                {
+                                                    if (LcArray != null && LcCount < LcArray.Length)
+                                                    {
+                                                        Double AvgEff = (Convert.ToDouble((TotalRestEfficiency + Convert.ToDouble(LcArray[LcCount])) / (RestEfficiencyNumber + 1)));
+                                                        if (Convert.ToInt32(reader["Active"]) == 0)
+                                                        {
+                                                            S4 = 0;
+                                                            S8 = 0;
+                                                        }
+                                                        else
+                                                        {
+                                                            S4 = (int)Math.Floor((Convert.ToDouble(S7) * (Convert.ToDouble(AvgEff) / 100.00)) / (AVGSAM));
+                                                            S8 = Convert.ToInt32(LcArray[LcCount]);
+                                                            LcLastIndex = S1 - 1;
+                                                            LcCount++;
+                                                        }
+                                                    }
+                                                    else if (LcArray != null && LcCount == LcArray.Length)
+                                                    {
+                                                        Double AvgEff = 0;
+
+                                                        AvgEff = (Convert.ToDouble((TotalRestEfficiency + Convert.ToDouble(LcArray[LcArray.Length - 1])) / (RestEfficiencyNumber + 1)));
+                                                        S8 = Convert.ToInt32(LcArray[LcArray.Length - 1]);
+                                                        S4 = Convert.ToInt32(reader["Active"]) == 0 ? 0 : (int)Math.Floor((Convert.ToDouble(S7) * (Convert.ToDouble(AvgEff) / 100.00)) / (AVGSAM));
+                                                    }
+                                                    else
+                                                    {
+                                                        Double AvgEff = 0;
+                                                        if (NewVal > -1)
+                                                        {
+                                                            S8 = EffList.Count == 0 ? Convert.ToInt32(effTextBox.Text) : EffList.ContainsKey(S1 - 1) == true ? EffList[S1 - 1] : EffList[EffList.Count - 1];
+                                                            AvgEff = (Convert.ToDouble((TotalRestEfficiency + S8) / (RestEfficiencyNumber + 1)));
+                                                            //S7 = NewVal;
+                                                        }
+                                                        S4 = Convert.ToInt32(reader["Active"]) == 0 ? 0 : (int)Math.Floor((Convert.ToDouble(S7) * (Convert.ToDouble(AvgEff) / 100.00)) / (AVGSAM));
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    Double AvgEff = (Convert.ToDouble((TotalRestEfficiency + Convert.ToDouble(effTextBox.Text)) / (RestEfficiencyNumber + 1)));
+                                                    S4 = Convert.ToInt32(reader["Active"]) == 0 ? 0 : (int)Math.Floor((Convert.ToDouble(S7) * (Convert.ToDouble(AvgEff) / 100.00)) / (AVGSAM));
+                                                    S8 = EffList.Count == 0 ? Convert.ToInt32(effTextBox.Text) : EffList.ContainsKey(S1 - 1) == true ? EffList[S1 - 1] : EffList[EffList.Count - 1];
+                                                    //S7 = Convert.ToInt32(effTextBox.Text);
+                                                }
                                                 if (Convert.ToInt32(reader["Active"]) == 0)
                                                 {
-                                                    S3 = 0;
-                                                    S7 = 0;
+                                                    S6 = 0;
+                                                    S9 = true;
                                                 }
                                                 else
                                                 {
-                                                    S3 = (int)Math.Floor((Convert.ToDouble(S6) * (Convert.ToDouble(AvgEff) / 100.00)) / (AVGSAM));
-                                                    S7 = Convert.ToInt32(LcArray[LcCount]);
-                                                    LcLastIndex = S1 - 1;
-                                                    LcCount++;
+                                                    if (S4 - S5 > temp)
+                                                    {
+                                                        S6 = temp;
+                                                        temp = 0;
+                                                    }
+                                                    else
+                                                    {
+                                                        if (S4 - S5 < 0)
+                                                        {
+                                                            S6 = 0;
+                                                        }
+                                                        else
+                                                        {
+                                                            S6 = S4 - S5;
+                                                        }
+                                                        temp = temp - S6;
+                                                    }
+                                                    S9 = false;
                                                 }
                                             }
-                                            else if (LcArray != null && LcCount == LcArray.Length)
-                                            {
-                                                Double AvgEff = 0;
-
-                                                AvgEff = (Convert.ToDouble((TotalRestEfficiency + Convert.ToDouble(LcArray[LcArray.Length - 1])) / (RestEfficiencyNumber + 1)));
-                                                S7 = Convert.ToInt32(LcArray[LcArray.Length - 1]);
-                                                S3 = Convert.ToInt32(reader["Active"]) == 0 ? 0 : (int)Math.Floor((Convert.ToDouble(S6) * (Convert.ToDouble(AvgEff) / 100.00)) / (AVGSAM));
-                                            }
-                                            else 
-                                            {
-                                                Double AvgEff = 0;
-                                                if (NewVal > -1)
-                                                {
-                                                    S7 = EffList.Count == 0 ? Convert.ToInt32(effTextBox.Text) : EffList.ContainsKey(S1 - 1) == true ? EffList[S1 - 1] : EffList[EffList.Count - 1];
-                                                    AvgEff = (Convert.ToDouble((TotalRestEfficiency + S7) / (RestEfficiencyNumber + 1)));
-                                                    //S7 = NewVal;
-                                                }
-                                                S3 = Convert.ToInt32(reader["Active"]) == 0 ? 0 : (int)Math.Floor((Convert.ToDouble(S6) * (Convert.ToDouble(AvgEff) / 100.00)) / (AVGSAM));
-                                            }
-                                        }
-                                        else
-                                        {
-                                            Double AvgEff = (Convert.ToDouble((TotalRestEfficiency + Convert.ToDouble(effTextBox.Text)) / (RestEfficiencyNumber + 1)));
-                                            S3 = Convert.ToInt32(reader["Active"]) == 0 ? 0 : (int)Math.Floor((Convert.ToDouble(S6) * (Convert.ToDouble(AvgEff) / 100.00)) / (AVGSAM));
-                                            S7 = EffList.Count == 0 ? Convert.ToInt32(effTextBox.Text) : EffList.ContainsKey(S1 - 1) == true ? EffList[S1 - 1] : EffList[EffList.Count - 1];
-                                            //S7 = Convert.ToInt32(effTextBox.Text);
-                                        }
-                                        if (Convert.ToInt32(reader["Active"]) == 0)
-                                        {
-                                            S5 = 0;
-                                            S8 = true;
-                                        }
-                                        else
-                                        {
-                                            if (S3 - S4 > temp)
-                                            {
-                                                S5 = temp;
-                                                temp = 0;
-                                            }
-                                            else
-                                            {
-                                                if (S3 - S4 < 0)
-                                                {
-                                                    S5 = 0;
-                                                }
-                                                else
-                                                {
-                                                    S5 = S3 - S4;
-                                                }
-
-                                                temp = temp - S5;
-                                            }
-                                            S8 = false;
                                         }
                                     }
                                 }
-                            }
-                        }
-                        else
-                        {
-                            S8 = false;
-                            query = "SELECT WorkDate, Minute, Active FROM WorkingDays WHERE MachineNo = " + MachineNo + " AND WorkDate = '" + date.Date + "'";
-                            reader = CommonFunctions.GetFromDB(query);
-                            if (reader.HasRows)
-                            {
-                                while (reader.Read())
+                                else
                                 {
-                                    S1 = SL;
-                                    S2 = Convert.ToDateTime(reader["WorkDate"]).ToString("dd/MM/yyyy");
-                                    if (LCFlag)
+                                    S9 = false;
+                                    query = "SELECT WorkDate, Minute, Active FROM WorkingDays WHERE MachineNo = " + MachineNo + " AND WorkDate = '" + date.Date + "'";
+                                    reader = CommonFunctions.GetFromDB(query);
+                                    if (reader.HasRows)
                                     {
-                                        S3 = Convert.ToInt32(reader["Active"]) == 0 ? 0 : GetEachCapacity(S1, Convert.ToInt32(reader["Minute"]));
-                                    }
-                                    else
-                                    {
-                                        S3 = Convert.ToInt32(reader["Active"]) == 0 ? 0 : (int)Math.Floor((Convert.ToInt32(reader["Minute"]) * (Convert.ToDouble(effTextBox.Text) / 100.00)) / (Convert.ToDouble(samTextBox.Text)));
-                                    }
-                                    S4 = 0;
-                                    if (Convert.ToInt32(reader["Active"]) == 0)
-                                    {
-                                        S5 = 0;
-                                        S8 = true;
-                                    }
-                                    else
-                                    {
-                                        if (S3 - S4 >= temp)
+                                        while (reader.Read())
                                         {
-                                            S5 = temp;
-                                            temp = 0;
-                                        }
-                                        else
-                                        {
-                                            S5 = S3 - S4;
-                                            temp = temp - S5;
-                                        }
-                                    }
-                                    S6 = Convert.ToInt32(reader["Active"]) == 0 ? 0 : Convert.ToInt32(reader["Minute"]);
-                                    if (LCFlag && Convert.ToInt32(reader["Active"]) != 0)
-                                    {
-                                        if (LcArray != null && LcCount < LcArray.Length)
-                                        {
+                                            S1 = SL;
+                                            S2 = MachineNo.ToString();
+                                            S3 = Convert.ToDateTime(reader["WorkDate"]).ToString("dd/MM/yyyy");
+                                            if (LCFlag)
+                                            {
+                                                S4 = Convert.ToInt32(reader["Active"]) == 0 ? 0 : GetEachCapacity(S1, Convert.ToInt32(reader["Minute"]));
+                                            }
+                                            else
+                                            {
+                                                S4 = Convert.ToInt32(reader["Active"]) == 0 ? 0 : (int)Math.Floor((Convert.ToInt32(reader["Minute"]) * (Convert.ToDouble(effTextBox.Text) / 100.00)) / (Convert.ToDouble(samTextBox.Text)));
+                                            }
+                                            S5 = 0;
                                             if (Convert.ToInt32(reader["Active"]) == 0)
                                             {
-                                                S7 = 0;
+                                                S6 = 0;
+                                                S9 = true;
                                             }
                                             else
                                             {
-                                                S7 = Convert.ToInt32(LcArray[LcCount]);
-                                                LcLastIndex = S1 - 1;
-                                                LcCount++;
+                                                if (S4 - S5 >= temp)
+                                                {
+                                                    S6 = temp;
+                                                    temp = 0;
+                                                }
+                                                else
+                                                {
+                                                    S6 = S4 - S5;
+                                                    temp = temp - S6;
+                                                }
                                             }
-                                        }
-                                        else if (LcArray != null && LcCount == LcArray.Length)
-                                        {
-                                            S7 = Convert.ToInt32(LcArray[LcArray.Length - 1]);
-                                        }
-                                        else
-                                        {
-                                            S7 = EffList.Count == 0 ? Convert.ToInt32(effTextBox.Text) : EffList.ContainsKey(S1 - 1) == true ? EffList[S1 - 1] : EffList[EffList.Count - 1]; 
-                                            //S7 = NewVal;
+                                            S7 = Convert.ToInt32(reader["Active"]) == 0 ? 0 : Convert.ToInt32(reader["Minute"]);
+                                            if (LCFlag && Convert.ToInt32(reader["Active"]) != 0)
+                                            {
+                                                if (LcArray != null && LcCount < LcArray.Length)
+                                                {
+                                                    if (Convert.ToInt32(reader["Active"]) == 0)
+                                                    {
+                                                        S8 = 0;
+                                                    }
+                                                    else
+                                                    {
+                                                        S8 = Convert.ToInt32(LcArray[LcCount]);
+                                                        LcLastIndex = S1 - 1;
+                                                        LcCount++;
+                                                    }
+                                                }
+                                                else if (LcArray != null && LcCount >= LcArray.Length)
+                                                {
+                                                    S8 = Convert.ToInt32(LcArray[LcArray.Length - 1]);
+                                                }
+                                                else
+                                                {
+                                                    S8 = EffList.Count == 0 ? Convert.ToInt32(effTextBox.Text) : EffList.ContainsKey(S1 - 1) == true ? EffList[S1 - 1] : EffList[EffList.Count - 1];
+                                                    //S7 = NewVal;
+                                                }
+                                            }
+                                            else
+                                            {
+                                                //S7 = Convert.ToInt32(effTextBox.Text);
+                                                S8 = EffList.Count == 0 ? Convert.ToInt32(effTextBox.Text) : EffList.ContainsKey(S1 - 1) == true ? EffList[S1 - 1] : EffList[EffList.Count - 1];
+                                            }
                                         }
                                     }
                                     else
                                     {
-                                        //S7 = Convert.ToInt32(effTextBox.Text);
-                                        S7 = EffList.Count == 0 ? Convert.ToInt32(effTextBox.Text) : EffList.ContainsKey(S1 - 1) == true ? EffList[S1 - 1] : EffList[EffList.Count - 1]; 
+                                        S1 = SL;
+                                        S2 = "0";
+                                        S3 = date.ToString("dd/MM/yyyy");
+                                        S4 = 0;
+                                        S5 = 0;
+                                        S6 = 0;
+                                        S7 = 0;
+                                        S8 = 0;
                                     }
                                 }
-                            }
-                            else
-                            {
-                                S1 = SL;
-                                S2 = date.ToString("dd/MM/yyyy");
-                                S3 = 0;
-                                S4 = 0;
-                                S5 = 0;
-                                S6 = 0;
-                                S7 = 0;
-                            }
-                        }
 
-                        //if ((OrderWisePlanGridRowIndex == S1 - 1) && LCFlag == true && NewVal > -1)
-                        //{
-                        //    if (LcArray != null && S1 <= LcArray.Length)
-                        //    {
-                        //        orderWisePlandataGridView.Rows[S1 - 1].Cells[6].ReadOnly = true;
-                        //    }
-                        //    if (S8 == false)
-                        //    {
-                        //        orderWisePlandataGridView.Rows[OrderWisePlanGridRowIndex].Cells[2].Value = S3;
-                        //        orderWisePlandataGridView.Rows[OrderWisePlanGridRowIndex].Cells[4].Value = S5;
-                        //        orderWisePlandataGridView.Rows[OrderWisePlanGridRowIndex].Cells[6].Value = S7;
-                        //        LCFlag = false;
-                        //    }
-                        //}
-                        //else
-                        //{
-                            orderWisePlandataGridView.Rows.Add(S1, S2, S3, S4, S5, S6, S7, S8);
-                            if (S8)
-                            {
-                                orderWisePlandataGridView.Rows[S1 - 1].Cells[4].ReadOnly = true;
-                                orderWisePlandataGridView.Rows[S1 - 1].Cells[6].ReadOnly = true;
-                            }
-                            if (LCFlag)
-                            {
-                                if (LcArray != null && S1 <= LcArray.Length)
+                                //if ((OrderWisePlanGridRowIndex == S1 - 1) && LCFlag == true && NewVal > -1)
+                                //{
+                                //    if (LcArray != null && S1 <= LcArray.Length)
+                                //    {
+                                //        orderWisePlandataGridView.Rows[S1 - 1].Cells[6].ReadOnly = true;
+                                //    }
+                                //    if (S8 == false)
+                                //    {
+                                //        orderWisePlandataGridView.Rows[OrderWisePlanGridRowIndex].Cells[2].Value = S3;
+                                //        orderWisePlandataGridView.Rows[OrderWisePlanGridRowIndex].Cells[4].Value = S5;
+                                //        orderWisePlandataGridView.Rows[OrderWisePlanGridRowIndex].Cells[6].Value = S7;
+                                //        LCFlag = false;
+                                //    }
+                                //}
+                                //else
+                                //{
+                                orderWisePlandataGridView.Rows.Add(S1, S2, S3, S4, S5, S6, S7, S8, S9);
+                                if (S9)
                                 {
-                                    orderWisePlandataGridView.Rows[S1 - 1].Cells[6].ReadOnly = true;
+                                    orderWisePlandataGridView.Rows[S1 - 1].Cells[5].ReadOnly = true;
+                                    orderWisePlandataGridView.Rows[S1 - 1].Cells[7].ReadOnly = true;
                                 }
-                            }
-                        //}
+                                if (LCFlag)
+                                {
+                                    if (LcArray != null && LcCount <= LcArray.Length)
+                                    {
+                                        orderWisePlandataGridView.Rows[S1 - 1].Cells[7].ReadOnly = true;
+                                        if (LcCount == LcArray.Length)
+                                        {
+                                            LcCount = int.MaxValue;
+                                        }
+                                    }
+                                }
+                                //}
 
-                        if (temp == 0)
-                        {
-                            if (AutoFlag)
-                            {
-                                toDateTimePicker.Value = date.Date;
-                                toDate = date.Date;
-                                AutoFlag = false;
-                                
+                                if (temp == 0)
+                                {
+                                    if (AutoFlag)
+                                    {
+                                        toDateTimePicker.Value = GetMaxDate();
+                                        toDate = date.Date;
+                                        AutoFlag = false;
+                                    }
+                                    date = toDateTimePicker.Value.AddDays(1);
+                                }
+                                else if (temp != 0 && AutoFlag == true && date == DateTime.ParseExact(shipDateTextBox.Text, "dd/MM/yyyy", null))
+                                {
+                                    if (i == mcNo.Count - 1)
+                                    {
+                                        DialogResult dialogResult = MessageBox.Show("Next Date Exceeds Given Shipment Date! Do you want to continue further?", "Confirmation", MessageBoxButtons.YesNo);
+                                        if (dialogResult == DialogResult.No)
+                                        {
+                                            toDateTimePicker.Value = GetMaxDate();
+                                            toDate = date.Date;
+                                            date = toDateTimePicker.Value.AddDays(1);
+                                            AutoFlag = false;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        date = toDate;
+                                    }
+                                }
+                                SL++;
+                                S9 = false;
+                                date = date.AddDays(1);
                             }
-                            date = toDateTimePicker.Value.AddDays(1);
+                            i++;
+                            fromDate = fromDateTimePicker.Value.Date;
                         }
-                        SL++;
-                        S8 = false;
                     }
                 }
             }
@@ -1159,8 +1197,23 @@ namespace PlanningBoard
                     CommonFunctions.connection.Close();
                 }
                 CalculateOrderWisePlanGridSum();
-                LCFlag = false;
             }
+        }
+
+        private DateTime GetMaxDate()
+        {
+            DateTime maxDate = DateTime.MinValue.Date;
+            if (orderWisePlandataGridView.Rows.Count > 0)
+            {
+                foreach (DataGridViewRow row in orderWisePlandataGridView.Rows)
+                {
+                    if (DateTime.ParseExact(row.Cells[2].Value.ToString(), "dd/MM/yyyy", null) > maxDate)
+                    {
+                        maxDate = DateTime.ParseExact(row.Cells[2].Value.ToString(), "dd/MM/yyyy", null);
+                    }
+                }
+            }
+            return maxDate;
         }
 
         private void CalculateOrderWisePlanGridSum()
@@ -1174,17 +1227,29 @@ namespace PlanningBoard
                 {
                     foreach (DataGridViewRow row in orderWisePlandataGridView.Rows)
                     {
-                        bookedQtySum = bookedQtySum + Convert.ToInt32(row.Cells[3].Value);
-                        plnQtySum = plnQtySum + Convert.ToInt32(row.Cells[4].Value);
+                        bookedQtySum = bookedQtySum + Convert.ToInt32(row.Cells[4].Value);
+                        plnQtySum = plnQtySum + Convert.ToInt32(row.Cells[5].Value);
                     }
-                    orderWisePlandataGridView.Rows.Add("Total:", "", "", bookedQtySum, plnQtySum, "", "");
-                    orderWisePlandataGridView.Rows[orderWisePlandataGridView.Rows.Count - 1].Cells[4].ReadOnly = true;
-                    orderWisePlandataGridView.Rows[orderWisePlandataGridView.Rows.Count - 1].Cells[6].ReadOnly = true;
+                    orderWisePlandataGridView.Rows.Add("Total:", "", "", "", bookedQtySum, plnQtySum, "", "");
+                    orderWisePlandataGridView.Rows[orderWisePlandataGridView.Rows.Count - 1].Cells[5].ReadOnly = true;
+                    orderWisePlandataGridView.Rows[orderWisePlandataGridView.Rows.Count - 1].Cells[7].ReadOnly = true;
                 }
             }
             catch(Exception ex)
             {
                 MessageBox.Show("" + ex.ToString());
+            }
+            finally
+            {
+                LCFlag = false;
+                mcNo.Clear();
+                foreach (CheckComboBoxItem item in MachineComboBox.Items)
+                {
+                    if (item.CheckState == true)
+                    {
+                        mcNo.Add(Convert.ToInt32(item.Text));
+                    }
+                }
             }
         }
 
@@ -1250,17 +1315,7 @@ namespace PlanningBoard
                 else
                 {
                     LoadOrderWisePlanGrid();
-                }
-                
-                //if (LeftQty != 0)
-                //{
-                //    LoadOrderWisePlanGrid();
-                //}
-                //else
-                //{
-                //    MessageBox.Show("Quantity Already Used!!!");
-                //    orderWisePlandataGridView.Rows.Clear();
-                //} 
+                } 
             }
         }
 
@@ -1294,23 +1349,30 @@ namespace PlanningBoard
         {
             try
             {
-                String query = "SELECT * FROM WorkingDays WHERE WorkDate between '" + DateTime.ParseExact(fromDateTimePicker.Text, "dd/MM/yyyy", null) + "' AND '" + DateTime.ParseExact(toDateTimePicker.Text, "dd/MM/yyyy", null) + "' AND MachineNo = " + MachineNo + " AND Active != " + 0;
                 int minuteCap = 0;
-                int i = 0;
-                SqlDataReader reader =  CommonFunctions.GetFromDB(query);
-                if (reader.HasRows)
+                int j = 0;
+                while (j < mcNo.Count)
                 {
-                    while (reader.Read())
+                    MachineNo = (int)mcNo[j];
+                    String query = "SELECT * FROM WorkingDays WHERE WorkDate between '" + DateTime.ParseExact(fromDateTimePicker.Text, "dd/MM/yyyy", null) + "' AND '" + DateTime.ParseExact(toDateTimePicker.Text, "dd/MM/yyyy", null) + "' AND MachineNo = " + MachineNo + " AND Active != " + 0;
+                    int i = 0;
+                    SqlDataReader reader = CommonFunctions.GetFromDB(query);
+                    if (reader.HasRows)
                     {
-                        minuteCap = minuteCap + (int)reader["Minute"];
-                        i++;
+                        while (reader.Read())
+                        {
+                            minuteCap = minuteCap + (int)reader["Minute"];
+                            i++;
+                        }
                     }
+                    else
+                    {
+                        minuteCap = 0;
+                    }
+                    daydiff = i;
+                    j++;
                 }
-                else
-                {
-                    minuteCap = 0;
-                }
-                daydiff = i;
+                
                 return minuteCap;
             }
 
@@ -1400,6 +1462,7 @@ namespace PlanningBoard
                 orderInfoDetailsdataGridView.Rows.Clear();
                 LoadOrderInfoGrid();
             }
+            LoadMachine();
         }
 
         private void partComboBox_SelectedIndexChanged(object sender, System.EventArgs e)
@@ -1449,7 +1512,7 @@ namespace PlanningBoard
                     return;
                 }
 
-                if (MachineComboBox.SelectedIndex == 0)
+                if (mcNo.Count == 0)
                 {
                     MessageBox.Show("Please Select Machine No!!!", VariableDecleration_Class.sMSGBOX);
                     toDateTimePicker.Focus();
@@ -1461,7 +1524,7 @@ namespace PlanningBoard
                     MessageBox.Show("Empty!!!", VariableDecleration_Class.sMSGBOX);
                     return;
                 }
-                if (Convert.ToInt32(orderWisePlandataGridView.Rows[orderWisePlandataGridView.Rows.Count - 1].Cells[4].Value) < 1)
+                if (Convert.ToInt32(orderWisePlandataGridView.Rows[orderWisePlandataGridView.Rows.Count - 1].Cells[5].Value) < 1)
                 {
                     MessageBox.Show("Plan Qty is Zero! No Qty is Left to Add!!!", VariableDecleration_Class.sMSGBOX);
                     return;
@@ -1495,25 +1558,25 @@ namespace PlanningBoard
                     {
                         if (row.Index != orderWisePlandataGridView.Rows.Count - 1)
                         {
-                            if (Convert.ToBoolean(row.Cells[7].Value) == false && Convert.ToInt32(row.Cells[4].Value) > 0)
+                            if (Convert.ToBoolean(row.Cells[8].Value) == false && Convert.ToInt32(row.Cells[5].Value) > 0)
                             {
-                                int capacity = Convert.ToInt32(row.Cells[2].Value);
-                                int remainQty = Convert.ToInt32(row.Cells[2].Value) - (Convert.ToInt32(row.Cells[3].Value) + Convert.ToInt32(row.Cells[4].Value));
+                                MachineNo = Convert.ToInt32(row.Cells[1].Value);
+                                int capacity = Convert.ToInt32(row.Cells[3].Value);
+                                int remainQty = Convert.ToInt32(row.Cells[3].Value) - (Convert.ToInt32(row.Cells[4].Value) + Convert.ToInt32(row.Cells[5].Value));
                                 remainQty = remainQty < 0 ? 0 : remainQty;
-                                int plnQty = Convert.ToInt32(row.Cells[4].Value);
-                                int efficiency = Convert.ToInt32(row.Cells[6].Value);
-                                int minute = Convert.ToInt32(row.Cells[5].Value);
-                                DateTime taskDate = DateTime.ParseExact(row.Cells[1].Value.ToString(), "dd/MM/yyyy", null);
-                                int active = (int)row.Cells[2].Value < 1 ? 0 : 1;
+                                int plnQty = Convert.ToInt32(row.Cells[5].Value);
+                                int efficiency = Convert.ToInt32(row.Cells[7].Value);
+                                int minute = Convert.ToInt32(row.Cells[6].Value);
+                                DateTime taskDate = DateTime.ParseExact(row.Cells[2].Value.ToString(), "dd/MM/yyyy", null);
+                                int active = (int)row.Cells[3].Value < 1 ? 0 : 1;
                                 query = "IF EXISTS (SELECT * FROM PlanTable WHERE MachineNo = " + MachineNo + " AND OrderID = " + orderID + " AND TaskDate = '" + taskDate + "' ) UPDATE PlanTable SET " +
                                         "Capacity = " + capacity + ", PlanQty = " + plnQty + ", RemainingQty = " + remainQty + ", OrderQty = " + orderQty + ", Efficiency = " + efficiency +
                                         " WHERE MachineNo = " + MachineNo + " AND OrderID = " + orderID + " AND TaskDate = '" + taskDate + "' ELSE " +
                                         "INSERT INTO PlanTable (MachineNo, TaskDate, OrderID, Capacity, PlanQty, RemainingQty, OrderQty, Efficiency, SAM, Minute, RevertVal, ActualQty, Status) " +
-                                        "VALUES (" + MachineNo + ",'" + taskDate + "'," + orderID + "," + capacity + "," + plnQty + "," + remainQty + "," + orderQty + "," + efficiency + "," + Convert.ToDouble(samTextBox.Text) + "," + minute + ", 0, 0, 0)";
+                                        "VALUES (" + MachineNo + ",'" + taskDate + "'," + orderID + "," + capacity + "," + plnQty + "," + remainQty + "," + orderQty + "," + efficiency + "," + Convert.ToDouble(samTextBox.Text) + "," + minute + ", 0, 0, 0, 1)";
                                 result = CommonFunctions.ExecutionToDB(query, 3);
                             }
-                        }
-                            
+                        }   
                     }
                     if (result)
                     {
@@ -1551,10 +1614,10 @@ namespace PlanningBoard
             resetMachinePart();
             if (PlanBoardDisplayForm.EditMode && orderID != 0)
             {
-                qtyTextBox.Text = orderInfoDetailsdataGridView.Rows[rowIndex].Cells[6].Value.ToString();
-                samTextBox.Text = orderInfoDetailsdataGridView.Rows[rowIndex].Cells[8].Value.ToString();
-                effTextBox.Text = orderInfoDetailsdataGridView.Rows[rowIndex].Cells[9].Value.ToString();
-                shipDateTextBox.Text = orderInfoDetailsdataGridView.Rows[rowIndex].Cells[7].Value.ToString();
+                qtyTextBox.Text = orderInfoDetailsdataGridView.Rows[rowIndex].Cells[7].Value.ToString();
+                samTextBox.Text = orderInfoDetailsdataGridView.Rows[rowIndex].Cells[9].Value.ToString();
+                effTextBox.Text = orderInfoDetailsdataGridView.Rows[rowIndex].Cells[10].Value.ToString();
+                shipDateTextBox.Text = orderInfoDetailsdataGridView.Rows[rowIndex].Cells[8].Value.ToString();
                 ttlMinuteTextBox.ReadOnly = true;
                 avgCapcityTextBox.ReadOnly = true;
                 calculatedDaysNeedTextBox.ReadOnly = true;
@@ -1563,15 +1626,24 @@ namespace PlanningBoard
 
                 calculateValues();
             }
-            else
+            else 
             {
-                if (MachineComboBox.SelectedIndex > 0 && orderID != 0)
+                if (mcNo.Count > 0 && orderID != 0)
                 {
-                    MachineNo = Convert.ToInt32(MachineList[(int)MachineComboBox.SelectedValue]);
-                    qtyTextBox.Text = orderInfoDetailsdataGridView.Rows[rowIndex].Cells[6].Value.ToString();
-                    samTextBox.Text = orderInfoDetailsdataGridView.Rows[rowIndex].Cells[8].Value.ToString();
-                    effTextBox.Text = orderInfoDetailsdataGridView.Rows[rowIndex].Cells[9].Value.ToString();
-                    shipDateTextBox.Text = orderInfoDetailsdataGridView.Rows[rowIndex].Cells[7].Value.ToString();
+                    shipDate = DateTime.ParseExact(orderInfoDetailsdataGridView.Rows[rowIndex].Cells[8].Value.ToString(), "dd/MM/yyyy", null);
+                    if (toDateTimePicker.Value > shipDate)
+                    {
+                        MessageBox.Show("End Date Can not be greater than Knitting Close Date", VariableDecleration_Class.sMSGBOX);
+                        toDateTimePicker.Value = shipDate;
+                        toDateTimePicker.Focus();
+                        return;
+                    }
+
+                    //MachineNo = Convert.ToInt32(MachineList[(int)MachineComboBox.SelectedValue]);
+                    qtyTextBox.Text = orderInfoDetailsdataGridView.Rows[rowIndex].Cells[7].Value.ToString();
+                    samTextBox.Text = orderInfoDetailsdataGridView.Rows[rowIndex].Cells[9].Value.ToString();
+                    effTextBox.Text = orderInfoDetailsdataGridView.Rows[rowIndex].Cells[10].Value.ToString();
+                    shipDateTextBox.Text = orderInfoDetailsdataGridView.Rows[rowIndex].Cells[8].Value.ToString();
                     totalMinute = GetTotalMinute();
                     if (totalMinute == 0)
                     {
@@ -1586,30 +1658,22 @@ namespace PlanningBoard
                         avgCapcityTextBox.Text = AvgCapacity.ToString();
                         ttlMinuteTextBox.Text = totalMinute.ToString();
                         calculatedDaysNeedTextBox.Text = (Convert.ToDouble(qtyTextBox.Text) / Convert.ToDouble(avgCapcityTextBox.Text)).ToString("###,###.00");
-                        //LCText.Text = "";
-                        //if (LcArray != null)
-                        //{
-                        //    if (LcArray.Length > 0)
-                        //    {
-                        //        Array.Clear(LcArray, 0, LcArray.Length);
-                        //        LcArray = null;
-                        //    }
-                        //}
+                        
                         calculateValues();
                     }
                 }
-                else if (MachineComboBox.SelectedIndex > 0 && orderID == 0)
+                else if (mcNo.Count > 0 && orderID == 0)
                 {
-                    MachineNo = Convert.ToInt32(MachineList[(int)MachineComboBox.SelectedValue]);
+                    //MachineNo = Convert.ToInt32(MachineList[(int)MachineComboBox.SelectedValue]);
                     totalMinute = GetTotalMinute();
                     dayDiffTextBox.Text = daydiff.ToString();
                 }
-                else if (MachineComboBox.SelectedIndex < 1 && orderID != 0)
+                else if (mcNo.Count < 1 && orderID != 0)
                 {
-                    qtyTextBox.Text = orderInfoDetailsdataGridView.Rows[rowIndex].Cells[6].Value.ToString();
-                    samTextBox.Text = orderInfoDetailsdataGridView.Rows[rowIndex].Cells[8].Value.ToString();
-                    effTextBox.Text = orderInfoDetailsdataGridView.Rows[rowIndex].Cells[9].Value.ToString();
-                    shipDateTextBox.Text = orderInfoDetailsdataGridView.Rows[rowIndex].Cells[7].Value.ToString();
+                    qtyTextBox.Text = orderInfoDetailsdataGridView.Rows[rowIndex].Cells[7].Value.ToString();
+                    samTextBox.Text = orderInfoDetailsdataGridView.Rows[rowIndex].Cells[9].Value.ToString();
+                    effTextBox.Text = orderInfoDetailsdataGridView.Rows[rowIndex].Cells[10].Value.ToString();
+                    shipDateTextBox.Text = orderInfoDetailsdataGridView.Rows[rowIndex].Cells[8].Value.ToString();
                     resetMachinePart();
                     orderWisePlandataGridView.Rows.Clear();
                 }
@@ -1701,7 +1765,6 @@ namespace PlanningBoard
             daydiff = 0;
             labelAlert.Visible = false;
             CurrentTaskDate = DateTime.Now;
-            MachineComboBox.SelectedIndex = 0;
             buyerComboBox.SelectedIndex = 0;
             styleComboBox.SelectedIndex = 0;
             sizeComboBox.SelectedIndex = 0;
@@ -1710,6 +1773,7 @@ namespace PlanningBoard
             LCFlag = false;
             LcArray = null;
             EffList.Clear();
+            mcNo.Clear();
 
         }
 
@@ -1740,11 +1804,9 @@ namespace PlanningBoard
             if (e.RowIndex >= 0)
             {
                 rowIndex = e.RowIndex;
+                toDateTimePicker.Value = DateTime.ParseExact(orderInfoDetailsdataGridView.Rows[e.RowIndex].Cells["KnitCloseDate"].Value.ToString(), "dd/MM/yyyy", null);
                 hiddenTextBox.Text = orderInfoDetailsdataGridView.Rows[e.RowIndex].Cells["ID"].Value.ToString();
                 orderID = Convert.ToInt32(hiddenTextBox.Text);
-                setValue();
-                LCFlag = false;
-                LcArray = null;
                 if (!PlanBoardDisplayForm.EditMode)
                 {
                     buyerComboBox.Text = orderInfoDetailsdataGridView.Rows[e.RowIndex].Cells["Buyer"].Value.ToString();
@@ -1753,14 +1815,12 @@ namespace PlanningBoard
                     diaComboBox.Text = orderInfoDetailsdataGridView.Rows[e.RowIndex].Cells["Dia"].Value.ToString();
                     partComboBox.Text = orderInfoDetailsdataGridView.Rows[e.RowIndex].Cells["Part"].Value.ToString();
                 }
+                setValue();
+                LCFlag = false;
+                LcArray = null;
+                
                 hiddenTextBox.Text = "";
             }
-        }
-
-        private void MachineComboBox_SelectedIndexChanged(object sender, System.EventArgs e)
-        {
-            //MachineNo = Convert.ToInt32(MachineList[(int)MachineComboBox.SelectedValue]);
-            setValue();
         }
 
         private void fromDateTimePicker_ValueChanged(object sender, System.EventArgs e)
@@ -1771,7 +1831,7 @@ namespace PlanningBoard
             }
             if (toDateTimePicker.Value < fromDateTimePicker.Value)
             {
-                MessageBox.Show("FROM DATE Can not be Greater than To DATE");
+                MessageBox.Show("Start DATE Can not be Greater than End DATE");
                 fromDateTimePicker.Value = DateTime.Now.Date;
                 return;
             }
@@ -1788,7 +1848,7 @@ namespace PlanningBoard
 
             if (toDateTimePicker.Value < fromDateTimePicker.Value)
             {
-                MessageBox.Show("FROM DATE Can not be Greater than To DATE");
+                MessageBox.Show("Start DATE Can not be Greater than End DATE");
                 toDateTimePicker.Value = DateTime.Now.Date;
                 return;
             }
@@ -1809,7 +1869,7 @@ namespace PlanningBoard
 
         private void newOrderQtyTextBox_TextChanged(object sender, System.EventArgs e)
         {
-            if (MachineComboBox.SelectedIndex > 0 && orderID != 0 && AvgCapacity != 0)
+            if (mcNo.Count > 0 && orderID != 0 && AvgCapacity != 0)
             {
                 if (newOrderQtyTextBox.Text == "")
                 {
@@ -1829,7 +1889,7 @@ namespace PlanningBoard
 
         private void orderWisePlandataGridView_EditingControlShowing(object sender, DataGridViewEditingControlShowingEventArgs e)
         {
-            if (orderWisePlandataGridView.CurrentCell.ColumnIndex == 4) //Desired Column
+            if (orderWisePlandataGridView.CurrentCell.ColumnIndex == 5) //Desired Column
             {
                 e.Control.KeyPress -= new KeyPressEventHandler(PlanQty_KeyPress);
                 TextBox tb = e.Control as TextBox;
@@ -1838,7 +1898,7 @@ namespace PlanningBoard
                     tb.KeyPress += new KeyPressEventHandler(PlanQty_KeyPress);
                 }
             }
-            else if (orderWisePlandataGridView.CurrentCell.ColumnIndex == 6) //Desired Column
+            else if (orderWisePlandataGridView.CurrentCell.ColumnIndex == 7) //Desired Column
             {
                 e.Control.KeyPress -= new KeyPressEventHandler(Eff_KeyPress);
                 TextBox tb = e.Control as TextBox;
@@ -1876,7 +1936,7 @@ namespace PlanningBoard
             {
                 if (row.Index != orderWisePlandataGridView.Rows.Count - 1)
                 {
-                    EffList.Add(Convert.ToInt32(row.Index), Convert.ToInt32(row.Cells[6].Value));
+                    EffList.Add(Convert.ToInt32(row.Index), Convert.ToInt32(row.Cells[7].Value));
                 }
             }
         }
@@ -1887,7 +1947,7 @@ namespace PlanningBoard
             {
                 if (orderID != 0)
                 {
-                    if (e.RowIndex > -1 && e.RowIndex < orderWisePlandataGridView.Rows.Count - 1 && (e.ColumnIndex == 4 || e.ColumnIndex == 6 || e.ColumnIndex == 1) && OrderWisePlanGridRowIndex == -1 && PreVal < 0)
+                    if (e.RowIndex > -1 && e.RowIndex < orderWisePlandataGridView.Rows.Count - 1 && (e.ColumnIndex == 5 || e.ColumnIndex == 7 || e.ColumnIndex == 2) && OrderWisePlanGridRowIndex == -1 && PreVal < 0)
                     {
                         if (orderWisePlandataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString() != "")
                         {
@@ -1913,9 +1973,9 @@ namespace PlanningBoard
             }
             else
             {
-                if (MachineComboBox.SelectedIndex > 0 && orderID != 0)
+                if (mcNo.Count > 0 && orderID != 0)
                 {
-                    if (e.RowIndex > -1 && e.RowIndex < orderWisePlandataGridView.Rows.Count - 1 && (e.ColumnIndex == 4 || e.ColumnIndex == 6) && OrderWisePlanGridRowIndex == -1 && PreVal < 0)
+                    if (e.RowIndex > -1 && e.RowIndex < orderWisePlandataGridView.Rows.Count - 1 && (e.ColumnIndex == 5 || e.ColumnIndex == 7) && OrderWisePlanGridRowIndex == -1 && PreVal < 0)
                     {
                         if (orderWisePlandataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString() != "")
                         {
@@ -1939,14 +1999,14 @@ namespace PlanningBoard
                 if (PlanBoardDisplayForm.EditMode)
                 {
                     string query = "";
-                    DateTime TaskDate = DateTime.ParseExact(orderWisePlandataGridView.Rows[0].Cells[1].Value.ToString(), "dd/MM/yyyy", null);
+                    DateTime TaskDate = DateTime.ParseExact(orderWisePlandataGridView.Rows[0].Cells[2].Value.ToString(), "dd/MM/yyyy", null);
 
-                    int capacity = Convert.ToInt32(orderWisePlandataGridView.Rows[0].Cells[2].Value);
-                    int planQty = Convert.ToInt32(orderWisePlandataGridView.Rows[0].Cells[4].Value);
+                    int capacity = Convert.ToInt32(orderWisePlandataGridView.Rows[0].Cells[3].Value);
+                    int planQty = Convert.ToInt32(orderWisePlandataGridView.Rows[0].Cells[5].Value);
                     int remainingQty = capacity - planQty;
-                    int efficiency = Convert.ToInt32(orderWisePlandataGridView.Rows[0].Cells[6].Value);
+                    int efficiency = Convert.ToInt32(orderWisePlandataGridView.Rows[0].Cells[7].Value);
                     int orderQty = Convert.ToInt32(qtyTextBox.Text);
-                    int minute = Convert.ToInt32(orderWisePlandataGridView.Rows[0].Cells[5].Value);
+                    int minute = Convert.ToInt32(orderWisePlandataGridView.Rows[0].Cells[6].Value);
 
                     if (CurrentTaskDate != TaskDate)
                     {
@@ -2004,7 +2064,7 @@ namespace PlanningBoard
                     ResetOrderWiseePlanTableParameters();
                     return;
                 }
-                if (e.ColumnIndex == 6)
+                if (e.ColumnIndex == 7)
                 {
                     if (Convert.ToInt32(orderWisePlandataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value) > 100)
                     {
@@ -2015,9 +2075,9 @@ namespace PlanningBoard
                     }
                     
                 }
-                if (e.ColumnIndex == 4)
+                if (e.ColumnIndex == 5)
                 {
-                    if (Convert.ToInt32(orderWisePlandataGridView.Rows[e.RowIndex].Cells[4].Value) > (Convert.ToInt32(orderWisePlandataGridView.Rows[e.RowIndex].Cells[2].Value) - Convert.ToInt32(orderWisePlandataGridView.Rows[e.RowIndex].Cells[3].Value)))
+                    if (Convert.ToInt32(orderWisePlandataGridView.Rows[e.RowIndex].Cells[5].Value) > (Convert.ToInt32(orderWisePlandataGridView.Rows[e.RowIndex].Cells[3].Value) - Convert.ToInt32(orderWisePlandataGridView.Rows[e.RowIndex].Cells[4].Value)))
                     {
                         MessageBox.Show("Plan Qty can not be greater than Remaining Qty!!!");
                         orderWisePlandataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = PreVal;
@@ -2027,7 +2087,7 @@ namespace PlanningBoard
                 }
                 
 
-                if (orderWisePlandataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value != null && e.RowIndex > -1 && e.RowIndex < (orderWisePlandataGridView.Rows.Count - 1) && (e.ColumnIndex == 1 || e.ColumnIndex == 4 || e.ColumnIndex == 6) && OrderWisePlanGridRowIndex == -1 && NewVal < 0)
+                if (orderWisePlandataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value != null && e.RowIndex > -1 && e.RowIndex < (orderWisePlandataGridView.Rows.Count - 1) && (e.ColumnIndex == 2 || e.ColumnIndex == 5 || e.ColumnIndex == 7) && OrderWisePlanGridRowIndex == -1 && NewVal < 0)
                 {
                     if (e.ColumnIndex == 1) // TaskDate Column
                     {
@@ -2060,31 +2120,31 @@ namespace PlanningBoard
                                             {
                                                 while (reader.Read())
                                                 {
-                                                    capacity = Convert.ToInt32(reader["Capacity"]);
-                                                    TotalPlanQty = Convert.ToInt32(reader["TotalPlanQty"]);
-                                                    minute = Convert.ToInt32(reader["Minute"]);
-                                                    efficiency = Convert.ToInt32(reader["Efficiency"]);
-                                                    planQty = Convert.ToInt32(reader["PlanQty"]);
-                                                    remainingQty = Convert.ToInt32(reader["RemainingQty"]);
+                                                    capacity = reader.IsDBNull(reader.GetOrdinal("Capacity")) == true ? 0 : Convert.ToInt32(reader["Capacity"]);
+                                                    TotalPlanQty = reader.IsDBNull(reader.GetOrdinal("TotalPlanQty")) == true ? 0 : Convert.ToInt32(reader["TotalPlanQty"]);
+                                                    minute = reader.IsDBNull(reader.GetOrdinal("Minute")) == true ? 0 : Convert.ToInt32(reader["Minute"]);
+                                                    efficiency = reader.IsDBNull(reader.GetOrdinal("Efficiency")) == true ? 0 : Convert.ToInt32(reader["Efficiency"]);
+                                                    planQty = reader.IsDBNull(reader.GetOrdinal("PlanQty")) == true ? 0 : Convert.ToInt32(reader["PlanQty"]);
+                                                    remainingQty = reader.IsDBNull(reader.GetOrdinal("RemainingQty")) == true ? 0 : Convert.ToInt32(reader["RemainingQty"]);
                                                 }
                                             }
                                             if (capacity > TotalPlanQty)
                                             {
-                                                int currentPlanQty = Convert.ToInt32(orderWisePlandataGridView.Rows[e.RowIndex].Cells[4].Value);
+                                                int currentPlanQty = Convert.ToInt32(orderWisePlandataGridView.Rows[e.RowIndex].Cells[5].Value);
                                                 //double UpdatedEfficiency = (double)(efficiency + Convert.ToInt32(orderWisePlandataGridView.Rows[e.RowIndex].Cells[6].Value)) / 2.00;
                                                 //int newCapacity = Convert.ToInt32(Math.Floor((double)((minute * (UpdatedEfficiency / 100.00)) / Convert.ToDouble(samTextBox.Text))));
                                                 int newPlanQty = currentPlanQty + planQty > capacity ? currentPlanQty - ((currentPlanQty + planQty) - capacity) : currentPlanQty + planQty;
 
-                                                orderWisePlandataGridView.Rows[e.RowIndex].Cells[1].Value = NewDate.ToString("dd/MM/yyyy");
-                                                orderWisePlandataGridView.Rows[e.RowIndex].Cells[2].Value = capacity;
-                                                orderWisePlandataGridView.Rows[e.RowIndex].Cells[3].Value = remainingQty;
-                                                orderWisePlandataGridView.Rows[e.RowIndex].Cells[4].Value = newPlanQty;
-                                                orderWisePlandataGridView.Rows[e.RowIndex].Cells[5].Value = minute;
+                                                orderWisePlandataGridView.Rows[e.RowIndex].Cells[2].Value = NewDate.ToString("dd/MM/yyyy");
+                                                orderWisePlandataGridView.Rows[e.RowIndex].Cells[3].Value = capacity;
+                                                orderWisePlandataGridView.Rows[e.RowIndex].Cells[4].Value = remainingQty;
+                                                orderWisePlandataGridView.Rows[e.RowIndex].Cells[5].Value = newPlanQty;
+                                                orderWisePlandataGridView.Rows[e.RowIndex].Cells[6].Value = minute;
                                             }
                                             else
                                             {
                                                 MessageBox.Show("This date has no capacity left to add plan quantity!!!");
-                                                orderWisePlandataGridView.Rows[e.RowIndex].Cells[1].Value = CurrentTaskDate.ToString("dd/MM/yyyy");
+                                                orderWisePlandataGridView.Rows[e.RowIndex].Cells[2].Value = CurrentTaskDate.ToString("dd/MM/yyyy");
                                             }
                                         }
                                         catch (Exception ee)
@@ -2106,14 +2166,14 @@ namespace PlanningBoard
                                         SqlDataReader reader = CommonFunctions.GetFromDB(query);
                                         try
                                         {
-                                            int currentPlanQty = Convert.ToInt32(orderWisePlandataGridView.Rows[e.RowIndex].Cells[4].Value);
+                                            int currentPlanQty = Convert.ToInt32(orderWisePlandataGridView.Rows[e.RowIndex].Cells[5].Value);
                                             if (reader.HasRows)
                                             {
                                                 while (reader.Read())
                                                 {
-                                                    capacity = Convert.ToInt32(reader["Capacity"]);
-                                                    TotalPlanQty = Convert.ToInt32(reader["TotalPlanQty"]);
-                                                    minute = Convert.ToInt32(reader["Minute"]);
+                                                    capacity = reader.IsDBNull(reader.GetOrdinal("Capacity")) == true ? 0 : Convert.ToInt32(reader["Capacity"]);
+                                                    TotalPlanQty = reader.IsDBNull(reader.GetOrdinal("TotalPlanQty")) == true ? 0 : Convert.ToInt32(reader["TotalPlanQty"]);
+                                                    minute = reader.IsDBNull(reader.GetOrdinal("Minute")) == true ? 0 : Convert.ToInt32(reader["Minute"]);
                                                 }
 
                                                 if (capacity > TotalPlanQty)
@@ -2129,39 +2189,39 @@ namespace PlanningBoard
                                                             double RestTotalSAM = reader1.IsDBNull(reader1.GetOrdinal("RestTotalSAM")) == true ? 0.00 : Convert.ToDouble(reader1["RestTotalSAM"]);
                                                             int RestTotalEfficiency = reader1.IsDBNull(reader1.GetOrdinal("RestTotalEfficiency")) == true ? 0 : Convert.ToInt32(reader1["RestTotalEfficiency"]);
                                                             double UpdatedSam = (RestTotalSAM + Convert.ToDouble(samTextBox.Text)) / (Convert.ToInt32(reader1["RecordCount"]) + 1);
-                                                            double UpdatedEfficiency = (double)(RestTotalEfficiency + Convert.ToInt32(orderWisePlandataGridView.Rows[e.RowIndex].Cells[6].Value)) / (Convert.ToInt32(reader1["RecordCount"]) + 1);
+                                                            double UpdatedEfficiency = (double)(RestTotalEfficiency + Convert.ToInt32(orderWisePlandataGridView.Rows[e.RowIndex].Cells[7].Value)) / (Convert.ToInt32(reader1["RecordCount"]) + 1);
                                                             NewCapacity = Convert.ToInt32(Math.Floor((double)((minute * (UpdatedEfficiency / 100.00)) / UpdatedSam)));
                                                         }
                                                         if (TotalPlanQty + currentPlanQty <= NewCapacity)
                                                         {
-                                                            orderWisePlandataGridView.Rows[e.RowIndex].Cells[1].Value = NewDate.ToString("dd/MM/yyyy");
-                                                            orderWisePlandataGridView.Rows[e.RowIndex].Cells[2].Value = NewCapacity;
-                                                            orderWisePlandataGridView.Rows[e.RowIndex].Cells[3].Value = TotalPlanQty;
-                                                            orderWisePlandataGridView.Rows[e.RowIndex].Cells[4].Value = currentPlanQty;
-                                                            orderWisePlandataGridView.Rows[e.RowIndex].Cells[5].Value = minute;
+                                                            orderWisePlandataGridView.Rows[e.RowIndex].Cells[2].Value = NewDate.ToString("dd/MM/yyyy");
+                                                            orderWisePlandataGridView.Rows[e.RowIndex].Cells[3].Value = NewCapacity;
+                                                            orderWisePlandataGridView.Rows[e.RowIndex].Cells[4].Value = TotalPlanQty;
+                                                            orderWisePlandataGridView.Rows[e.RowIndex].Cells[5].Value = currentPlanQty;
+                                                            orderWisePlandataGridView.Rows[e.RowIndex].Cells[6].Value = minute;
                                                         }
                                                         else
                                                         {
                                                             MessageBox.Show("This date has no capacity left to add plan quantity!!!");
-                                                            orderWisePlandataGridView.Rows[e.RowIndex].Cells[1].Value = CurrentTaskDate.ToString("dd/MM/yyyy");
+                                                            orderWisePlandataGridView.Rows[e.RowIndex].Cells[2].Value = CurrentTaskDate.ToString("dd/MM/yyyy");
                                                         }
                                                     }
                                                     else
                                                     {
                                                         MessageBox.Show("Failed To Update Capacity!!!");
-                                                        orderWisePlandataGridView.Rows[e.RowIndex].Cells[1].Value = CurrentTaskDate.ToString("dd/MM/yyyy");
+                                                        orderWisePlandataGridView.Rows[e.RowIndex].Cells[2].Value = CurrentTaskDate.ToString("dd/MM/yyyy");
                                                     }
                                                 }
                                                 else
                                                 {
                                                     MessageBox.Show("This date has no capacity left to add plan quantity!!!");
-                                                    orderWisePlandataGridView.Rows[e.RowIndex].Cells[1].Value = CurrentTaskDate.ToString("dd/MM/yyyy");
+                                                    orderWisePlandataGridView.Rows[e.RowIndex].Cells[2].Value = CurrentTaskDate.ToString("dd/MM/yyyy");
                                                 }
                                             }
                                             else
                                             {
                                                 MessageBox.Show("Failed To Update Capacity!!!");
-                                                orderWisePlandataGridView.Rows[e.RowIndex].Cells[1].Value = CurrentTaskDate.ToString("dd/MM/yyyy");
+                                                orderWisePlandataGridView.Rows[e.RowIndex].Cells[2].Value = CurrentTaskDate.ToString("dd/MM/yyyy");
                                             }
                                         }
                                         catch (Exception ee)
@@ -2180,8 +2240,8 @@ namespace PlanningBoard
                                 else
                                 {
                                     int minute = 0;
-                                    int efficiency = Convert.ToInt32(orderWisePlandataGridView.Rows[e.RowIndex].Cells[6].Value);
-                                    int currentPlanQty = Convert.ToInt32(orderWisePlandataGridView.Rows[e.RowIndex].Cells[4].Value);
+                                    int efficiency = Convert.ToInt32(orderWisePlandataGridView.Rows[e.RowIndex].Cells[7].Value);
+                                    int currentPlanQty = Convert.ToInt32(orderWisePlandataGridView.Rows[e.RowIndex].Cells[5].Value);
                                     double Sam = Convert.ToDouble(samTextBox.Text);
                                     string query = "SELECT Minute FROM WorkingDays WHERE MachineNo =" + MachineNo + " AND WorkDate = '" + NewDate + "'";
                                     SqlDataReader reader = CommonFunctions.GetFromDB(query);
@@ -2189,12 +2249,12 @@ namespace PlanningBoard
                                     {
                                         while(reader.Read())
                                         {
-                                            minute = Convert.ToInt32(reader["Minute"]);
+                                            minute = reader.IsDBNull(reader.GetOrdinal("Minute")) == true ? 0 : Convert.ToInt32(reader["Minute"]);
                                         }
                                     }
                                     int capacity = Convert.ToInt32(Math.Floor((double)((minute * (efficiency / 100.00)) / Sam)));
                                     currentPlanQty = capacity < currentPlanQty ? capacity : currentPlanQty;
-                                    orderWisePlandataGridView.Rows[e.RowIndex].Cells[2].Value = capacity;
+                                    orderWisePlandataGridView.Rows[e.RowIndex].Cells[3].Value = capacity;
                                 }
                             }
                             else
@@ -2211,7 +2271,7 @@ namespace PlanningBoard
                     }
                     else if (e.ColumnIndex == 4) // PlanQuantity Column
                     {
-                        if (Convert.ToInt32(orderWisePlandataGridView.Rows[e.RowIndex].Cells[2].Value) - Convert.ToInt32(orderWisePlandataGridView.Rows[e.RowIndex].Cells[3].Value) < NewVal)
+                        if (Convert.ToInt32(orderWisePlandataGridView.Rows[e.RowIndex].Cells[3].Value) - Convert.ToInt32(orderWisePlandataGridView.Rows[e.RowIndex].Cells[4].Value) < NewVal)
                         {
                             MessageBox.Show("Plan Quantity can not be greater than remamining Capacity!!!");
                             orderWisePlandataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = PreVal;
@@ -2221,12 +2281,12 @@ namespace PlanningBoard
                     else if (e.ColumnIndex == 6) // For Efficiency Column
                     {
                         int newPlanQty = 0;
-                        int currentMinute = Convert.ToInt32(orderWisePlandataGridView.Rows[e.RowIndex].Cells[5].Value);
-                        int CurrentPlanQty = Convert.ToInt32(orderWisePlandataGridView.Rows[e.RowIndex].Cells[4].Value);
+                        int currentMinute = Convert.ToInt32(orderWisePlandataGridView.Rows[e.RowIndex].Cells[6].Value);
+                        int CurrentPlanQty = Convert.ToInt32(orderWisePlandataGridView.Rows[e.RowIndex].Cells[5].Value);
                         NewVal = Convert.ToInt32(orderWisePlandataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value);
                         OrderWisePlanGridRowIndex = e.RowIndex;
 
-                        DateTime sDate = DateTime.ParseExact(orderWisePlandataGridView.Rows[OrderWisePlanGridRowIndex].Cells[1].Value.ToString(), "dd/MM/yyyy", null);
+                        DateTime sDate = DateTime.ParseExact(orderWisePlandataGridView.Rows[OrderWisePlanGridRowIndex].Cells[2].Value.ToString(), "dd/MM/yyyy", null);
                         string query = "SELECT (SELECT Count(Id) FROM PlanTable WHERE MachineNo = " + MachineNo + " AND TaskDate = '" + sDate + "') As RecordCount, SUM(SAM) AS RestTotalSAM, SUM(Minute) AS RestTotalMinute," + 
                                         "SUM(PlanQty) AS RestTotalRemainingQty, SUM(Efficiency) AS RestTotalEfficiency FROM PlanTable WHERE MachineNo = " + MachineNo + " AND TaskDate = '" + sDate + "' AND OrderID != " + orderID;
                         
@@ -2250,19 +2310,19 @@ namespace PlanningBoard
                                     int RestTotalRemainingQty = reader.IsDBNull(reader.GetOrdinal("RestTotalRemainingQty")) == true ?  0 : Convert.ToInt32(reader["RestTotalRemainingQty"]);
                                     newPlanQty = CurrentPlanQty + RestTotalRemainingQty > NewCapacity ? NewCapacity - RestTotalRemainingQty : CurrentPlanQty;
                                 }
-                                orderWisePlandataGridView.Rows[e.RowIndex].Cells[2].Value = NewCapacity;
-                                orderWisePlandataGridView.Rows[e.RowIndex].Cells[4].Value = newPlanQty;
+                                orderWisePlandataGridView.Rows[e.RowIndex].Cells[3].Value = NewCapacity;
+                                orderWisePlandataGridView.Rows[e.RowIndex].Cells[5].Value = newPlanQty;
                             }
                             else
                             {
                                 MessageBox.Show("Failed To Update Capacity!!!");
-                                orderWisePlandataGridView.Rows[e.RowIndex].Cells[2].Value = PreVal;
+                                orderWisePlandataGridView.Rows[e.RowIndex].Cells[3].Value = PreVal;
                             }
                         }
                         catch (Exception ee)
                         {
                             MessageBox.Show("" + ee.ToString());
-                            orderWisePlandataGridView.Rows[e.RowIndex].Cells[2].Value = PreVal;
+                            orderWisePlandataGridView.Rows[e.RowIndex].Cells[3].Value = PreVal;
                         }
                         finally
                         {
@@ -2279,8 +2339,12 @@ namespace PlanningBoard
             }
             else
             {
-                if (MachineComboBox.SelectedIndex > 0 && orderID != 0)
+                if (mcNo.Count > 0 && orderID != 0)
                 {
+                    string sDate = "";
+                    int mc = Convert.ToInt32(orderWisePlandataGridView.Rows[e.RowIndex].Cells[1].Value);
+                    int mcIndex = mcNo.IndexOf(mc);
+
                     if (orderWisePlandataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value == null)
                     {
                         MessageBox.Show("Null Value can not used!!!");
@@ -2302,24 +2366,52 @@ namespace PlanningBoard
                         return;
                     }
 
-                    if (orderWisePlandataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value != null && e.RowIndex > -1 && e.RowIndex < (orderWisePlandataGridView.Rows.Count - 1) && (e.ColumnIndex == 4 || e.ColumnIndex == 6) && OrderWisePlanGridRowIndex == -1 && NewVal < 0)
+                    if (orderWisePlandataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value != null && e.RowIndex > -1 && e.RowIndex < (orderWisePlandataGridView.Rows.Count - 1) && (e.ColumnIndex == 5 || e.ColumnIndex == 7) && OrderWisePlanGridRowIndex == -1 && NewVal < 0)
                     {
-                        if (e.ColumnIndex == 6) // For Efficiency Column
+                        if (e.ColumnIndex == 7) // For Efficiency Column
                         {
+                            LcArray = null;
                             NewVal = Convert.ToInt32(orderWisePlandataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value);
                             OrderWisePlanGridRowIndex = e.RowIndex;
                             LCFlag = true;
                             int temp = 0;
                             int rowCount = orderWisePlandataGridView.Rows.Count - 1;
 
-                            DateTime currentRowDate = DateTime.ParseExact(orderWisePlandataGridView.Rows[OrderWisePlanGridRowIndex].Cells[1].Value.ToString(), "dd/MM/yyyy", null);
+                            DateTime currentRowDate = DateTime.ParseExact(orderWisePlandataGridView.Rows[OrderWisePlanGridRowIndex].Cells[2].Value.ToString(), "dd/MM/yyyy", null);
 
-                            string sDate = OrderWisePlanGridRowIndex < rowCount - 1 ? DateTime.ParseExact(orderWisePlandataGridView.Rows[OrderWisePlanGridRowIndex + 1].Cells[1].Value.ToString(), "dd/MM/yyyy", null).ToString()
-                                : toDateTimePicker.Value > currentRowDate ? currentRowDate.AddDays(1).ToString() : "";
+                             //= OrderWisePlanGridRowIndex < rowCount - 1 ? DateTime.ParseExact(orderWisePlandataGridView.Rows[OrderWisePlanGridRowIndex + 1].Cells[2].Value.ToString(), "dd/MM/yyyy", null).ToString()
+                             //   : toDateTimePicker.Value > currentRowDate ? currentRowDate.AddDays(1).ToString() : "";
+
+                            //if (OrderWisePlanGridRowIndex < rowCount - 1)
+                            //{
+                            //    sDate = DateTime.ParseExact(orderWisePlandataGridView.Rows[OrderWisePlanGridRowIndex + 1].Cells[2].Value.ToString(), "dd/MM/yyyy", null).ToString();
+                            //}
+                            //else
+                            //{
+                            //    sDate = toDateTimePicker.Value > currentRowDate ? currentRowDate.AddDays(1).ToString() : "";
+                            //}
+
+                            if (DateTime.ParseExact(orderWisePlandataGridView.Rows[OrderWisePlanGridRowIndex].Cells[2].Value.ToString(), "dd/MM/yyyy", null) < toDateTimePicker.Value)
+                            {
+                                sDate = DateTime.ParseExact(orderWisePlandataGridView.Rows[OrderWisePlanGridRowIndex].Cells[2].Value.ToString(), "dd/MM/yyyy", null).AddDays(1).ToString();
+                                mcNo.RemoveRange(0, mcIndex);
+                            }
+                            else
+                            {
+                                if (mcIndex == mcNo.Count - 1)
+                                {
+                                    sDate = "";
+                                }
+                                else
+                                {
+                                    sDate = fromDateTimePicker.Value.ToString();
+                                    mcNo.RemoveRange(0, mcIndex + 1);
+                                }
+                            }
 
                             int capacity = 0;
-                            int CurrentRowBookedQty = Convert.ToInt32(orderWisePlandataGridView.Rows[OrderWisePlanGridRowIndex].Cells[3].Value);
-                            int CurrentRowMinute = Convert.ToInt32(orderWisePlandataGridView.Rows[OrderWisePlanGridRowIndex].Cells[5].Value);
+                            int CurrentRowBookedQty = Convert.ToInt32(orderWisePlandataGridView.Rows[OrderWisePlanGridRowIndex].Cells[4].Value);
+                            int CurrentRowMinute = Convert.ToInt32(orderWisePlandataGridView.Rows[OrderWisePlanGridRowIndex].Cells[6].Value);
 
                             if (CurrentRowBookedQty > 0)
                             {
@@ -2356,9 +2448,9 @@ namespace PlanningBoard
                             {
                                 if (i < OrderWisePlanGridRowIndex)
                                 {
-                                    if (Convert.ToBoolean(orderWisePlandataGridView.Rows[i].Cells[7].Value) == false)
+                                    if (Convert.ToBoolean(orderWisePlandataGridView.Rows[i].Cells[8].Value) == false)
                                     {
-                                        temp = temp + Convert.ToInt32(orderWisePlandataGridView.Rows[i].Cells[4].Value);
+                                        temp = temp + Convert.ToInt32(orderWisePlandataGridView.Rows[i].Cells[5].Value);
                                     }  
                                 }
                                 if (i > OrderWisePlanGridRowIndex)
@@ -2368,8 +2460,8 @@ namespace PlanningBoard
                             }
 
                             int UpdatedPlanQty = (Convert.ToInt32(newOrderQtyTextBox.Text) - temp) > (capacity - CurrentRowBookedQty) ? (capacity - CurrentRowBookedQty) : (Convert.ToInt32(newOrderQtyTextBox.Text) - temp);
-                            orderWisePlandataGridView.Rows[OrderWisePlanGridRowIndex].Cells[2].Value = capacity;
-                            orderWisePlandataGridView.Rows[OrderWisePlanGridRowIndex].Cells[4].Value = UpdatedPlanQty;
+                            orderWisePlandataGridView.Rows[OrderWisePlanGridRowIndex].Cells[3].Value = capacity;
+                            orderWisePlandataGridView.Rows[OrderWisePlanGridRowIndex].Cells[5].Value = UpdatedPlanQty;
                             temp = Convert.ToInt32(newOrderQtyTextBox.Text) - (temp + UpdatedPlanQty);
 
                             if (sDate != "" && temp != 0)
@@ -2382,18 +2474,18 @@ namespace PlanningBoard
                                 LCFlag = false;
                             }
                         }
-                        else if (e.ColumnIndex == 4) // For Plan Quantity Column
+                        else if (e.ColumnIndex == 5) // For Plan Quantity Column
                         {
                             OrderWisePlanGridRowIndex = e.RowIndex;
                             NewVal = Convert.ToInt32(orderWisePlandataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value);
-                            if (Convert.ToInt32(orderWisePlandataGridView.Rows[e.RowIndex].Cells[2].Value) - Convert.ToInt32(orderWisePlandataGridView.Rows[e.RowIndex].Cells[3].Value) < 0)
+                            if (Convert.ToInt32(orderWisePlandataGridView.Rows[e.RowIndex].Cells[3].Value) - Convert.ToInt32(orderWisePlandataGridView.Rows[e.RowIndex].Cells[4].Value) < 0)
                             {
                                 MessageBox.Show("No Qty is Left!!!");
                                 orderWisePlandataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = PreVal;
                                 ResetOrderWiseePlanTableParameters();
                                 return;
                             }
-                            if (Convert.ToInt32(orderWisePlandataGridView.Rows[e.RowIndex].Cells[2].Value) - Convert.ToInt32(orderWisePlandataGridView.Rows[e.RowIndex].Cells[3].Value) < NewVal)
+                            if (Convert.ToInt32(orderWisePlandataGridView.Rows[e.RowIndex].Cells[3].Value) - Convert.ToInt32(orderWisePlandataGridView.Rows[e.RowIndex].Cells[4].Value) < NewVal)
                             {
                                 MessageBox.Show("Plan Quantity can not be greater than remamining Capacity!!!");
                                 orderWisePlandataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = PreVal;
@@ -2417,9 +2509,15 @@ namespace PlanningBoard
                                 MessageBox.Show("Plan Quantity can not be zero!!!");
                             }
 
+                            else if (mcIndex == mcNo.Count-1 && DateTime.ParseExact(orderWisePlandataGridView.Rows[OrderWisePlanGridRowIndex].Cells[2].Value.ToString(), "dd/MM/yyyy", null) == toDateTimePicker.Value && e.RowIndex == LastRowIndex - 1)
+                            {
+                                orderWisePlandataGridView.Rows.RemoveAt(LastRowIndex);
+                                CalculateOrderWisePlanGridSum();
+                            }
+
                             else if (NewVal > PreVal)
                             {
-                                if (NewVal > (int)orderWisePlandataGridView.Rows[e.RowIndex].Cells[2].Value || e.RowIndex == LastRowIndex - 1)
+                                if (NewVal > (int)orderWisePlandataGridView.Rows[e.RowIndex].Cells[3].Value || e.RowIndex == LastRowIndex - 1)
                                 {
                                     MessageBox.Show("Plan Quantity can not be greater than capacity!!!");
                                     orderWisePlandataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = PreVal;
@@ -2432,7 +2530,7 @@ namespace PlanningBoard
                                     {
                                         if (row.Index > OrderWisePlanGridRowIndex && row.Index != orderWisePlandataGridView.Rows.Count - 1)
                                         {
-                                            if ((int)row.Cells[2].Value > 0)
+                                            if ((int)row.Cells[3].Value > 0)
                                             {
                                                 remainingSum = remainingSum + Convert.ToInt32(row.Cells[e.ColumnIndex].Value);
                                             }
@@ -2440,11 +2538,26 @@ namespace PlanningBoard
                                     }
                                     if (NewVal > -1)
                                     {
-                                        if (temp > remainingSum)
-                                            temp = temp - remainingSum;
+                                        temp = temp > remainingSum ? temp - remainingSum : remainingSum - temp;
+
+                                        if (DateTime.ParseExact(orderWisePlandataGridView.Rows[OrderWisePlanGridRowIndex].Cells[2].Value.ToString(), "dd/MM/yyyy", null) < toDateTimePicker.Value)
+                                        {
+                                            sDate = DateTime.ParseExact(orderWisePlandataGridView.Rows[OrderWisePlanGridRowIndex].Cells[2].Value.ToString(), "dd/MM/yyyy", null).AddDays(1).ToString();
+                                            mcNo.RemoveRange(0, mcIndex);
+                                        }
                                         else
-                                            temp = remainingSum - temp;
-                                        string sDate = DateTime.ParseExact(orderWisePlandataGridView.Rows[OrderWisePlanGridRowIndex].Cells[1].Value.ToString(), "dd/MM/yyyy", null).AddDays(1).ToString();
+                                        {
+                                            if (mcIndex == mcNo.Count - 1)
+                                            {
+                                                sDate = toDateTimePicker.Value.AddDays(1).ToString();
+                                            }
+                                            else
+                                            {
+                                                sDate = fromDateTimePicker.Value.ToString();
+                                                mcNo.RemoveRange(0, mcIndex + 1);
+                                            }
+                                        }
+
                                         Int32 rowCount = orderWisePlandataGridView.Rows.Count - 1;
                                         for (int i = rowCount; i >= 0; i--)
                                         {
@@ -2466,9 +2579,9 @@ namespace PlanningBoard
                                     {
                                         if (row.Index > OrderWisePlanGridRowIndex && row.Index != orderWisePlandataGridView.Rows.Count - 1)
                                         {
-                                            if (row.Cells[2].Value != "")
+                                            if (row.Cells[3].Value != "")
                                             {
-                                                if ((int)row.Cells[2].Value > 0)
+                                                if ((int)row.Cells[3].Value > 0)
                                                 {
                                                     remainingSum = remainingSum + Convert.ToInt32(row.Cells[e.ColumnIndex].Value);
                                                 }
@@ -2478,13 +2591,30 @@ namespace PlanningBoard
                                     if (NewVal > -1)
                                     {
                                         temp = temp + remainingSum;
-                                        string sDate = DateTime.ParseExact(orderWisePlandataGridView.Rows[OrderWisePlanGridRowIndex].Cells[1].Value.ToString(), "dd/MM/yyyy", null).AddDays(1).ToString();
                                         Int32 rowCount = orderWisePlandataGridView.Rows.Count - 1;
                                         for (int i = rowCount; i >= 0; i--)
                                         {
                                             if (i > OrderWisePlanGridRowIndex)
                                             {
                                                 orderWisePlandataGridView.Rows.RemoveAt(i);
+                                            }
+                                        }
+                                        
+                                        if (DateTime.ParseExact(orderWisePlandataGridView.Rows[OrderWisePlanGridRowIndex].Cells[2].Value.ToString(), "dd/MM/yyyy", null) < toDateTimePicker.Value)
+                                        {
+                                            sDate = DateTime.ParseExact(orderWisePlandataGridView.Rows[OrderWisePlanGridRowIndex].Cells[2].Value.ToString(), "dd/MM/yyyy", null).AddDays(1).ToString();
+                                            mcNo.RemoveRange(0, mcIndex);
+                                        }
+                                        else
+                                        {
+                                            if (mcIndex == mcNo.Count - 1)
+                                            {
+                                                sDate = toDateTimePicker.Value.AddDays(1).ToString();
+                                            }
+                                            else
+                                            {
+                                                sDate = fromDateTimePicker.Value.ToString();
+                                                mcNo.RemoveRange(0, mcIndex + 1);
                                             }
                                         }
                                         LoadOrderWisePlanGrid(temp, sDate);
@@ -2511,7 +2641,7 @@ namespace PlanningBoard
 
         private void button1_Click(object sender, System.EventArgs e)
         {
-            if (MachineComboBox.SelectedIndex > 0 && orderID != 0 && AvgCapacity != 0)
+            if (mcNo.Count > 0 && orderID != 0 && AvgCapacity != 0)
             {
                 if (LCText.Text != "")
                 {
@@ -2552,9 +2682,9 @@ namespace PlanningBoard
         {
             if (e.RowIndex > -1)
             {
-                if (Convert.ToBoolean(orderWisePlandataGridView.Rows[e.RowIndex].Cells[7].Value) == true)
+                if (Convert.ToBoolean(orderWisePlandataGridView.Rows[e.RowIndex].Cells[8].Value) == true)
                 {
-                    if (Convert.ToInt32(orderWisePlandataGridView.Rows[e.RowIndex].Cells[5].Value) == 0)
+                    if (Convert.ToInt32(orderWisePlandataGridView.Rows[e.RowIndex].Cells[6].Value) == 0)
                     {
                         orderWisePlandataGridView.Rows[e.RowIndex].DefaultCellStyle.BackColor = Color.IndianRed;
                     }
@@ -2575,7 +2705,7 @@ namespace PlanningBoard
             }
 
             int index = e.RowIndex;
-            DateTime TaskDate = DateTime.ParseExact(orderWisePlandataGridView.Rows[index].Cells[1].Value.ToString(), "dd/MM/yyyy", null);
+            DateTime TaskDate = DateTime.ParseExact(orderWisePlandataGridView.Rows[index].Cells[2].Value.ToString(), "dd/MM/yyyy", null);
             ShowDateWiseOrderHistory(MachineNo, TaskDate);
         }
 
@@ -2620,7 +2750,7 @@ namespace PlanningBoard
 
         private void AutoPlanButton_Click(object sender, System.EventArgs e)
         {
-            if (MachineComboBox.SelectedIndex < 1)
+            if (mcNo.Count < 1)
             {
                 return;
             }
@@ -2705,6 +2835,24 @@ namespace PlanningBoard
         private void orderWisePlandataGridView_ColumnWidthChanged(object sender, DataGridViewColumnEventArgs e)
         {
             TaskDateDTP.Visible = false;
+        }
+
+        private void MachineComboBox_CheckStateChanged(object sender, EventArgs e)
+        {
+            mcNo.Clear();
+            foreach (CheckComboBoxItem item in MachineComboBox.Items)
+            {
+                if (item.CheckState == true)
+                {
+                    mcNo.Add(Convert.ToInt32(item.Text));
+                }
+            }
+            setValue();
+        }
+
+        private void MachineComboBox_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            e.Handled = true;
         }
 
     }

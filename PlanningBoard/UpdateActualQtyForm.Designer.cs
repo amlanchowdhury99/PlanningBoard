@@ -41,6 +41,7 @@
             this.Part = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.PlanQty = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.ActualQty = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Production = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.Id = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.actualQtyDataGridView)).BeginInit();
@@ -106,6 +107,7 @@
             this.Part,
             this.PlanQty,
             this.ActualQty,
+            this.Production,
             this.Id});
             this.actualQtyDataGridView.Location = new System.Drawing.Point(0, 20);
             this.actualQtyDataGridView.Name = "actualQtyDataGridView";
@@ -171,6 +173,14 @@
             this.ActualQty.Name = "ActualQty";
             this.ActualQty.Width = 65;
             // 
+            // Production
+            // 
+            this.Production.HeaderText = "Production";
+            this.Production.Name = "Production";
+            this.Production.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.Production.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            this.Production.Visible = false;
+            // 
             // Id
             // 
             this.Id.HeaderText = "Id";
@@ -213,6 +223,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Part;
         private System.Windows.Forms.DataGridViewTextBoxColumn PlanQty;
         private System.Windows.Forms.DataGridViewTextBoxColumn ActualQty;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn Production;
         private System.Windows.Forms.DataGridViewTextBoxColumn Id;
     }
 }

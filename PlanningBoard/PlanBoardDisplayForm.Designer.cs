@@ -49,7 +49,7 @@
             this.backwardToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.changeWorkDateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.updateActualQtyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.progressBar1 = new System.Windows.Forms.ProgressBar();
+            this.noProductionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.pinwheel = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.planBoardDataGridView)).BeginInit();
@@ -112,12 +112,13 @@
             // 
             this.Revert.BackColor = System.Drawing.Color.RosyBrown;
             this.Revert.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Revert.Location = new System.Drawing.Point(1179, 23);
+            this.Revert.Location = new System.Drawing.Point(1179, 25);
             this.Revert.Name = "Revert";
-            this.Revert.Size = new System.Drawing.Size(87, 31);
+            this.Revert.Size = new System.Drawing.Size(84, 27);
             this.Revert.TabIndex = 40;
             this.Revert.Text = "Revert";
             this.Revert.UseVisualStyleBackColor = false;
+            this.Revert.Click += new System.EventHandler(this.Revert_Click);
             // 
             // toDateTimePicker
             // 
@@ -132,9 +133,9 @@
             // 
             this.Search.BackColor = System.Drawing.Color.RosyBrown;
             this.Search.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Search.Location = new System.Drawing.Point(1086, 23);
+            this.Search.Location = new System.Drawing.Point(1086, 25);
             this.Search.Name = "Search";
-            this.Search.Size = new System.Drawing.Size(87, 31);
+            this.Search.Size = new System.Drawing.Size(84, 27);
             this.Search.TabIndex = 39;
             this.Search.Text = "Search";
             this.Search.UseVisualStyleBackColor = false;
@@ -193,9 +194,9 @@
             // 
             this.GenerateExcelBtn.BackColor = System.Drawing.Color.RosyBrown;
             this.GenerateExcelBtn.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.GenerateExcelBtn.Location = new System.Drawing.Point(993, 23);
+            this.GenerateExcelBtn.Location = new System.Drawing.Point(993, 25);
             this.GenerateExcelBtn.Name = "GenerateExcelBtn";
-            this.GenerateExcelBtn.Size = new System.Drawing.Size(87, 31);
+            this.GenerateExcelBtn.Size = new System.Drawing.Size(87, 27);
             this.GenerateExcelBtn.TabIndex = 18;
             this.GenerateExcelBtn.Text = "Export Excel";
             this.GenerateExcelBtn.UseVisualStyleBackColor = false;
@@ -205,9 +206,9 @@
             // 
             this.BtnAddPlan.BackColor = System.Drawing.Color.RosyBrown;
             this.BtnAddPlan.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.BtnAddPlan.Location = new System.Drawing.Point(900, 23);
+            this.BtnAddPlan.Location = new System.Drawing.Point(897, 25);
             this.BtnAddPlan.Name = "BtnAddPlan";
-            this.BtnAddPlan.Size = new System.Drawing.Size(87, 31);
+            this.BtnAddPlan.Size = new System.Drawing.Size(84, 27);
             this.BtnAddPlan.TabIndex = 16;
             this.BtnAddPlan.Text = "Add Plan";
             this.BtnAddPlan.UseVisualStyleBackColor = false;
@@ -217,9 +218,9 @@
             // 
             this.BtnGeneratePlan.BackColor = System.Drawing.Color.RosyBrown;
             this.BtnGeneratePlan.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.BtnGeneratePlan.Location = new System.Drawing.Point(807, 23);
+            this.BtnGeneratePlan.Location = new System.Drawing.Point(807, 25);
             this.BtnGeneratePlan.Name = "BtnGeneratePlan";
-            this.BtnGeneratePlan.Size = new System.Drawing.Size(87, 31);
+            this.BtnGeneratePlan.Size = new System.Drawing.Size(84, 27);
             this.BtnGeneratePlan.TabIndex = 15;
             this.BtnGeneratePlan.Text = "Generate";
             this.BtnGeneratePlan.UseVisualStyleBackColor = false;
@@ -251,50 +252,50 @@
             this.forwardToolStripMenuItem,
             this.backwardToolStripMenuItem,
             this.changeWorkDateToolStripMenuItem,
-            this.updateActualQtyToolStripMenuItem});
+            this.updateActualQtyToolStripMenuItem,
+            this.noProductionToolStripMenuItem});
             this.pBContextMenuStrip.Name = "pBContextMenuStrip";
-            this.pBContextMenuStrip.Size = new System.Drawing.Size(174, 92);
+            this.pBContextMenuStrip.Size = new System.Drawing.Size(175, 114);
             // 
             // forwardToolStripMenuItem
             // 
             this.forwardToolStripMenuItem.Name = "forwardToolStripMenuItem";
-            this.forwardToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
-            this.forwardToolStripMenuItem.Text = "Forward Plan";
+            this.forwardToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+            this.forwardToolStripMenuItem.Text = "<---Backward Plan";
             this.forwardToolStripMenuItem.Click += new System.EventHandler(this.forwardToolStripMenuItem_Click);
             // 
             // backwardToolStripMenuItem
             // 
             this.backwardToolStripMenuItem.Name = "backwardToolStripMenuItem";
-            this.backwardToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
-            this.backwardToolStripMenuItem.Text = "Backward Plan";
+            this.backwardToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+            this.backwardToolStripMenuItem.Text = "Forward Plan--->";
             this.backwardToolStripMenuItem.Click += new System.EventHandler(this.backwardToolStripMenuItem_Click);
             // 
             // changeWorkDateToolStripMenuItem
             // 
             this.changeWorkDateToolStripMenuItem.Name = "changeWorkDateToolStripMenuItem";
-            this.changeWorkDateToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
+            this.changeWorkDateToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
             this.changeWorkDateToolStripMenuItem.Text = "Change Work Date";
             this.changeWorkDateToolStripMenuItem.Click += new System.EventHandler(this.changeWorkDateToolStripMenuItem_Click);
             // 
             // updateActualQtyToolStripMenuItem
             // 
             this.updateActualQtyToolStripMenuItem.Name = "updateActualQtyToolStripMenuItem";
-            this.updateActualQtyToolStripMenuItem.Size = new System.Drawing.Size(173, 22);
+            this.updateActualQtyToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
             this.updateActualQtyToolStripMenuItem.Text = "Update Actual Qty";
             this.updateActualQtyToolStripMenuItem.Click += new System.EventHandler(this.updateActualQtyToolStripMenuItem_Click);
             // 
-            // progressBar1
+            // noProductionToolStripMenuItem
             // 
-            this.progressBar1.Location = new System.Drawing.Point(545, 227);
-            this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(100, 23);
-            this.progressBar1.TabIndex = 2;
-            this.progressBar1.Visible = false;
+            this.noProductionToolStripMenuItem.Name = "noProductionToolStripMenuItem";
+            this.noProductionToolStripMenuItem.Size = new System.Drawing.Size(174, 22);
+            this.noProductionToolStripMenuItem.Text = "No Production";
+            this.noProductionToolStripMenuItem.Click += new System.EventHandler(this.noProductionToolStripMenuItem_Click);
             // 
             // pinwheel
             // 
             this.pinwheel.Image = global::PlanningBoard.Properties.Resources._5;
-            this.pinwheel.Location = new System.Drawing.Point(563, 256);
+            this.pinwheel.Location = new System.Drawing.Point(623, 271);
             this.pinwheel.Name = "pinwheel";
             this.pinwheel.Size = new System.Drawing.Size(65, 65);
             this.pinwheel.TabIndex = 3;
@@ -308,12 +309,13 @@
             this.BackColor = System.Drawing.SystemColors.ButtonShadow;
             this.ClientSize = new System.Drawing.Size(1296, 599);
             this.Controls.Add(this.pinwheel);
-            this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.planBoardDataGridView);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Name = "PlanBoardDisplayForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "PlanBoardDisplayForm";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.PlanBoardDisplayForm_FormClosing);
             this.Load += new System.EventHandler(this.PlanBoardDisplayForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.planBoardDataGridView)).EndInit();
             this.groupBox1.ResumeLayout(false);
@@ -346,9 +348,9 @@
         private System.Windows.Forms.ToolStripMenuItem updateActualQtyToolStripMenuItem;
         private System.Windows.Forms.Button Search;
         private System.Windows.Forms.Button Revert;
-        private System.Windows.Forms.ProgressBar progressBar1;
         private System.ComponentModel.BackgroundWorker backgroundWorker1;
         private System.Windows.Forms.PictureBox pinwheel;
+        private System.Windows.Forms.ToolStripMenuItem noProductionToolStripMenuItem;
 
     }
 }

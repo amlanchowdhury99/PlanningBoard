@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.MachineComboBox = new System.Windows.Forms.ComboBox();
             this.daysFBTextBox = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.PlanDateLabel = new System.Windows.Forms.Label();
@@ -37,7 +38,6 @@
             this.BtnSave = new System.Windows.Forms.Button();
             this.labelHeader = new System.Windows.Forms.Label();
             this.Orderlabel = new System.Windows.Forms.Label();
-            this.MachineComboBox = new System.Windows.Forms.ComboBox();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -58,6 +58,18 @@
             this.groupBox1.Size = new System.Drawing.Size(281, 113);
             this.groupBox1.TabIndex = 11;
             this.groupBox1.TabStop = false;
+            this.groupBox1.Enter += new System.EventHandler(this.groupBox1_Enter);
+            // 
+            // MachineComboBox
+            // 
+            this.MachineComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.MachineComboBox.FormattingEnabled = true;
+            this.MachineComboBox.Location = new System.Drawing.Point(71, 55);
+            this.MachineComboBox.Name = "MachineComboBox";
+            this.MachineComboBox.Size = new System.Drawing.Size(99, 24);
+            this.MachineComboBox.TabIndex = 39;
+            this.MachineComboBox.Visible = false;
+            this.MachineComboBox.SelectedIndexChanged += new System.EventHandler(this.MachineComboBox_SelectedIndexChanged);
             // 
             // daysFBTextBox
             // 
@@ -142,16 +154,6 @@
             this.Orderlabel.TabIndex = 17;
             this.Orderlabel.Text = "asdasdasdasdasd";
             this.Orderlabel.Click += new System.EventHandler(this.Orderlabel_Click);
-            // 
-            // MachineComboBox
-            // 
-            this.MachineComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.MachineComboBox.FormattingEnabled = true;
-            this.MachineComboBox.Location = new System.Drawing.Point(71, 55);
-            this.MachineComboBox.Name = "MachineComboBox";
-            this.MachineComboBox.Size = new System.Drawing.Size(99, 24);
-            this.MachineComboBox.TabIndex = 39;
-            this.MachineComboBox.Visible = false;
             // 
             // FBPlanBoardForm
             // 

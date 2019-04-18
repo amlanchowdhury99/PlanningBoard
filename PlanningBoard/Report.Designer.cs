@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.Reset = new System.Windows.Forms.Button();
             this.orderStatusComboBox = new System.Windows.Forms.ComboBox();
             this.label3 = new System.Windows.Forms.Label();
             this.proRadioButton = new System.Windows.Forms.RadioButton();
@@ -67,6 +68,7 @@
             // groupBox1
             // 
             this.groupBox1.BackColor = System.Drawing.Color.SlateGray;
+            this.groupBox1.Controls.Add(this.Reset);
             this.groupBox1.Controls.Add(this.orderStatusComboBox);
             this.groupBox1.Controls.Add(this.label3);
             this.groupBox1.Controls.Add(this.proRadioButton);
@@ -105,6 +107,18 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Searching Criteria";
             // 
+            // Reset
+            // 
+            this.Reset.BackColor = System.Drawing.Color.RosyBrown;
+            this.Reset.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Reset.Location = new System.Drawing.Point(604, 96);
+            this.Reset.Name = "Reset";
+            this.Reset.Size = new System.Drawing.Size(111, 31);
+            this.Reset.TabIndex = 63;
+            this.Reset.Text = "Reset";
+            this.Reset.UseVisualStyleBackColor = false;
+            this.Reset.Click += new System.EventHandler(this.Reset_Click);
+            // 
             // orderStatusComboBox
             // 
             this.orderStatusComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
@@ -142,9 +156,9 @@
             this.shipRadioButton.AutoSize = true;
             this.shipRadioButton.Location = new System.Drawing.Point(109, 19);
             this.shipRadioButton.Name = "shipRadioButton";
-            this.shipRadioButton.Size = new System.Drawing.Size(110, 20);
+            this.shipRadioButton.Size = new System.Drawing.Size(111, 20);
             this.shipRadioButton.TabIndex = 59;
-            this.shipRadioButton.Text = "Shipment Date";
+            this.shipRadioButton.Text = "Knit Close Date";
             this.shipRadioButton.UseVisualStyleBackColor = true;
             this.shipRadioButton.CheckedChanged += new System.EventHandler(this.shipRadioButton_CheckedChanged);
             this.shipRadioButton.Click += new System.EventHandler(this.shipRadioButton_Click);
@@ -155,6 +169,7 @@
             this.maskedTextBox1.Name = "maskedTextBox1";
             this.maskedTextBox1.Size = new System.Drawing.Size(100, 23);
             this.maskedTextBox1.TabIndex = 58;
+            this.maskedTextBox1.Visible = false;
             // 
             // ExportBtn
             // 
@@ -438,7 +453,7 @@
             this.ClientSize = new System.Drawing.Size(1085, 514);
             this.Controls.Add(this.planBoardDataGridView);
             this.Controls.Add(this.groupBox1);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
+            this.MaximizeBox = false;
             this.Name = "Report";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = " ";
@@ -483,5 +498,6 @@
         private System.Windows.Forms.RadioButton proRadioButton;
         private System.Windows.Forms.ComboBox orderStatusComboBox;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Button Reset;
     }
 }

@@ -21,14 +21,18 @@ namespace PlanningBoard
         int DifferenceInDays = 1;
         string query = "";
         public int MachineNo = 0;
+        public int dia = 0;
+        public static Boolean ChangeFlag = false;
 
-        public FBPlanBoardForm(bool flag, int mcNo, DateTime taskDate, string Ids, bool changeDate)
+        public FBPlanBoardForm(bool flag, int mcNo, int diaNo, DateTime taskDate, string Ids, bool changeDate)
         {
             Flag = flag;
             planDate = DateTime.ParseExact(taskDate.Date.ToString("dd/MM/yyy"), "dd/MM/yyyy", null);
             orderids = Ids;
             MachineNo = mcNo;
+            dia = diaNo;
             InitializeComponent();
+            ChangeFlag = false;
             if (changeDate)
             {
                 FBPlanDateDateTimePicker.Enabled = true;
@@ -56,7 +60,8 @@ namespace PlanningBoard
         {
             try
             {
-                string query = "SELECT * FROM Machine_Info WHERE Status = 1 order by MachineNo asc";
+
+                string query = "SELECT * FROM Machine_Info WHERE Status = 1 AND MachineDia = (SELECT Top 1 DiaID FROM Planing_Board_Details WHERE MachineNo ="+MachineNo+") order by MachineNo asc";
 
                 SqlDataReader reader = CommonFunctions.GetFromDB(query);
                 MachineComboBox.DataSource = null;
@@ -73,7 +78,7 @@ namespace PlanningBoard
                 if (MachineList.Count > 0)
                 {
                     MachineComboBox.DataSource = MachineList;
-                    MachineComboBox.SelectedIndex = 0;
+                    MachineComboBox.SelectedIndex = MachineList.IndexOf(MachineNo);
                 }
             }
             catch (Exception e)
@@ -107,13 +112,14 @@ namespace PlanningBoard
         {
             if (FBPlanDateDateTimePicker.Enabled == false)
             {
+                DateTime currentDate = DateTimeOffset.Now.Date;
                 if (daysFBTextBox.Text == "" || Convert.ToInt32(daysFBTextBox.Text) < 1)
                 {
                     MessageBox.Show("Please Enter Valid Number!!!!");
                     daysFBTextBox.Text = "";
                     return;
                 }
-                if (CommonFunctions.recordExist("SELECT * FROM PlanTable WHERE ActualQty != 0 AND TaskDate >= '"+FBPlanDateDateTimePicker.Value+"'"))
+                if (CommonFunctions.recordExist("SELECT * FROM PlanTable WHERE MachineNo = " + MachineNo + " AND ActualQty != 0 AND TaskDate >= '" + FBPlanDateDateTimePicker.Value + "'"))
                 {
                     MessageBox.Show("Forwarding or Backwording Plan is not applicable for the orders where Auto Adjustment for Actual Qty has been used applied !!!!");
                     daysFBTextBox.Text = "";
@@ -122,19 +128,27 @@ namespace PlanningBoard
                 if(Flag == false)
                 {
                     int daysAdded = Convert.ToInt16(daysFBTextBox.Text);
+
+                    if (currentDate > FBPlanDateDateTimePicker.Value.AddDays(-daysAdded).Date)
+                    {
+                        MessageBox.Show("Invalid Backwarding Plan! You can not backward date smaller than current date !!!!");
+                        daysFBTextBox.Text = "";
+                        return;
+                    }
+
                     while (!CommonFunctions.recordExist("SELECT * FROM WorkingDays WHERE MachineNo = " + MachineNo + " AND Active = 1 AND WorkDate = '" + FBPlanDateDateTimePicker.Value.AddDays(-daysAdded) + "'"))
                     {
                         daysAdded++;
                     }
                     if (CommonFunctions.recordExist("SELECT * FROM PlanTable WHERE MachineNo = " + MachineNo + " AND TaskDate = '" + FBPlanDateDateTimePicker.Value.AddDays(-daysAdded) + "'"))
                     {
-                        MessageBox.Show("Invalid Forwarding Plan! Order already exists in that Date !!!!");
+                        MessageBox.Show("Invalid Backwarding Plan! Order already exists in that Date !!!!");
                         daysFBTextBox.Text = "";
                         return;
                     }
                     if (CommonFunctions.recordExist("SELECT * FROM PlanTable WHERE MachineNo = " + MachineNo + " AND TaskDate < '" + FBPlanDateDateTimePicker.Value + "' AND TaskDate > '" + FBPlanDateDateTimePicker.Value.AddDays(-daysAdded) + "'"))
                     {
-                        MessageBox.Show("Invalid Forwarding Plan! You can not jump over another dates while forwarding !!!!");
+                        MessageBox.Show("Invalid Backwarding Plan! You can not jump over another dates while forwarding !!!!");
                         daysFBTextBox.Text = "";
                         return;
                     }
@@ -148,7 +162,7 @@ namespace PlanningBoard
                 //        return;
                 //    }
                 //}
-                
+                ChangeFlag = true;
                 ReGenerate_Board();
             }
             else
@@ -162,6 +176,7 @@ namespace PlanningBoard
                         {
                             try
                             {
+                                ChangeFlag = true;
                                 int Capacity = 0;
                                 int PlanQty = 0;
                                 string GetDate = "";
@@ -581,10 +596,25 @@ namespace PlanningBoard
 
         private void FBPlanDateDateTimePicker_ValueChanged(object sender, EventArgs e)
         {
-        
+            if (FBPlanDateDateTimePicker.Value < DateTimeOffset.UtcNow.Date)
+            {
+                MessageBox.Show("You can not switch date smaller tha current date!!!");
+                FBPlanDateDateTimePicker.Value = DateTimeOffset.UtcNow.Date;
+                return;
+            }
         }
 
         private void Orderlabel_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void groupBox1_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void MachineComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
 
         }
