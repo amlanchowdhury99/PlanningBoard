@@ -151,7 +151,8 @@ namespace PlanningBoard
                                 ChangeFlag = true;
                                 int orderID = Convert.ToInt32(row.Cells["Id"].Value);
                                 int PlanQty = Convert.ToInt32(row.Cells["PlanQty"].Value);
-                                int ActualQty = IsLastEntry(orderID, TaskDate, MachineNo) ? PlanQty > Convert.ToInt32(row.Cells["ActualQty"].Value) ? Convert.ToInt32(row.Cells["ActualQty"].Value) : PlanQty : Convert.ToInt32(row.Cells["ActualQty"].Value);
+                                int ActualQty = Convert.ToInt32(row.Cells["ActualQty"].Value);
+                                //int ActualQty = IsLastEntry(orderID, TaskDate, MachineNo) ? PlanQty > Convert.ToInt32(row.Cells["ActualQty"].Value) ? Convert.ToInt32(row.Cells["ActualQty"].Value) : PlanQty : Convert.ToInt32(row.Cells["ActualQty"].Value);
 
                                 string query = "UPDATE PlanTable SET ActualQty = " + ActualQty + " WHERE OrderID = " + orderID + " AND MachineNo = " + MachineNo + " AND TaskDate = '" + TaskDate + "'";
                                 Boolean Result = CommonFunctions.ExecutionToDB(query, 3);
@@ -159,7 +160,7 @@ namespace PlanningBoard
 
                                 Boolean flag = PreValStore[orderID] == 0 ? ActualQty > PlanQty ? true : false : ActualQty > PreValStore[orderID] ? true : false;
 
-                                if (flag)
+                                if (flag && !IsLastEntry(orderID, TaskDate, MachineNo))
                                 {
                                     value = IsLastEntry(orderID, TaskDate, MachineNo) ? 0 : PreValStore[orderID] == 0 ? ActualQty - PlanQty : ActualQty - PreValStore[orderID];
                                     AdjustActualQty(flag, value, orderID);
@@ -334,7 +335,7 @@ namespace PlanningBoard
         {
             try
             {
-                DateTime TempDate = TaskDate; int mc = 0; string query = ""; SqlDataReader reader; value = Val; Boolean Result;
+                DateTime TempDate = TaskDate; int mc = 0; string query = ""; SqlDataReader reader; value = Val; Boolean Result; Boolean Continue = true;
                 string connectionStr = ConnectionManager.connectionString; SqlDataReader reader1;
                 SqlCommand cm = new SqlCommand(); SqlConnection cn = new SqlConnection(connectionStr); cm.Connection = cn; 
 
@@ -376,7 +377,7 @@ namespace PlanningBoard
                         if (CommonFunctions.IsTrue(query))
                         {
                             int rowID = 0;
-                            query = "SELECT Top 1 * FROM PlanTable WHERE MachineNo = " + mc + " AND TaskDate = '" + TempDate + "' order by Id desc";
+                            query = "SELECT Top 1 * FROM PlanTable WHERE MachineNo = " + mc + " AND TaskDate = '" + TempDate + "' AND OrderID != " + orderID + " order by Id desc";
                             reader = CommonFunctions.GetFromDB(query);
                             if (reader.HasRows)
                             {
@@ -388,9 +389,12 @@ namespace PlanningBoard
                             }
                             if (!IsLastEntry(orderID, TempDate, mc))
                             {
-                                query = " SELECT CASE WHEN RemainingQty >= " + value + " THEN CAST( 1 as BIT ) ELSE CAST( 0 as BIT ) END AS A FROM PlanTable WHERE Id = " + rowID;
-                                if (CommonFunctions.IsTrue(query))
+                                if (GetLeftPlanQty(mc, TempDate, orderID) >= value)
                                 {
+                                //}
+                                //query = " SELECT CASE WHEN RemainingQty >= " + value + " THEN CAST( 1 as BIT ) ELSE CAST( 0 as BIT ) END AS A FROM PlanTable WHERE Id = " + rowID;
+                                //if (CommonFunctions.IsTrue(query))
+                                //{
                                     query = "UPDATE PlanTable SET PlanQty = PlanQty + " + value + ", RemainingQty = RemainingQty - " + value + " WHERE Id = " + rowID;
                                 }
                                 else
@@ -404,8 +408,7 @@ namespace PlanningBoard
                                         tempo = Convert.ToInt32(reader1["PlanQty"]);
                                     }
                                     cn.Close();
-                                    query = "UPDATE PlanTable SET PlanQty = PlanQty + " + value + ", RemainingQty = 0 WHERE Id = " + rowID;
-                                    //AdjustImmediateEntry(orderID, mc, TempDate, value - tempo);
+                                    query = "UPDATE PlanTable SET PlanQty = PlanQty + RemainingQty, RemainingQty = 0 WHERE Id = " + rowID;
                                 }
                                 
                                 Result = CommonFunctions.ExecutionToDB(query, 3);
@@ -430,10 +433,10 @@ namespace PlanningBoard
                     if (!IsLastEntry(orderID, TempDate, mc)) // if last entry then will not enter
                     {
                         DateTime KnitCloseDate = GetKnitCloseDate(orderID);
-                        int j = mcNo.IndexOf(MachineNo);
+                        int j = 0;
                         while (j < mcNo.Count && value > 0)
                         {
-                            mc = (int)mcNo[j]; TempDate = TaskDate.AddDays(1);
+                            mc = Convert.ToInt32(mcNo[j]); TempDate = TaskDate.AddDays(1);
                             while (TempDate <= KnitCloseDate && value > 0)
                             {
                                 query = "SELECT Id FROM PlanTable WHERE MachineNo = "+mc+" AND TaskDate = '"+TempDate+"' AND OrderID ="+orderID;
@@ -470,20 +473,12 @@ namespace PlanningBoard
                         //TempDate = (DateTime)LastEntryDate(orderID); mc = GetLastMachineNo(orderID, TempDate);
                         while (value > 0)
                         {
-                            TempDate = TaskDate.AddDays(1);
-                            int tempMC = MachineNo;
-
-                            //if (TempDate == TaskDate) // HERE WE DON'T NEED TO LOOK FOR DIFFRENT ENTRY IN SAME DATE
-                            //{
-                            //    TempDate = TaskDate.AddDays(1);
-                            //    tempMC = Convert.ToInt32(mcNo[i]);
-                            //}
-
+                            TempDate = TaskDate.AddDays(1); int tempMC = MachineNo;
                             LeftPlanQty = GetLeftPlanQty(tempMC, TaskDate.AddDays(1), orderID);
 
                             while (LeftPlanQty <= 0)
                             {
-                                i = 0; 
+                                i = 0;
                                 while (i < mcNo.Count)
                                 {
                                     tempMC = Convert.ToInt32(mcNo[i]);
@@ -494,17 +489,6 @@ namespace PlanningBoard
                                 {
                                     TempDate = TempDate.AddDays(1); 
                                 }
-                                    
-                                //if (LeftPlanQty <= 0)
-                                //{
-                                //    TempDate = TempDate.AddDays(1);
-                                    //while (!CommonFunctions.recordExist("SELECT * FROM WorkingDays WHERE MachineNo = " + tempMC + " AND Active = 1 AND WorkDate = '" + TempDate + "'"))
-                                    //{
-                                    //    TempDate = TempDate.AddDays(1);
-                                    //}
-                                //    tempMC = Convert.ToInt32(mcNo[i]);
-                                //}
-                                //LeftPlanQty = GetLeftPlanQty(tempMC, TempDate, orderID);
                             }
 
                             tempVal = LeftPlanQty > value ? value : LeftPlanQty;
@@ -565,11 +549,10 @@ namespace PlanningBoard
                 SqlCommand cm = new SqlCommand(); SqlConnection cn = new SqlConnection(connectionStr); cm.Connection = cn; cn.Open();
                 SqlCommand cm1 = new SqlCommand(); SqlConnection cn1 = new SqlConnection(connectionStr); cm1.Connection = cn1; cn1.Open();
                 SqlCommand cm2 = new SqlCommand(); SqlConnection cn2 = new SqlConnection(connectionStr); cm2.Connection = cn2;
-                string date = null; int id1 = 0; int id2 = 0; int MachineNumber = 0;
-                string query = " SELECT * FROM PlanTable WHERE MachineNo = "
-                               +"(SELECT Max(MachineNo) AS MaxMachineNo FROM PlanTable WHERE OrderID = " + orderID + " AND MachineNo < (SELECT Max(MachineNo) AS MaxMachineNo FROM PlanTable WHERE OrderID = " + orderID + ")) AND  "
-                               +"TaskDate = (SELECT Max(TaskDate) AS MaxTaskDate FROM PlanTable WHERE OrderID = " + orderID + " AND MachineNo = "
-                               + "(SELECT Max(MachineNo) AS MaxMachineNo FROM PlanTable WHERE OrderID = " + orderID + " AND MachineNo < (SELECT Max(MachineNo) AS MaxMachineNo FROM PlanTable WHERE OrderID = " + orderID + "))) AND OrderID = " + orderID;
+                string date = null; int id1 = 0; int id2 = 0; int MachineNumber = 0; int ActualQty = 0;
+
+                string query = " SELECT * FROM PlanTable WHERE TaskDate = (SELECT MAX(TaskDate) FROM PlanTable WHERE OrderID = " + orderID + " AND TaskDate < (SELECT MAX(TaskDate) FROM PlanTable WHERE OrderID = " + orderID + ")) AND "
+                              + " MachineNo = (SELECT MAX(MachineNo) FROM PlanTable WHERE (SELECT MAX(TaskDate) FROM PlanTable WHERE OrderID = " + orderID + " AND TaskDate < (SELECT MAX(TaskDate) FROM PlanTable WHERE OrderID = " + orderID + ")))";
                 cm.CommandText = query;
                 reader = cm.ExecuteReader();
                 while (reader.Read())
@@ -577,6 +560,7 @@ namespace PlanningBoard
                     id1 = Convert.ToInt32(reader["Id"]);
                     MachineNumber = Convert.ToInt32(reader["MachineNo"]);
                     date = reader["TaskDate"].ToString();
+                    ActualQty = Convert.ToInt32(reader["ActualQty"]);
                 }
                 cn.Close();
 
@@ -589,7 +573,7 @@ namespace PlanningBoard
                 }
                 cn1.Close();
 
-                if (id1 != id2)
+                if (id1 != id2 && ActualQty == 0)
                 {
                     cn2.Open();
                     query = "UPDATE PlanTable SET RemainingQty = RemainingQty + " + val + ", PlanQty = PlanQty - " + val + " WHERE OrderID = " + orderID + " AND MachineNo =  " + MachineNumber + " AND TaskDate = '" + date + "'";
