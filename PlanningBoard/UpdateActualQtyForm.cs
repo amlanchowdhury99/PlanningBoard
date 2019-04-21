@@ -160,9 +160,10 @@ namespace PlanningBoard
 
                                 Boolean flag = PreValStore[orderID] == 0 ? ActualQty > PlanQty ? true : false : ActualQty > PreValStore[orderID] ? true : false;
 
-                                if (flag && !IsLastEntry(orderID, TaskDate, MachineNo))
+                                if (flag)
                                 {
-                                    value = IsLastEntry(orderID, TaskDate, MachineNo) ? 0 : PreValStore[orderID] == 0 ? ActualQty - PlanQty : ActualQty - PreValStore[orderID];
+                                    //value = IsLastEntry(orderID, TaskDate, MachineNo) ? 0 : PreValStore[orderID] == 0 ? ActualQty - PlanQty : ActualQty - PreValStore[orderID];
+                                    value = PreValStore[orderID] == 0 ? ActualQty - PlanQty : ActualQty - PreValStore[orderID];
                                     AdjustActualQty(flag, value, orderID);
                                 }
                                 else
@@ -331,6 +332,11 @@ namespace PlanningBoard
             }
         }
 
+        private void AdjustLastPlanQty(int orderID, int mc, DateTime TempDate, int val)
+        {
+
+        }
+
         private void AdjustActualQty(Boolean flag, int Val, int orderID)
         {
             try
@@ -342,87 +348,90 @@ namespace PlanningBoard
                 if (flag)
                 {
                     mc = MachineNo;
-                    while (!IsLastEntry(orderID, TempDate, mc))
+                    if (!IsLastEntry(orderID, TaskDate, MachineNo))
                     {
-                        TempDate = (DateTime)LastEntryDate(orderID); mc = GetLastMachineNo(orderID, TempDate);
+                        while (!IsLastEntry(orderID, TempDate, mc))
+                        {
+                            TempDate = (DateTime)LastEntryDate(orderID); mc = GetLastMachineNo(orderID, TempDate);
 
-                        query = " SELECT CASE WHEN PlanQty >= " + value + " THEN CAST( 1 as BIT ) ELSE CAST( 0 as BIT ) END AS A FROM PlanTable WHERE OrderID = " + orderID + " AND MachineNo =  " + mc + " AND TaskDate = '" + TempDate + "'";
-                        if (CommonFunctions.IsTrue(query))
-                        {
-                            query = "UPDATE PlanTable SET PlanQty = PlanQty - " + value + ", RemainingQty = RemainingQty + " + value + " WHERE OrderID = " + orderID + " AND MachineNo =  " + mc + " AND TaskDate = '" + TempDate + "'";
-                            Result = CommonFunctions.ExecutionToDB(query, 3);
-                            UpdateRemainingQty(mc, TempDate);
-                        }
-                        else
-                        {
-                            cn.Open();
-                            int tempo = 0;
-                            cm.CommandText = "SELECT PlanQty FROM PlanTable WHERE OrderID = " + orderID + " AND MachineNo =  " + mc + " AND TaskDate = '" + TempDate + "'";
-                            reader1 = cm.ExecuteReader();
-                            while (reader1.Read())
+                            query = " SELECT CASE WHEN PlanQty >= " + value + " THEN CAST( 1 as BIT ) ELSE CAST( 0 as BIT ) END AS A FROM PlanTable WHERE OrderID = " + orderID + " AND MachineNo =  " + mc + " AND TaskDate = '" + TempDate + "'";
+                            if (CommonFunctions.IsTrue(query))
                             {
-                                tempo = Convert.ToInt32(reader1["PlanQty"]);
+                                query = "UPDATE PlanTable SET PlanQty = PlanQty - " + value + ", RemainingQty = RemainingQty + " + value + " WHERE OrderID = " + orderID + " AND MachineNo =  " + mc + " AND TaskDate = '" + TempDate + "'";
+                                Result = CommonFunctions.ExecutionToDB(query, 3);
+                                UpdateRemainingQty(mc, TempDate);
                             }
-                            cn.Close();
-                            query = "UPDATE PlanTable SET RemainingQty = RemainingQty + " + tempo + ", PlanQty = 0 WHERE OrderID = " + orderID + " AND MachineNo =  " + mc + " AND TaskDate = '" + TempDate + "'";
-                            Result = CommonFunctions.ExecutionToDB(query, 3);
-                            UpdateRemainingQty(mc, TempDate);
-                            AdjustImmediateEntry(orderID, mc, TempDate, value - tempo);
-                            value = tempo;
-                        }
-
-                        query = " SELECT CASE WHEN COUNT(*) > 1 THEN CAST( 1 as BIT ) ELSE CAST( 0 as BIT ) END AS A FROM PlanTable WHERE MachineNo = " + mc +
-                                " AND TaskDate = '" + TempDate + "'";
-
-                        if (CommonFunctions.IsTrue(query))
-                        {
-                            int rowID = 0;
-                            query = "SELECT Top 1 * FROM PlanTable WHERE MachineNo = " + mc + " AND TaskDate = '" + TempDate + "' AND OrderID != " + orderID + " order by Id desc";
-                            reader = CommonFunctions.GetFromDB(query);
-                            if (reader.HasRows)
+                            else
                             {
-                                while (reader.Read())
+                                cn.Open();
+                                int tempo = 0;
+                                cm.CommandText = "SELECT PlanQty FROM PlanTable WHERE OrderID = " + orderID + " AND MachineNo =  " + mc + " AND TaskDate = '" + TempDate + "'";
+                                reader1 = cm.ExecuteReader();
+                                while (reader1.Read())
                                 {
-                                    orderID = Convert.ToInt32(reader["OrderID"]);
-                                    rowID = Convert.ToInt32(reader["Id"]);
+                                    tempo = Convert.ToInt32(reader1["PlanQty"]);
                                 }
+                                cn.Close();
+                                query = "UPDATE PlanTable SET RemainingQty = RemainingQty + " + tempo + ", PlanQty = 0 WHERE OrderID = " + orderID + " AND MachineNo =  " + mc + " AND TaskDate = '" + TempDate + "'";
+                                Result = CommonFunctions.ExecutionToDB(query, 3);
+                                UpdateRemainingQty(mc, TempDate);
+                                AdjustImmediateEntry(orderID, mc, TempDate, value - tempo);
+                                value = tempo;
                             }
-                            if (!IsLastEntry(orderID, TempDate, mc))
+
+                            query = " SELECT CASE WHEN COUNT(*) > 1 THEN CAST( 1 as BIT ) ELSE CAST( 0 as BIT ) END AS A FROM PlanTable WHERE MachineNo = " + mc +
+                                    " AND TaskDate = '" + TempDate + "'";
+
+                            if (CommonFunctions.IsTrue(query))
                             {
-                                if (GetLeftPlanQty(mc, TempDate, orderID) >= value)
+                                int rowID = 0;
+                                query = "SELECT Top 1 * FROM PlanTable WHERE MachineNo = " + mc + " AND TaskDate = '" + TempDate + "' AND OrderID != " + orderID + " order by Id desc";
+                                reader = CommonFunctions.GetFromDB(query);
+                                if (reader.HasRows)
                                 {
-                                //}
-                                //query = " SELECT CASE WHEN RemainingQty >= " + value + " THEN CAST( 1 as BIT ) ELSE CAST( 0 as BIT ) END AS A FROM PlanTable WHERE Id = " + rowID;
-                                //if (CommonFunctions.IsTrue(query))
-                                //{
-                                    query = "UPDATE PlanTable SET PlanQty = PlanQty + " + value + ", RemainingQty = RemainingQty - " + value + " WHERE Id = " + rowID;
+                                    while (reader.Read())
+                                    {
+                                        orderID = Convert.ToInt32(reader["OrderID"]);
+                                        rowID = Convert.ToInt32(reader["Id"]);
+                                    }
+                                }
+                                if (!IsLastEntry(orderID, TempDate, mc))
+                                {
+                                    if (GetLeftPlanQty(mc, TempDate, orderID) >= value)
+                                    {
+                                        query = "UPDATE PlanTable SET PlanQty = PlanQty + " + value + ", RemainingQty = RemainingQty - " + value + " WHERE Id = " + rowID;
+                                    }
+                                    else
+                                    {
+                                        int tempo = 0;
+                                        cn.Open();
+                                        cm.CommandText = "SELECT PlanQty FROM PlanTable WHERE OrderID = " + orderID + " AND MachineNo =  " + mc + " AND TaskDate = '" + TempDate + "'";
+                                        reader1 = cm.ExecuteReader();
+                                        while (reader1.Read())
+                                        {
+                                            tempo = Convert.ToInt32(reader1["PlanQty"]);
+                                        }
+                                        cn.Close();
+                                        query = "UPDATE PlanTable SET PlanQty = PlanQty + RemainingQty, RemainingQty = 0 WHERE Id = " + rowID;
+                                    }
+
+                                    Result = CommonFunctions.ExecutionToDB(query, 3);
+                                    UpdateRemainingQty(mc, TempDate);
                                 }
                                 else
                                 {
-                                    int tempo = 0;
-                                    cn.Open();
-                                    cm.CommandText = "SELECT PlanQty FROM PlanTable WHERE OrderID = " + orderID + " AND MachineNo =  " + mc + " AND TaskDate = '" + TempDate + "'";
-                                    reader1 = cm.ExecuteReader();
-                                    while (reader1.Read())
-                                    {
-                                        tempo = Convert.ToInt32(reader1["PlanQty"]);
-                                    }
-                                    cn.Close();
-                                    query = "UPDATE PlanTable SET PlanQty = PlanQty + RemainingQty, RemainingQty = 0 WHERE Id = " + rowID;
+                                    mc = GetLastMachineNo(orderID, TempDate);
                                 }
-                                
-                                Result = CommonFunctions.ExecutionToDB(query, 3);
-                                UpdateRemainingQty(mc, TempDate);
                             }
                             else
                             {
                                 mc = GetLastMachineNo(orderID, TempDate);
                             }
                         }
-                        else
-                        {
-                            mc = GetLastMachineNo(orderID, TempDate);
-                        }
+                    }
+                    else
+                    {
+                        
                     }
                 }
                 else
@@ -551,8 +560,18 @@ namespace PlanningBoard
                 SqlCommand cm2 = new SqlCommand(); SqlConnection cn2 = new SqlConnection(connectionStr); cm2.Connection = cn2;
                 string date = null; int id1 = 0; int id2 = 0; int MachineNumber = 0; int ActualQty = 0;
 
-                string query = " SELECT * FROM PlanTable WHERE TaskDate = (SELECT MAX(TaskDate) FROM PlanTable WHERE OrderID = " + orderID + " AND TaskDate < (SELECT MAX(TaskDate) FROM PlanTable WHERE OrderID = " + orderID + ")) AND "
-                              + " MachineNo = (SELECT MAX(MachineNo) FROM PlanTable WHERE (SELECT MAX(TaskDate) FROM PlanTable WHERE OrderID = " + orderID + " AND TaskDate < (SELECT MAX(TaskDate) FROM PlanTable WHERE OrderID = " + orderID + ")))";
+                string query = "SELECT * FROM PlanTable WHERE TaskDate = '" + TempDate + "' AND MachineNo = (SELECT MAX(MachineNo) FROM PlanTable WHERE MachineNo < " + mc + " AND OrderID = "+orderID+" AND TaskDate = '"+TempDate+"') AND OrderID = " + orderID;
+
+                if (CommonFunctions.recordExist(query))
+                {
+                    query = "SELECT * FROM PlanTable WHERE TaskDate = '" + TempDate + "' AND MachineNo = (SELECT MAX(MachineNo) FROM PlanTable WHERE MachineNo < " + mc + " AND OrderID = " + orderID + " AND TaskDate = '" + TempDate + "') AND OrderID = " + orderID;
+
+                }
+                else
+                {
+                    query = " SELECT * FROM PlanTable WHERE TaskDate = (SELECT MAX(TaskDate) FROM PlanTable WHERE OrderID = " + orderID + " AND TaskDate < '" + TempDate + "') AND "
+                          + " MachineNo = (SELECT MAX(MachineNo) FROM PlanTable WHERE OrderID = "+orderID+" AND TaskDate = (SELECT MAX(TaskDate) FROM PlanTable WHERE OrderID = " + orderID + " AND TaskDate < '" + TempDate + "'))";
+                }
                 cm.CommandText = query;
                 reader = cm.ExecuteReader();
                 while (reader.Read())

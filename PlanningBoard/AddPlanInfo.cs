@@ -1572,7 +1572,7 @@ namespace PlanningBoard
                                 query = "IF EXISTS (SELECT * FROM PlanTable WHERE MachineNo = " + MachineNo + " AND OrderID = " + orderID + " AND TaskDate = '" + taskDate + "' ) UPDATE PlanTable SET " +
                                         "Capacity = " + capacity + ", PlanQty = " + plnQty + ", RemainingQty = " + remainQty + ", OrderQty = " + orderQty + ", Efficiency = " + efficiency +
                                         " WHERE MachineNo = " + MachineNo + " AND OrderID = " + orderID + " AND TaskDate = '" + taskDate + "' ELSE " +
-                                        "INSERT INTO PlanTable (MachineNo, TaskDate, OrderID, Capacity, PlanQty, RemainingQty, OrderQty, Efficiency, SAM, Minute, RevertVal, ActualQty, Status) " +
+                                        "INSERT INTO PlanTable (MachineNo, TaskDate, OrderID, Capacity, PlanQty, RemainingQty, OrderQty, Efficiency, SAM, Minute, RevertVal, ActualQty, Status, Production) " +
                                         "VALUES (" + MachineNo + ",'" + taskDate + "'," + orderID + "," + capacity + "," + plnQty + "," + remainQty + "," + orderQty + "," + efficiency + "," + Convert.ToDouble(samTextBox.Text) + "," + minute + ", 0, 0, 0, 1)";
                                 result = CommonFunctions.ExecutionToDB(query, 3);
                             }
