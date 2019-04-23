@@ -1952,7 +1952,7 @@ namespace PlanningBoard
                         if (orderWisePlandataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString() != "")
                         {
                             PreIndex = e.RowIndex;
-                            if(e.ColumnIndex != 1)
+                            if(e.ColumnIndex != 2)
                             {
                                 PreVal = Convert.ToInt32(orderWisePlandataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value);
                             }
@@ -2015,10 +2015,11 @@ namespace PlanningBoard
                     }
 
                     query = "IF EXISTS (SELECT * FROM PlanTable WHERE MachineNo = " + MachineNo + " AND OrderID = " + orderID + " AND TaskDate = '" + TaskDate + "' ) UPDATE PlanTable SET " +
-                                    "Capacity = " + capacity + ", PlanQty = " + planQty + ", RemainingQty = " + remainingQty + ", Efficiency = " + efficiency +
-                                    " WHERE MachineNo = " + MachineNo + " AND OrderID = " + orderID + " AND TaskDate = '" + TaskDate + "' ELSE " +
-                                    "INSERT INTO PlanTable (MachineNo, TaskDate, OrderID, Capacity, PlanQty, RemainingQty, OrderQty, Efficiency, Minute) " +
-                                    "VALUES (" + MachineNo + ",'" + TaskDate + "'," + orderID + "," + capacity + "," + planQty + "," + remainingQty + "," + orderQty + "," + efficiency + "," + minute + ")";
+                            "Capacity = " + capacity + ", PlanQty = " + planQty + ", RemainingQty = " + remainingQty + ", Efficiency = " + efficiency +
+                            " WHERE MachineNo = " + MachineNo + " AND OrderID = " + orderID + " AND TaskDate = '" + TaskDate + "' ELSE " +
+                            "INSERT INTO PlanTable (MachineNo, TaskDate, OrderID, Capacity, PlanQty, RemainingQty, OrderQty, Efficiency, SAM, Minute, RevertVal, ActualQty, Status, Production) " +
+                            "VALUES (" + MachineNo + ",'" + TaskDate + "'," + orderID + "," + capacity + "," + planQty + "," + remainingQty + "," + orderQty + "," + efficiency + "," + Convert.ToDouble(samTextBox.Text) + "," + minute + ", 0, 0, 0, 1)";
+
                     
                     Boolean result = CommonFunctions.ExecutionToDB(query, 3);
 
@@ -2089,7 +2090,7 @@ namespace PlanningBoard
 
                 if (orderWisePlandataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value != null && e.RowIndex > -1 && e.RowIndex < (orderWisePlandataGridView.Rows.Count - 1) && (e.ColumnIndex == 2 || e.ColumnIndex == 5 || e.ColumnIndex == 7) && OrderWisePlanGridRowIndex == -1 && NewVal < 0)
                 {
-                    if (e.ColumnIndex == 1) // TaskDate Column
+                    if (e.ColumnIndex == 2) // TaskDate Column
                     {
                         //DateTime NewDate = Convert.ToDateTime(TaskDateDTP.Text);
                         DateTime NewDate = DateTime.ParseExact(TaskDateDTP.Text, "dd/MM/yyyy", null);
@@ -2140,6 +2141,7 @@ namespace PlanningBoard
                                                 orderWisePlandataGridView.Rows[e.RowIndex].Cells[4].Value = remainingQty;
                                                 orderWisePlandataGridView.Rows[e.RowIndex].Cells[5].Value = newPlanQty;
                                                 orderWisePlandataGridView.Rows[e.RowIndex].Cells[6].Value = minute;
+                                                orderWisePlandataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = TaskDateDTP.Text;
                                             }
                                             else
                                             {
@@ -2199,6 +2201,7 @@ namespace PlanningBoard
                                                             orderWisePlandataGridView.Rows[e.RowIndex].Cells[4].Value = TotalPlanQty;
                                                             orderWisePlandataGridView.Rows[e.RowIndex].Cells[5].Value = currentPlanQty;
                                                             orderWisePlandataGridView.Rows[e.RowIndex].Cells[6].Value = minute;
+                                                            orderWisePlandataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = TaskDateDTP.Text;
                                                         }
                                                         else
                                                         {
@@ -2255,6 +2258,7 @@ namespace PlanningBoard
                                     int capacity = Convert.ToInt32(Math.Floor((double)((minute * (efficiency / 100.00)) / Sam)));
                                     currentPlanQty = capacity < currentPlanQty ? capacity : currentPlanQty;
                                     orderWisePlandataGridView.Rows[e.RowIndex].Cells[3].Value = capacity;
+                                    orderWisePlandataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = TaskDateDTP.Text;
                                 }
                             }
                             else

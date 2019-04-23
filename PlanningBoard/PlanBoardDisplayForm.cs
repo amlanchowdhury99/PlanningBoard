@@ -1316,31 +1316,68 @@ namespace PlanningBoard
 
         private void Revert_Click(object sender, EventArgs e)
         {
-            //string connectionStr = ConnectionManager.connectionStringSavePoint;
-            //SqlCommand cm = new SqlCommand();
-            //SqlConnection cn = new SqlConnection(connectionStr);
-            //cm.Connection = cn;
-            //cn.Open();
-            //try
-            //{
-            //    string query = "ROLLBACK TRAN SAVEPLANTABLE";
-            //    cm.CommandText = query;
-            //    SqlDataReader reader = cm.ExecuteReader();
-            //    if (reader.HasRows)
-            //    {
-            //        BtnGeneratePlan.PerformClick();
-            //    }
-            //}
+            string connectionStr = ConnectionManager.connectionString; string query = "";
+            SqlCommand cm = new SqlCommand(); SqlConnection cn = new SqlConnection(connectionStr); cm.Connection = cn; cn.Open();
+            SqlCommand cm1 = new SqlCommand(); SqlConnection cn1 = new SqlConnection(connectionStr); cm1.Connection = cn1; cn1.Open();
 
-            //catch (Exception ex)
-            //{
-            //    MessageBox.Show("" + ex.ToString());
-            //}
+            string cols = "Id, MachineNo, TaskDate, OrderID, Capacity, PlanQty, RemainingQty, ActualQty, OrderQty, Efficiency, SAM, Minute, Status, RevertVal, Production";
 
-            //finally
-            //{
-            //    cn.Close();
-            //}
+            try
+            {
+                query = "DELETE FROM PlanTable WHERE TaskDate BETWEEN (SELECT MIN(TaskDate) FROM TempPlanTable) AND (SELECT MAX(TaskDate) FROM TempPlanTable)";
+                cm.CommandText = query;
+                if (cm.ExecuteNonQuery() > 0)
+                {
+                    query = "SET IDENTITY_INSERT PlanTable ON INSERT INTO PlanTable (" + cols + ") SELECT " + cols + " FROM TempPlanTable";
+                    cm1.CommandText = query;
+                    if (cm1.ExecuteNonQuery() > 0)
+                    {
+                        BtnGeneratePlan.PerformClick();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Can not Revert. Please Try Again!!!");
+                    }
+                }  
+            }
+
+            catch (Exception ex)
+            {
+                MessageBox.Show("" + ex.ToString());
+            }
+
+            finally
+            {
+                cn.Close();
+                cn1.Close();
+            }
+        }
+
+        public static Boolean SaveState()
+        {
+            string connectionStr = ConnectionManager.connectionString; string query = ""; Boolean result = false;
+            SqlCommand cm = new SqlCommand(); SqlConnection cn = new SqlConnection(connectionStr); cm.Connection = cn; cn.Open();
+            SqlCommand cm1 = new SqlCommand(); SqlConnection cn1 = new SqlConnection(connectionStr); cm1.Connection = cn1; cn1.Open();
+
+            try
+            {
+                query = "DELETE FROM TempPlanTable";
+                cm.CommandText = query; cm.ExecuteNonQuery();
+                query = "INSERT INTO TempPlanTable SELECT * FROM PlanTable WHERE TaskDate BETWEEN '" + fromDate + "' AND '" + toDate + "'";
+                cm1.CommandText = query;
+                result = cm1.ExecuteNonQuery() > 0 ? true : false;
+                return result;
+            }
+            catch (Exception ee)
+            {
+                MessageBox.Show("" + ee.ToString());
+                return false;
+            }
+            finally
+            {
+                cn.Close();
+                cn1.Close();
+            }
         }
 
         private void PlanBoardDisplayForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -1372,7 +1409,6 @@ namespace PlanningBoard
                 myThread.Start();
             }
         }
-
     }
 
     public static class ExtensionMethods
