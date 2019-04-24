@@ -2049,7 +2049,7 @@ namespace PlanningBoard
                                 {
                                     if (NewCapacity > TotalRestPlanQty)
                                     {
-                                        newPlanQty = TotalRestPlanQty == 0 ? temp > NewCapacity ? NewCapacity : temp : NewCapacity - TotalRestPlanQty;
+                                        newPlanQty = TotalRestPlanQty == 0 ? temp > NewCapacity ? NewCapacity : temp : temp > (NewCapacity - TotalRestPlanQty) ? (NewCapacity - TotalRestPlanQty) : temp;
                                         remainingQty = planQty - newPlanQty;
                                     }
                                 }

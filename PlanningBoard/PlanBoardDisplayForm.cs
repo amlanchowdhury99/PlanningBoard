@@ -881,6 +881,15 @@ namespace PlanningBoard
                 string ActualQty = planBoardDataGridView.Rows[rowIndex + OrderFactorsCount - 2].Cells[colIndex].Value.ToString();
                 int mcNo = Convert.ToInt32(planBoardDataGridView.Rows[rowIndex].Cells[0].Value);
 
+                if (CurrentPlanDate <= DateTime.Now.Date)
+                {
+                    this.pBContextMenuStrip.Items[4].Visible = true;
+                }
+                else
+                {
+                    this.pBContextMenuStrip.Items[4].Visible = false;
+                }
+
                 CurrentPlanDate = CurrentPlanDate.AddDays(1);
                 while (!CommonFunctions.recordExist("SELECT * FROM WorkingDays WHERE MachineNo = " + mcNo + " AND Active = 1 AND WorkDate = '" + CurrentPlanDate + "'"))
                 {
@@ -921,7 +930,7 @@ namespace PlanningBoard
                     this.pBContextMenuStrip.Items[0].Enabled = false;
                     this.pBContextMenuStrip.Items[1].Enabled = false;
                     this.pBContextMenuStrip.Items[2].Enabled = false;
-                    this.pBContextMenuStrip.Items[3].Enabled = false; 
+                    this.pBContextMenuStrip.Items[3].Enabled = false;
                 }
 
                 this.pBContextMenuStrip.Show(this.planBoardDataGridView, e.Location);
@@ -951,12 +960,16 @@ namespace PlanningBoard
                     int McNo = Convert.ToInt32(planBoardDataGridView.Rows[e.RowIndex].Cells[0].Value);
                     orderIDs = planBoardDataGridView.Rows[e.RowIndex + OrderFactorsCount - 1].Cells[colIndex].Value.ToString();
                     string currentDate = planBoardDataGridView.Rows[1].Cells[colIndex].Value.ToString();
-                    EditMode = true;
-                    ViewOrderInfo viewOrderInfo = new ViewOrderInfo(McNo, currentDate);
-                    viewOrderInfo.ShowDialog();
-                    ThreadStart myThreadStart = new ThreadStart(Generate_Plan_Board);
-                    Thread myThread = new Thread(myThreadStart);
-                    myThread.Start(); 
+
+                    if (DateTime.ParseExact(currentDate, "dd/MM/yyyy", null) >= DateTime.Now.Date)
+                    {
+                        EditMode = true;
+                        ViewOrderInfo viewOrderInfo = new ViewOrderInfo(McNo, currentDate);
+                        viewOrderInfo.ShowDialog();
+                        ThreadStart myThreadStart = new ThreadStart(Generate_Plan_Board);
+                        Thread myThread = new Thread(myThreadStart);
+                        myThread.Start(); 
+                    }
                     //Generate_Plan_Board();
                 }
             }
@@ -1324,21 +1337,24 @@ namespace PlanningBoard
 
             try
             {
-                query = "DELETE FROM PlanTable WHERE TaskDate BETWEEN (SELECT MIN(TaskDate) FROM TempPlanTable) AND (SELECT MAX(TaskDate) FROM TempPlanTable)";
-                cm.CommandText = query;
-                if (cm.ExecuteNonQuery() > 0)
+                if (CommonFunctions.recordExist("SELECT Top 1* FROM TempPlanTable"))
                 {
-                    query = "SET IDENTITY_INSERT PlanTable ON INSERT INTO PlanTable (" + cols + ") SELECT " + cols + " FROM TempPlanTable";
-                    cm1.CommandText = query;
-                    if (cm1.ExecuteNonQuery() > 0)
+                    query = "DELETE FROM PlanTable WHERE TaskDate >= (SELECT MIN(TaskDate) FROM TempPlanTable)";
+                    cm.CommandText = query;
+                    if (cm.ExecuteNonQuery() > 0)
                     {
-                        BtnGeneratePlan.PerformClick();
+                        query = "SET IDENTITY_INSERT PlanTable ON INSERT INTO PlanTable (" + cols + ") SELECT " + cols + " FROM TempPlanTable";
+                        cm1.CommandText = query;
+                        if (cm1.ExecuteNonQuery() > 0)
+                        {
+                            BtnGeneratePlan.PerformClick();
+                        }
+                        else
+                        {
+                            MessageBox.Show("Can not Revert. Please Try Again!!!");
+                        }
                     }
-                    else
-                    {
-                        MessageBox.Show("Can not Revert. Please Try Again!!!");
-                    }
-                }  
+                }   
             }
 
             catch (Exception ex)
