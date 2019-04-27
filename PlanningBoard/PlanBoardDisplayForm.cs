@@ -769,9 +769,13 @@ namespace PlanningBoard
                     toDateTimePicker.Value = planEndDate;
                 }
             }
-            ThreadStart myThreadStart = new ThreadStart(Generate_Plan_Board);
-            Thread myThread = new Thread(myThreadStart);
-            myThread.Start(); 
+
+            if (ViewOrderInfo.ChangeFlag)
+            {
+                ThreadStart myThreadStart = new ThreadStart(Generate_Plan_Board);
+                Thread myThread = new Thread(myThreadStart);
+                myThread.Start(); 
+            }
             //Generate_Plan_Board();
         }
 
@@ -966,9 +970,13 @@ namespace PlanningBoard
                         EditMode = true;
                         ViewOrderInfo viewOrderInfo = new ViewOrderInfo(McNo, currentDate);
                         viewOrderInfo.ShowDialog();
-                        ThreadStart myThreadStart = new ThreadStart(Generate_Plan_Board);
-                        Thread myThread = new Thread(myThreadStart);
-                        myThread.Start(); 
+
+                        if (ViewOrderInfo.ChangeFlag)
+                        {
+                            ThreadStart myThreadStart = new ThreadStart(Generate_Plan_Board);
+                            Thread myThread = new Thread(myThreadStart);
+                            myThread.Start(); 
+                        }
                     }
                     //Generate_Plan_Board();
                 }

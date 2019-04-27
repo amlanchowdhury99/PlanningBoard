@@ -1081,6 +1081,7 @@ namespace PlanningBoard
                 sizeComboBox.Enabled = true;
                 diaComboBox.Enabled = true;
                 partComboBox.Enabled = true;
+                effTextBox.ReadOnly = false;
             }
             orderInfoID.Text = hiddenIDtextBox.Text;
             //try
@@ -2144,6 +2145,47 @@ namespace PlanningBoard
                     orderWisePlandataGridView.Rows.Add("Total", "", "", "", bookedQtySum, plnQtySum, "", "", "", true);
                     orderWisePlandataGridView.Rows[orderWisePlandataGridView.Rows.Count - 1].Cells[5].ReadOnly = true;
                     orderWisePlandataGridView.Rows[orderWisePlandataGridView.Rows.Count - 1].Cells[7].ReadOnly = true;
+                    SetMaxMinDate();
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("" + ex.ToString());
+            }
+        }
+
+        private void SetMaxMinDate()
+        {
+            int i = 0;
+            DateTime minDate = DateTime.MaxValue;
+            DateTime maxDate = DateTime.MinValue;
+            try
+            {
+                if (orderWisePlandataGridView.Rows.Count > 0)
+                {
+                    foreach (DataGridViewRow row in orderWisePlandataGridView.Rows)
+                    {
+                        if (row.Index < orderWisePlandataGridView.Rows.Count - 1)
+                        {
+                            if (minDate > DateTime.ParseExact(row.Cells[2].Value.ToString(), "dd/MM/yyyy", null))
+                            {
+                                minDate = DateTime.ParseExact(row.Cells[2].Value.ToString(), "dd/MM/yyyy", null);
+                            }
+                            if (maxDate < DateTime.ParseExact(row.Cells[2].Value.ToString(), "dd/MM/yyyy", null))
+                            {
+                                maxDate = DateTime.ParseExact(row.Cells[2].Value.ToString(), "dd/MM/yyyy", null);
+                            }
+                            if (Convert.ToInt32(row.Cells[3].Value) > 0)
+                            {
+                                i++;
+                            }
+                        }
+                    }
+
+                    startDateTimePicker.Value = minDate;
+                    endDateTimePicker.Value = maxDate;
+                    dayDiffTextBox.Text = i.ToString();
+                    newDaysTextBox.Text = i.ToString();
                 }
             }
             catch (Exception ex)

@@ -51,6 +51,7 @@ namespace PlanningBoard
         public Boolean AutoFlag = false;
         public int MachineNo = -1;
         public DateTime shipDate = DateTime.Now;
+        public static Boolean ChangeFlag = false;
 
         public int LC1 = 0;
         public int LC2 = 0;
@@ -1580,6 +1581,7 @@ namespace PlanningBoard
                     }
                     if (result)
                     {
+                        ChangeFlag = true;
                         MessageBox.Show("Added Successfully!!!");
                         resetAll();
                         PlanBoardDisplayForm.planStartDate = fromDateTimePicker.Value;
@@ -1588,6 +1590,7 @@ namespace PlanningBoard
                     }
                     else
                     {
+                        ChangeFlag = false;
                         MessageBox.Show("Failed To Add!!!");
                         return;
                     }
@@ -1998,6 +2001,24 @@ namespace PlanningBoard
             {
                 if (PlanBoardDisplayForm.EditMode)
                 {
+                    if (orderInfoDetailsdataGridView.Rows.Count == 0)
+                    {
+                        MessageBox.Show("Table has no rows to save!!!");
+                        return;
+                    }
+
+                    if (orderWisePlandataGridView.Rows.Count == 0)
+                    {
+                        MessageBox.Show("Table has no rows to save!!!");
+                        return;
+                    }
+
+                    if (orderID == 0)
+                    {
+                        MessageBox.Show("Please Select a Row!!!");
+                        return;
+                    }
+
                     string query = "";
                     DateTime TaskDate = DateTime.ParseExact(orderWisePlandataGridView.Rows[0].Cells[2].Value.ToString(), "dd/MM/yyyy", null);
 
@@ -2025,10 +2046,12 @@ namespace PlanningBoard
 
                     if (result)
                     {
+                        ChangeFlag = true;
                         MessageBox.Show("Updated Successfully!!!");
                     }
                     else
                     {
+                        ChangeFlag = false;
                         MessageBox.Show("Failed To Update!!! Try Again!!!");
                         return;
                     }   
@@ -2036,6 +2059,7 @@ namespace PlanningBoard
             }
             catch (Exception ee)
             {
+                ChangeFlag = false;
                 MessageBox.Show("" + ee.ToString());
             }
             finally
@@ -2356,8 +2380,16 @@ namespace PlanningBoard
                         ResetOrderWiseePlanTableParameters();
                         return;
                     }
+
                     if (Convert.ToInt32(orderWisePlandataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value) == PreVal || e.RowIndex != PreIndex)
                     {
+                        ResetOrderWiseePlanTableParameters();
+                        return;
+                    }
+
+                    if (Convert.ToInt32(orderWisePlandataGridView.Rows[e.RowIndex].Cells[5].Value) < 1)
+                    {
+                        orderWisePlandataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value = PreVal;
                         ResetOrderWiseePlanTableParameters();
                         return;
                     }
