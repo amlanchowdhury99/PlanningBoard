@@ -86,7 +86,11 @@ namespace PlanningBoard
                 if (isDetailed)
                 {
                     planBoardDataGridView.Columns.Add("ProductionDate", "ProductionDate");
-                }   
+                }
+                else
+                {
+                    planBoardDataGridView.Columns.Add("PlanFinishDate", "Plan Finish Date");
+                }
                 planBoardDataGridView.Columns.Add("OrderQty", "OrderQty");
                 planBoardDataGridView.Columns.Add("OrderStatus", "OrderStatus");
                 if (isDetailed)
