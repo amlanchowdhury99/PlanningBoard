@@ -221,7 +221,6 @@ namespace PlanningBoard
         private void SaveMachineInfo_Click(object sender, EventArgs e)
         {
             ResetMachineInfo();
-
         }
 
         private void ResetMachineInfo()
@@ -852,6 +851,12 @@ namespace PlanningBoard
                     return;
                 }
 
+                if (shipDatePicker.Value > CHD.Value)
+                {
+                    MessageBox.Show("Knit Closing Date can not be greater than shipment date!!!");
+                    return;
+                }
+
                 string purchaseOrderNumber = pOTextBox.Text;
                 int buyerName = ((KeyValuePair < int, string>)buyerComboBox.SelectedItem).Key;
                 int styleName = ((KeyValuePair<int, string>)styleComboBox.SelectedItem).Key;
@@ -1017,7 +1022,6 @@ namespace PlanningBoard
                 qtyTextBox.Text = "";
                 samTextBox.Text = "";
                 effTextBox.Text = "";
-                dayDiffTextBox.Text = "";
                 newOrderQtyTextBox.Text = "";
                 newDaysTextBox.Text = "";
                 remarkTextBox.Text = "";
@@ -1028,6 +1032,7 @@ namespace PlanningBoard
                 planDateTimePicker.Value = DateTime.Now;
                 startDateTimePicker.Value = DateTime.Now;
                 endDateTimePicker.Value = DateTime.Now;
+                CHD.Value = DateTime.Now;
 
                 AddBuyer.Enabled = true;
                 AddStyle.Enabled = true;
@@ -1905,6 +1910,7 @@ namespace PlanningBoard
                 shipDatePicker.Value = DateTime.Now.Date;
                 return;
             }
+
             else
             {
                 if (hiddenIDtextBox.Text == "")
@@ -2104,7 +2110,6 @@ namespace PlanningBoard
                 }
                 startDateTimePicker.Value = DateTime.ParseExact(orderWisePlandataGridView.Rows[0].Cells[2].Value.ToString(), "dd/MM/yyyy", null);
                 endDateTimePicker.Value = DateTime.ParseExact(orderWisePlandataGridView.Rows[orderWisePlandataGridView.Rows.Count-1].Cells[2].Value.ToString(), "dd/MM/yyyy", null);
-                dayDiffTextBox.Text = dayDiffTextBox.Text = (endDateTimePicker.Value - startDateTimePicker.Value).Days.ToString();
                 if (temp > 0)
                 {
                     orderInfoWarningLbl.Text = "Knit Close Date Exceeds!!! Left Plan Qty is " + temp + ". No machine available!!! ";
@@ -2184,7 +2189,6 @@ namespace PlanningBoard
 
                     startDateTimePicker.Value = minDate;
                     endDateTimePicker.Value = maxDate;
-                    dayDiffTextBox.Text = i.ToString();
                     newDaysTextBox.Text = i.ToString();
                 }
             }
@@ -2307,6 +2311,24 @@ namespace PlanningBoard
             cm.CommandText = "DELETE FROM PlanTable WHERE PlanQty = 0 AND Production = 1";
             cm.ExecuteNonQuery();
             cn.Close();
+        }
+
+        private void CHD_ValueChanged(object sender, EventArgs e)
+        {
+            if (CHD.Value < shipDatePicker.Value)
+            {
+                MessageBox.Show("ShipmentDate can not be smaller than knit close date!!!");
+                CHD.Value = shipDatePicker.Value;
+                return;
+            }
+            /else
+            //{
+            //    if (hiddenIDtextBox.Text == "")
+            //    {
+            //        newOrderQtyTextBox.Text = qtyTextBox.Text;
+            //        LoadOrdeWiseGrid();
+            //    }
+            //}/
         }
 
     }

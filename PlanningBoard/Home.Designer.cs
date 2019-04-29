@@ -85,7 +85,6 @@
             this.LCText = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
             this.newDaysTextBox = new System.Windows.Forms.TextBox();
-            this.endDateTimePicker = new System.Windows.Forms.DateTimePicker();
             this.newOrderQtyTextBox = new System.Windows.Forms.TextBox();
             this.startDateTimePicker = new System.Windows.Forms.DateTimePicker();
             this.label4 = new System.Windows.Forms.Label();
@@ -94,10 +93,8 @@
             this.label12 = new System.Windows.Forms.Label();
             this.label24 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
             this.planDateTimePicker = new System.Windows.Forms.DateTimePicker();
             this.remarkTextBox = new System.Windows.Forms.TextBox();
-            this.dayDiffTextBox = new System.Windows.Forms.TextBox();
             this.SaveOrderInfo = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.orderWisePlandataGridView = new System.Windows.Forms.DataGridView();
@@ -161,6 +158,9 @@
             this.checkAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.unCheckAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStrip3 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.endDateTimePicker = new System.Windows.Forms.DateTimePicker();
+            this.CHD = new System.Windows.Forms.DateTimePicker();
+            this.label5 = new System.Windows.Forms.Label();
             this.panel2.SuspendLayout();
             this.panel4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Grid_WorkDays_Info)).BeginInit();
@@ -307,10 +307,11 @@
             this.panel4.Controls.Add(this.SaveWorkDays);
             this.panel4.Controls.Add(this.labelAlert);
             this.panel4.Controls.Add(this.textBox1);
+            this.panel4.Controls.Add(this.HomePanel);
             this.panel4.Controls.Add(this.Grid_WorkDays_Info);
             this.panel4.Controls.Add(this.groupBox2);
             this.panel4.Controls.Add(this.BtnUpdate);
-            this.panel4.Location = new System.Drawing.Point(142, 6);
+            this.panel4.Location = new System.Drawing.Point(521, 311);
             this.panel4.Name = "panel4";
             this.panel4.Size = new System.Drawing.Size(1084, 577);
             this.panel4.TabIndex = 10;
@@ -501,7 +502,7 @@
             this.HomePanel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.HomePanel.Controls.Add(this.label17);
             this.HomePanel.Controls.Add(this.button5);
-            this.HomePanel.Location = new System.Drawing.Point(142, 6);
+            this.HomePanel.Location = new System.Drawing.Point(171, 275);
             this.HomePanel.Name = "HomePanel";
             this.HomePanel.Size = new System.Drawing.Size(1085, 582);
             this.HomePanel.TabIndex = 42;
@@ -718,6 +719,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panel3.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
             this.panel3.Controls.Add(this.orderInfoWarningLbl);
+            this.panel3.Controls.Add(this.panel4);
             this.panel3.Controls.Add(this.orderInfoWarningLabel);
             this.panel3.Controls.Add(this.hiddenIDtextBox);
             this.panel3.Controls.Add(this.groupBox5);
@@ -767,6 +769,8 @@
             // groupBox5
             // 
             this.groupBox5.BackColor = System.Drawing.Color.SlateGray;
+            this.groupBox5.Controls.Add(this.label5);
+            this.groupBox5.Controls.Add(this.CHD);
             this.groupBox5.Controls.Add(this.LCBtn);
             this.groupBox5.Controls.Add(this.label26);
             this.groupBox5.Controls.Add(this.MachineComboBox);
@@ -783,10 +787,8 @@
             this.groupBox5.Controls.Add(this.label12);
             this.groupBox5.Controls.Add(this.label24);
             this.groupBox5.Controls.Add(this.label9);
-            this.groupBox5.Controls.Add(this.label5);
             this.groupBox5.Controls.Add(this.planDateTimePicker);
             this.groupBox5.Controls.Add(this.remarkTextBox);
-            this.groupBox5.Controls.Add(this.dayDiffTextBox);
             this.groupBox5.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBox5.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.groupBox5.Location = new System.Drawing.Point(271, 14);
@@ -868,17 +870,6 @@
             this.newDaysTextBox.Size = new System.Drawing.Size(117, 21);
             this.newDaysTextBox.TabIndex = 45;
             // 
-            // endDateTimePicker
-            // 
-            this.endDateTimePicker.CustomFormat = "dd/MM/yyyy";
-            this.endDateTimePicker.Enabled = false;
-            this.endDateTimePicker.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.endDateTimePicker.Location = new System.Drawing.Point(104, 90);
-            this.endDateTimePicker.Name = "endDateTimePicker";
-            this.endDateTimePicker.Size = new System.Drawing.Size(117, 21);
-            this.endDateTimePicker.TabIndex = 19;
-            this.endDateTimePicker.Value = new System.DateTime(2019, 2, 5, 11, 53, 30, 0);
-            // 
             // newOrderQtyTextBox
             // 
             this.newOrderQtyTextBox.Location = new System.Drawing.Point(104, 134);
@@ -959,16 +950,6 @@
             this.label9.TabIndex = 22;
             this.label9.Text = "Start Date";
             // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Font = new System.Drawing.Font("Microsoft Tai Le", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.Location = new System.Drawing.Point(35, 114);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(63, 16);
-            this.label5.TabIndex = 22;
-            this.label5.Text = "Total Days";
-            // 
             // planDateTimePicker
             // 
             this.planDateTimePicker.CustomFormat = "dd/MM/yyyy";
@@ -986,14 +967,6 @@
             this.remarkTextBox.Name = "remarkTextBox";
             this.remarkTextBox.Size = new System.Drawing.Size(117, 21);
             this.remarkTextBox.TabIndex = 25;
-            // 
-            // dayDiffTextBox
-            // 
-            this.dayDiffTextBox.Location = new System.Drawing.Point(104, 112);
-            this.dayDiffTextBox.Name = "dayDiffTextBox";
-            this.dayDiffTextBox.ReadOnly = true;
-            this.dayDiffTextBox.Size = new System.Drawing.Size(117, 21);
-            this.dayDiffTextBox.TabIndex = 37;
             // 
             // SaveOrderInfo
             // 
@@ -1606,6 +1579,39 @@
             this.contextMenuStrip3.Name = "contextMenuStrip3";
             this.contextMenuStrip3.Size = new System.Drawing.Size(61, 4);
             // 
+            // endDateTimePicker
+            // 
+            this.endDateTimePicker.CustomFormat = "dd/MM/yyyy";
+            this.endDateTimePicker.Enabled = false;
+            this.endDateTimePicker.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+            this.endDateTimePicker.Location = new System.Drawing.Point(104, 90);
+            this.endDateTimePicker.Name = "endDateTimePicker";
+            this.endDateTimePicker.Size = new System.Drawing.Size(117, 21);
+            this.endDateTimePicker.TabIndex = 19;
+            this.endDateTimePicker.Value = new System.DateTime(2019, 2, 5, 11, 53, 30, 0);
+            // 
+            // CHD
+            // 
+            this.CHD.CustomFormat = "dd/MM/yyyy";
+            this.CHD.Enabled = false;
+            this.CHD.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+            this.CHD.Location = new System.Drawing.Point(104, 112);
+            this.CHD.Name = "CHD";
+            this.CHD.Size = new System.Drawing.Size(117, 21);
+            this.CHD.TabIndex = 52;
+            this.CHD.Value = new System.DateTime(2019, 2, 5, 11, 53, 30, 0);
+            this.CHD.ValueChanged += new System.EventHandler(this.CHD_ValueChanged);
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Font = new System.Drawing.Font("Microsoft Tai Le", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label5.Location = new System.Drawing.Point(64, 114);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(33, 16);
+            this.label5.TabIndex = 53;
+            this.label5.Text = "CHD";
+            // 
             // Home
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1614,8 +1620,6 @@
             this.AutoValidate = System.Windows.Forms.AutoValidate.EnableAllowFocusChange;
             this.BackColor = System.Drawing.SystemColors.ControlDarkDark;
             this.ClientSize = new System.Drawing.Size(1238, 597);
-            this.Controls.Add(this.HomePanel);
-            this.Controls.Add(this.panel4);
             this.Controls.Add(this.panel3);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.panel2);
@@ -1738,16 +1742,13 @@
         private System.Windows.Forms.GroupBox entryGroupBox;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.DataGridView orderWisePlandataGridView;
-        private System.Windows.Forms.Label label5;
         private System.Windows.Forms.TextBox remarkTextBox;
-        private System.Windows.Forms.TextBox dayDiffTextBox;
         private System.Windows.Forms.Label label6;
         public System.Windows.Forms.DateTimePicker planDateTimePicker;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Label label12;
         private System.Windows.Forms.Label label23;
         public System.Windows.Forms.DateTimePicker startDateTimePicker;
-        public System.Windows.Forms.DateTimePicker endDateTimePicker;
         private System.Windows.Forms.TextBox newOrderQtyTextBox;
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.TextBox LCText;
@@ -1791,6 +1792,9 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Efficiency;
         private System.Windows.Forms.DataGridViewTextBoxColumn Status;
         private System.Windows.Forms.DataGridViewTextBoxColumn ID;
+        private System.Windows.Forms.Label label5;
+        public System.Windows.Forms.DateTimePicker CHD;
+        public System.Windows.Forms.DateTimePicker endDateTimePicker;
         //private FirstCustomControl firstCustomControl1;
         //private MySecondCustmControl mySecondCustmControl1;
     }

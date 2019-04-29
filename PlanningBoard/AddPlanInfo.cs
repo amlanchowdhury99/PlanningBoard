@@ -2829,6 +2829,7 @@ namespace PlanningBoard
                     Boolean result = CommonFunctions.ExecutionToDB(query, 3);
                     if (result)
                     {
+                        ChangeFlag = true;
                         MessageBox.Show("Deleted Successully!!!");
                         IDs.RemoveAll(item => item == OrderID);
 

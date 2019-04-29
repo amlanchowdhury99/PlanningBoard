@@ -89,7 +89,7 @@ namespace PlanningBoard
                 }
                 else
                 {
-                    planBoardDataGridView.Columns.Add("PlanFinishDate", "Plan Finish Date");
+                    planBoardDataGridView.Columns.Add("PlanFinishDate", "PlanFinishDate");
                 }
                 planBoardDataGridView.Columns.Add("OrderQty", "OrderQty");
                 planBoardDataGridView.Columns.Add("OrderStatus", "OrderStatus");
@@ -161,11 +161,11 @@ namespace PlanningBoard
                             {
                                 if (count != 0)
                                 {
-                                    S10 = totalPlanQty.ToString();
-                                    S11 = totalActualQty.ToString();
-                                    S12 = (orderQty - totalPlanQty).ToString();
-                                    S13 = (orderQty - totalActualQty).ToString();  
-                                    planBoardDataGridView.Rows.Add(S1, S2, S3, S4, S5, S6, S7, S8, S9, S10, S11, S12, S13);
+                                    S11 = totalPlanQty.ToString();
+                                    S12 = totalActualQty.ToString();
+                                    S13 = (orderQty - totalPlanQty).ToString();
+                                    S14 = (orderQty - totalActualQty).ToString();  
+                                    planBoardDataGridView.Rows.Add(S1, S2, S3, S4, S5, S6, S7, S8, S9, S10, S11, S12, S13, S14);
                                     totalPlanQty = 0;
                                     totalActualQty = 0;
                                     SL++;
@@ -183,21 +183,22 @@ namespace PlanningBoard
                             S3 = reader["StyleName"].ToString();
                             S4 = reader["SizeName"].ToString();
                             S5 = reader["Dia"].ToString();
-                            S6 = reader["PartName"].ToString();
+                            S6 = reader["PartName"].ToString(); 
                             S7 = Convert.ToDateTime(reader["ShipmentDate"]).ToString("dd/MM/yyyy");
-                            S8 = reader["OrderQty"].ToString();
-                            orderQty = Convert.ToInt32(S8);
-                            S9 = orderStatusComboBox.Text;
+                            S8 = Convert.ToDateTime(reader["PlanFinishDate"]).ToString("dd/MM/yyyy");
+                            S9 = reader["OrderQty"].ToString();
+                            orderQty = Convert.ToInt32(S9);
+                            S10 = orderStatusComboBox.Text;
 
                             totalPlanQty = totalPlanQty + Convert.ToInt32(reader["PlanQty"]);
                             totalActualQty = totalActualQty + (reader.IsDBNull(reader.GetOrdinal("ActualQty")) == true ? 0 : Convert.ToInt32(reader["ActualQty"]));
                         }
 
-                        S10 = totalPlanQty.ToString();
-                        S11 = totalActualQty.ToString();
-                        S12 = (orderQty - totalPlanQty).ToString();
-                        S13 = (orderQty - totalActualQty).ToString();
-                        planBoardDataGridView.Rows.Add(S1, S2, S3, S4, S5, S6, S7, S8, S9, S10, S11, S12, S13);
+                        S11 = totalPlanQty.ToString();
+                        S12 = totalActualQty.ToString();
+                        S13 = (orderQty - totalPlanQty).ToString();
+                        S14 = (orderQty - totalActualQty).ToString();
+                        planBoardDataGridView.Rows.Add(S1, S2, S3, S4, S5, S6, S7, S8, S9, S10, S11, S12, S13, S14);
                         totalPlanQty = 0;
                         totalActualQty = 0;
                         SL++;
@@ -666,7 +667,7 @@ namespace PlanningBoard
             }
 
             string orderby = " order by OrderID, BuyerName, StyleName, SizeName, Dia, PartName asc";
-            string query = "SELECT OrderID, MachineNo, TaskDate, ShipmentDate, OrderQty, SAM, Efficiency, PlanQty, ActualQty, BuyerName, StyleName, SizeName, Dia, PartName FROM Planing_Board_Details WHERE OrderStatus = " + orderStatus;
+            string query = "SELECT OrderID, MachineNo, TaskDate, ShipmentDate, (SELECT MAX(TaskDate) FROM PlanTable WHERE OrderID = OrderID) AS PlanFinishDate, OrderQty, SAM, Efficiency, PlanQty, ActualQty, BuyerName, StyleName, SizeName, Dia, PartName FROM Planing_Board_Details WHERE OrderStatus = " + orderStatus;
             
             if (buyer != "")
             {
