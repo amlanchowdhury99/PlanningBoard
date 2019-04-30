@@ -803,6 +803,13 @@ namespace PlanningBoard
                     return;
                 }
 
+                if (pOTextBox.Text.Trim() == "")
+                {
+                    MessageBox.Show("Please Enter Purchase Order Number", VariableDecleration_Class.sMSGBOX);
+                    pOTextBox.Focus();
+                    return;
+                }
+
                 if (qtyTextBox.Text.Trim() == "")
                 {
                     MessageBox.Show("Please Enter Quantity Value", VariableDecleration_Class.sMSGBOX);
@@ -865,111 +872,125 @@ namespace PlanningBoard
                 int bodyPart = ((KeyValuePair<int, string>)partComboBox.SelectedItem).Key;
                 double qty = Convert.ToDouble(qtyTextBox.Text);
                 DateTime shipdate = DateTime.ParseExact(shipDatePicker.Text, "dd/MM/yyyy", null).Date;
+                DateTime chd = DateTime.ParseExact(CHD.Text, "dd/MM/yyyy", null).Date;
                 double SAMNo = Convert.ToDouble(samTextBox.Text);
                 int eff = Convert.ToInt32(effTextBox.Text);
                 int status = Convert.ToInt32((VariableDecleration_Class.Status.Pending));
                 string Remarks = remarkTextBox.Text;
                 int orderQty = Convert.ToInt32(qtyTextBox.Text);
 
-                string query = " (SELECT Count(*) FROM Order_Info WHERE Buyer = " + buyerName + " AND Style = " + styleName + " AND Size = " + sizeNo + " AND Dia = " + dia + " AND BodyPart = " + bodyPart + ")";
+                string query1 = " (SELECT Count(*) FROM Order_Info WHERE Buyer = " + buyerName + " AND Style = " + styleName + " AND Size = " + sizeNo + " AND Dia = " + dia + " AND BodyPart = " + bodyPart + " AND PurchaseOrderNo = '" + purchaseOrderNumber + "' )";
 
-                if (CommonFunctions.GetNumberForRows(query))
+
+                if (CommonFunctions.GetNumberForRows(query1))
                 {
-                    if (hiddenIDtextBox.Text.Trim() != "")
+                    string query = " SELECT CASE WHEN (" + query1 + ") = 1 THEN CAST( 1 as BIT ) ELSE CAST( 0 as BIT ) END AS A FROM Order_Info WHERE Buyer = " + buyerName + " AND Style = " + styleName + " AND Size = " + sizeNo + " AND Dia = " + dia + " AND BodyPart = " + bodyPart + " AND PurchaseOrderNo = '" + purchaseOrderNumber + "'";
+
+                    if (!CommonFunctions.IsTrue(query))
                     {
-                        query = "SELECT * FROM Order_Info WHERE Id = " + Convert.ToInt32(hiddenIDtextBox.Text);
-                        SqlDataReader reader = CommonFunctions.GetFromDB(query);
-                        if (reader.HasRows)
+                        if (hiddenIDtextBox.Text.Trim() != "")
                         {
-                            while (reader.Read())
+                            query = "SELECT * FROM Order_Info WHERE Id = " + Convert.ToInt32(hiddenIDtextBox.Text);
+                            SqlDataReader reader = CommonFunctions.GetFromDB(query);
+                            if (reader.HasRows)
                             {
-                                if (hiddenIDtextBox.Text != reader["Id"].ToString())
+                                while (reader.Read())
                                 {
-                                    MessageBox.Show("Same Record Exists Already! Please Change the Parameter!!");
-                                    return;
+                                    if (hiddenIDtextBox.Text != reader["Id"].ToString())
+                                    {
+                                        MessageBox.Show("Same Record Exists Already! Please Change the Parameter!!");
+                                        return;
+                                    }
                                 }
+                            }
+
+                            query = "UPDATE Order_Info SET Buyer = " + buyerName + ", Style = " + styleName + ", Size = " + sizeNo + ", Dia = " + dia + ", BodyPart = " + bodyPart + ", PurchaseOrderNo = '" + purchaseOrderNumber + "', Quantity = " + qty + ", ShipmentDate = '" + shipdate + "', CHD = '" + chd + "', SAM = " + SAMNo + ", Efficiency = " + eff + ", Status = " + status + " WHERE Id = " + Convert.ToInt32(hiddenIDtextBox.Text);
+                            if (CommonFunctions.ExecutionToDB(query, 2))
+                            {
+                                //if (CommonFunctions.recordExist("SELECT * FROM PlanTable WHERE OrderID = " + Convert.ToInt32(hiddenIDtextBox.Text)))
+                                //{
+                                //    query = "UPDATE PlanTable SET OrderQty = " + qty + ", SAM = " + SAMNo + " WHERE OrderID = " + Convert.ToInt32(hiddenIDtextBox.Text);
+                                //    if (CommonFunctions.ExecutionToDB(query, 3))
+                                //    {
+                                //        LoadOrderInfoGrid();
+                                //        ResetOrderInfo();
+                                //    }
+                                //}
+                                LoadOrderInfoGrid();
+                                //ResetOrderInfo();
+                            }
+                        }
+                        else
+                        {
+                            if (CommonFunctions.rowsCount > 0)
+                            {
+                                MessageBox.Show("Same Record Exists Already! Please Change the Parameter!!");
+                                return;
+                            }
+
+
+                            query = "INSERT INTO Order_Info(Buyer, Style, Size, Dia, BodyPart, Quantity, ShipmentDate, CHD, SAM, Efficiency, Status, Remarks, PurchaseOrderNo) VALUES (" + buyerName + "," + styleName + "," + sizeNo + "," + dia + "," + bodyPart + "," + qty + ",'" + shipdate + "','" + chd + "'," + SAMNo + "," + eff + "," + status + ", '" + Remarks + "', '" + purchaseOrderNumber + "')";
+                            if (CommonFunctions.ExecutionToDB(query, 1))
+                            {
+                                LoadOrderInfoGrid();
                             }
                         }
 
-                        query = "UPDATE Order_Info SET Buyer = " + buyerName + ", Style = " + styleName + ", Size = " + sizeNo + ", Dia = " + dia + ", BodyPart = " + bodyPart + ", Quantity = " + qty + ", ShipmentDate = '" + shipdate + "', SAM = " + SAMNo + ", Efficiency = " + eff + ", Status = " + status + " WHERE Id = " + Convert.ToInt32(hiddenIDtextBox.Text);
-                        if (CommonFunctions.ExecutionToDB(query, 2))
+                        if (orderWisePlandataGridView.Rows.Count > 0 && addToProductioncheckBox.Checked == true)
                         {
-                            //if (CommonFunctions.recordExist("SELECT * FROM PlanTable WHERE OrderID = " + Convert.ToInt32(hiddenIDtextBox.Text)))
-                            //{
-                            //    query = "UPDATE PlanTable SET OrderQty = " + qty + ", SAM = " + SAMNo + " WHERE OrderID = " + Convert.ToInt32(hiddenIDtextBox.Text);
-                            //    if (CommonFunctions.ExecutionToDB(query, 3))
-                            //    {
-                            //        LoadOrderInfoGrid();
-                            //        ResetOrderInfo();
-                            //    }
-                            //}
-                            LoadOrderInfoGrid();
-                            //ResetOrderInfo();
+                            int planQty = Convert.ToInt32(newOrderQtyTextBox.Text);
+                            int orderID = 0; Boolean result = false;
+                            string connectionStr = ConnectionManager.connectionString;
+                            SqlConnection cn = new SqlConnection(connectionStr);
+                            SqlCommand cm = new SqlCommand();
+                            cm.Connection = cn;
+                            cn.Open();
+                            cm.CommandText = "SELECT Id From Order_Info WHERE Buyer = " + buyerName + " AND Style = " + styleName + " AND Size = " + sizeNo + " AND Dia = " + dia + " AND BodyPart = " + bodyPart + " AND PurchaseOrderNo = '" + purchaseOrderNumber + "'";
+                            SqlDataReader reader1 = cm.ExecuteReader();
+                            if (reader1.HasRows)
+                            {
+                                while (reader1.Read())
+                                {
+                                    orderID = Convert.ToInt32(reader1["Id"]);
+                                }
+                            }
+                            cn.Close();
+                            foreach (DataGridViewRow row in orderWisePlandataGridView.Rows)
+                            {
+                                if (row.Index != orderWisePlandataGridView.Rows.Count - 1)
+                                {
+                                    if (Convert.ToInt32(row.Cells[3].Value) > 0 && Convert.ToInt32(row.Cells[5].Value) > 0)
+                                    {
+                                        int machineNo = Convert.ToInt32(row.Cells[1].Value);
+                                        int capacity = Convert.ToInt32(row.Cells[3].Value);
+                                        int remainQty = Convert.ToInt32(row.Cells[3].Value) - (Convert.ToInt32(row.Cells[4].Value) + Convert.ToInt32(row.Cells[5].Value));
+                                        remainQty = remainQty < 0 ? 0 : remainQty;
+                                        int plnQty = Convert.ToInt32(row.Cells[5].Value);
+                                        int efficiency = Convert.ToInt32(row.Cells[8].Value);
+                                        int minute = Convert.ToInt32(row.Cells[7].Value);
+                                        DateTime taskDate = DateTime.ParseExact(row.Cells[2].Value.ToString(), "dd/MM/yyyy", null);
+                                        int active = Convert.ToInt32(row.Cells[3].Value) < 1 ? 0 : 1;
+                                        query = "INSERT INTO PlanTable (MachineNo, TaskDate, OrderID, Capacity, PlanQty, RemainingQty, OrderQty, Efficiency, SAM, Minute, RevertVal, ActualQty, Status, Production) " +
+                                                "VALUES (" + machineNo + ",'" + taskDate + "'," + orderID + "," + capacity + "," + plnQty + "," + remainQty + "," + orderQty + "," + efficiency + "," + Convert.ToDouble(samTextBox.Text) + "," + minute + ", 0, 0, 0, 1)";
+                                        result = CommonFunctions.ExecutionToDB(query, 3);
+                                    }
+                                }
+                            }
+                            if (result == true)
+                            {
+                                MessageBox.Show("Added to PlanTable Successfully!!!");
+                                orderWisePlandataGridView.Rows.Clear();
+                                return;
+                            }
                         }
                     }
                     else
                     {
-                        if (CommonFunctions.rowsCount > 0)
-                        {
-                            MessageBox.Show("Same Record Exists Already! Please Change the Parameter!!");
-                            return;
-                        }
-
-
-                        query = "INSERT INTO Order_Info(Buyer, Style, Size, Dia, BodyPart, Quantity, ShipmentDate, SAM, Efficiency, Status, Remarks, PurchaseOrderNo) VALUES (" + buyerName + "," + styleName + "," + sizeNo + "," + dia + "," + bodyPart + "," + qty + ",'" + shipdate + "'," + SAMNo + "," + eff + "," + status + ", '" + Remarks + "', '" + purchaseOrderNumber + "')";
-                        if (CommonFunctions.ExecutionToDB(query, 1))
-                        {
-                            LoadOrderInfoGrid();
-                        }
+                        MessageBox.Show("Same Record Exists Already! Please Change the Parameter!!");
+                        return;
                     }
 
-                    if (orderWisePlandataGridView.Rows.Count > 0 && addToProductioncheckBox.Checked == true)
-                    {
-                        int planQty = Convert.ToInt32(newOrderQtyTextBox.Text);
-                        int orderID = 0; Boolean result = false;
-                        string connectionStr = ConnectionManager.connectionString;
-                        SqlConnection cn = new SqlConnection(connectionStr);
-                        SqlCommand cm = new SqlCommand();
-                        cm.Connection = cn;
-                        cn.Open();
-                        cm.CommandText = "SELECT Id From Order_Info WHERE Buyer = " + buyerName + " AND Style = " + styleName + " AND Size = " + sizeNo + " AND Dia = " + dia + " AND BodyPart = " + bodyPart;
-                        SqlDataReader reader1 = cm.ExecuteReader();
-                        if (reader1.HasRows)
-                        {
-                            while (reader1.Read())
-                            {
-                                orderID = Convert.ToInt32(reader1["Id"]);
-                            }
-                        }
-                        cn.Close();
-                        foreach (DataGridViewRow row in orderWisePlandataGridView.Rows)
-                        {
-                            if (row.Index != orderWisePlandataGridView.Rows.Count - 1)
-                            {
-                                if (Convert.ToInt32(row.Cells[3].Value) > 0 && Convert.ToInt32(row.Cells[5].Value) > 0)
-                                {
-                                    int machineNo = Convert.ToInt32(row.Cells[1].Value);
-                                    int capacity = Convert.ToInt32(row.Cells[3].Value);
-                                    int remainQty = Convert.ToInt32(row.Cells[3].Value) - (Convert.ToInt32(row.Cells[4].Value) + Convert.ToInt32(row.Cells[5].Value));
-                                    remainQty = remainQty < 0 ? 0 : remainQty;
-                                    int plnQty = Convert.ToInt32(row.Cells[5].Value);
-                                    int efficiency = Convert.ToInt32(row.Cells[8].Value);
-                                    int minute = Convert.ToInt32(row.Cells[7].Value);
-                                    DateTime taskDate = DateTime.ParseExact(row.Cells[2].Value.ToString(), "dd/MM/yyyy", null);
-                                    int active = Convert.ToInt32(row.Cells[3].Value) < 1 ? 0 : 1;
-                                    query = "INSERT INTO PlanTable (MachineNo, TaskDate, OrderID, Capacity, PlanQty, RemainingQty, OrderQty, Efficiency, SAM, Minute, RevertVal, ActualQty, Status, Production) " +
-                                            "VALUES (" + machineNo + ",'" + taskDate + "'," + orderID + "," + capacity + "," + plnQty + "," + remainQty + "," + orderQty + "," + efficiency + "," + Convert.ToDouble(samTextBox.Text) + "," + minute + ", 0, 0, 0, 1)";
-                                    result = CommonFunctions.ExecutionToDB(query, 3);
-                                }
-                            }
-                        }
-                        if (result == true)
-                        {
-                            MessageBox.Show("Added to PlanTable Successfully!!!");
-                            orderWisePlandataGridView.Rows.Clear();
-                            return;
-                        }
-                    }
+                    
                 }
             }
 
@@ -1068,6 +1089,24 @@ namespace PlanningBoard
             int sizeNo = ((KeyValuePair<int, string>)sizeComboBox.SelectedItem).Key;
             int dia = ((KeyValuePair<int, string>)diaComboBox.SelectedItem).Key;
             int bodyPart = ((KeyValuePair<int, string>)partComboBox.SelectedItem).Key;
+
+            string connectionStr = ConnectionManager.connectionString; SqlDataReader reader;
+            SqlCommand cm = new SqlCommand(); SqlConnection cn = new SqlConnection(connectionStr); cm.Connection = cn; cn.Open();
+            cm.CommandText = "SELECT CHD,PurchaseOrderNo FROM Order_Info WHERE ID = " + Convert.ToInt32(hiddenIDtextBox.Text);
+            reader = cm.ExecuteReader();
+            if (reader.HasRows)
+            {
+                while (reader.Read())
+                {
+                    CHD.Value = reader.IsDBNull(reader.GetOrdinal("CHD")) == true ? shipDatePicker.Value : Convert.ToDateTime(reader["CHD"].ToString());
+                    pOTextBox.Text = CHD.Text;
+                }
+            }
+            else
+            {
+                CHD.Value = shipDatePicker.Value;
+            }
+            cn.Close();
 
             if (OrderUsed)
             {
@@ -1943,8 +1982,9 @@ namespace PlanningBoard
                 int sizeNo = ((KeyValuePair<int, string>)sizeComboBox.SelectedItem).Key;
                 int Dia = ((KeyValuePair<int, string>)diaComboBox.SelectedItem).Key;
                 int bodyPart = ((KeyValuePair<int, string>)partComboBox.SelectedItem).Key;
+                string purchaseOrderNumber = pOTextBox.Text;
 
-                if (CommonFunctions.recordExist("SELECT * FROM PlanTable WHERE OrderID = (SELECT Id FROM Order_Info WHERE Buyer = " + buyerName + " AND Style = " + styleName + " AND Size = " + sizeNo + " AND Dia = " + Dia + " AND BodyPart = " + bodyPart + ")"))
+                if (CommonFunctions.recordExist("SELECT * FROM PlanTable WHERE OrderID = (SELECT Id FROM Order_Info WHERE Buyer = " + buyerName + " AND Style = " + styleName + " AND Size = " + sizeNo + " AND Dia = " + Dia + " AND BodyPart = " + bodyPart + " AND PurchaseOrderNo = '" + purchaseOrderNumber + "')"))
                 {
                     MessageBox.Show("This order already exists in PlanBoard!!!");
                     return;
@@ -2321,7 +2361,11 @@ namespace PlanningBoard
                 CHD.Value = shipDatePicker.Value;
                 return;
             }
-            /else
+            else
+            {
+                pOTextBox.Text = CHD.Text;
+            }
+            ///else
             //{
             //    if (hiddenIDtextBox.Text == "")
             //    {

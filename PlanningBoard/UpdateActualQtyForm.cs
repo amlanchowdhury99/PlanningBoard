@@ -703,20 +703,8 @@ namespace PlanningBoard
 
                     if (id1 != id2 && ActualQty == 0)
                     {
-
-                        query = " SELECT CASE WHEN PlanQty >= " + val + " THEN CAST( 1 as BIT ) ELSE CAST( 0 as BIT ) END AS A FROM PlanTable WHERE OrderID = " + orderID + " AND MachineNo =  " + MachineNumber + " AND TaskDate = '" + date + "'";
-                        if (CommonFunctions.IsTrue(query))
-                        {
-                            query = "UPDATE PlanTable SET RemainingQty = RemainingQty + " + val + ", PlanQty = PlanQty - " + val + " WHERE OrderID = " + orderID + " AND MachineNo =  " + MachineNumber + " AND TaskDate = '" + date + "'";
-                            Boolean Result = CommonFunctions.ExecutionToDB(query, 3);
-                            UpdateRemainingQty(mc, TempDate);
-                        }
-                        else
-                        {
-                            //query = "UPDATE PlanTable SET RemainingQty = RemainingQty + " + tempo + ", PlanQty = 0 WHERE OrderID = " + orderID + " AND MachineNo =  " + mc + " AND TaskDate = '" + TempDate + "'";
-                        }
-
                         cn2.Open();
+                        query = "UPDATE PlanTable SET RemainingQty = RemainingQty + " + val + ", PlanQty = PlanQty - " + val + " WHERE OrderID = " + orderID + " AND MachineNo =  " + MachineNumber + " AND TaskDate = '" + date + "'";
                         cm2.CommandText = query;
                         cm2.ExecuteNonQuery();
                         cn2.Close();

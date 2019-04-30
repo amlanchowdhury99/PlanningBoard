@@ -57,7 +57,7 @@ namespace PlanningBoard
         public static DateTime planEndDate = DateTime.Now.Date;
         public List<int> gridMachineRowStartIndex = new List<int>();
         public int extraCols = 0;
-        public static List<string> Paras = new List<string>() { "STYLE :", "PURCHASE ORDER :", "PARTS :", "SIZE :", "SAM :", "EFFICIENCY :", "CAPACITY :", "PLAN QTY :", "CHD :", "ORDER-QTY :", "ACTUAL PRODUCTION :", "ORDER ID :" };
+        public static List<string> Paras = new List<string>() { "STYLE :", "PURCHASE ORDER :", "PARTS :", "SIZE :", "SAM :", "EFFICIENCY :", "CAPACITY :", "PLAN QTY :", "KnitCloseDate :", "ORDER-QTY :", "ACTUAL PRODUCTION :", "ORDER ID :" };
 
         public PlanBoardDisplayForm()
         {

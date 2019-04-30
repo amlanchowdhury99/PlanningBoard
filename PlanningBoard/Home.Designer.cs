@@ -41,6 +41,9 @@
             this.SaveWorkDays = new System.Windows.Forms.Button();
             this.labelAlert = new System.Windows.Forms.Label();
             this.textBox1 = new System.Windows.Forms.TextBox();
+            this.HomePanel = new System.Windows.Forms.Panel();
+            this.label17 = new System.Windows.Forms.Label();
+            this.button5 = new System.Windows.Forms.Button();
             this.Grid_WorkDays_Info = new System.Windows.Forms.DataGridView();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.resetButton = new System.Windows.Forms.Button();
@@ -53,9 +56,6 @@
             this.label15 = new System.Windows.Forms.Label();
             this.label16 = new System.Windows.Forms.Label();
             this.BtnUpdate = new System.Windows.Forms.Button();
-            this.HomePanel = new System.Windows.Forms.Panel();
-            this.label17 = new System.Windows.Forms.Label();
-            this.button5 = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.machineInfoDataGridView = new System.Windows.Forms.DataGridView();
@@ -78,13 +78,15 @@
             this.orderInfoWarningLabel = new System.Windows.Forms.Label();
             this.hiddenIDtextBox = new System.Windows.Forms.TextBox();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.CHD = new System.Windows.Forms.DateTimePicker();
             this.LCBtn = new System.Windows.Forms.Button();
             this.label26 = new System.Windows.Forms.Label();
-            this.MachineComboBox = new PlanningBoard.CheckComboBox();
             this.addToProductioncheckBox = new System.Windows.Forms.CheckBox();
             this.LCText = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
             this.newDaysTextBox = new System.Windows.Forms.TextBox();
+            this.endDateTimePicker = new System.Windows.Forms.DateTimePicker();
             this.newOrderQtyTextBox = new System.Windows.Forms.TextBox();
             this.startDateTimePicker = new System.Windows.Forms.DateTimePicker();
             this.label4 = new System.Windows.Forms.Label();
@@ -158,14 +160,12 @@
             this.checkAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.unCheckAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStrip3 = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.endDateTimePicker = new System.Windows.Forms.DateTimePicker();
-            this.CHD = new System.Windows.Forms.DateTimePicker();
-            this.label5 = new System.Windows.Forms.Label();
+            this.MachineComboBox = new PlanningBoard.CheckComboBox();
             this.panel2.SuspendLayout();
             this.panel4.SuspendLayout();
+            this.HomePanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Grid_WorkDays_Info)).BeginInit();
             this.groupBox2.SuspendLayout();
-            this.HomePanel.SuspendLayout();
             this.panel1.SuspendLayout();
             this.groupBox4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.machineInfoDataGridView)).BeginInit();
@@ -307,13 +307,12 @@
             this.panel4.Controls.Add(this.SaveWorkDays);
             this.panel4.Controls.Add(this.labelAlert);
             this.panel4.Controls.Add(this.textBox1);
-            this.panel4.Controls.Add(this.HomePanel);
             this.panel4.Controls.Add(this.Grid_WorkDays_Info);
             this.panel4.Controls.Add(this.groupBox2);
             this.panel4.Controls.Add(this.BtnUpdate);
-            this.panel4.Location = new System.Drawing.Point(521, 311);
+            this.panel4.Location = new System.Drawing.Point(140, 6);
             this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(1084, 577);
+            this.panel4.Size = new System.Drawing.Size(1087, 577);
             this.panel4.TabIndex = 10;
             this.panel4.Paint += new System.Windows.Forms.PaintEventHandler(this.panel4_Paint);
             this.panel4.PreviewKeyDown += new System.Windows.Forms.PreviewKeyDownEventHandler(this.panel4_PreviewKeyDown);
@@ -351,6 +350,43 @@
             this.textBox1.Size = new System.Drawing.Size(100, 20);
             this.textBox1.TabIndex = 15;
             this.textBox1.Visible = false;
+            // 
+            // HomePanel
+            // 
+            this.HomePanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.HomePanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(64)))));
+            this.HomePanel.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("HomePanel.BackgroundImage")));
+            this.HomePanel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.HomePanel.Controls.Add(this.label17);
+            this.HomePanel.Controls.Add(this.button5);
+            this.HomePanel.Location = new System.Drawing.Point(140, 6);
+            this.HomePanel.Name = "HomePanel";
+            this.HomePanel.Size = new System.Drawing.Size(1088, 582);
+            this.HomePanel.TabIndex = 42;
+            // 
+            // label17
+            // 
+            this.label17.AutoSize = true;
+            this.label17.Font = new System.Drawing.Font("Monotype Corsiva", 48F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label17.ForeColor = System.Drawing.SystemColors.ButtonFace;
+            this.label17.Location = new System.Drawing.Point(121, 236);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(842, 79);
+            this.label17.TabIndex = 6;
+            this.label17.Text = "Seamless Machine Planning Board";
+            // 
+            // button5
+            // 
+            this.button5.BackColor = System.Drawing.Color.RosyBrown;
+            this.button5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button5.Location = new System.Drawing.Point(972, 611);
+            this.button5.Name = "button5";
+            this.button5.Size = new System.Drawing.Size(96, 34);
+            this.button5.TabIndex = 5;
+            this.button5.Text = "Save";
+            this.button5.UseVisualStyleBackColor = false;
             // 
             // Grid_WorkDays_Info
             // 
@@ -491,43 +527,6 @@
             this.BtnUpdate.Text = "Save";
             this.BtnUpdate.UseVisualStyleBackColor = false;
             this.BtnUpdate.Click += new System.EventHandler(this.BtnUpdate_Click);
-            // 
-            // HomePanel
-            // 
-            this.HomePanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.HomePanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(64)))));
-            this.HomePanel.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("HomePanel.BackgroundImage")));
-            this.HomePanel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.HomePanel.Controls.Add(this.label17);
-            this.HomePanel.Controls.Add(this.button5);
-            this.HomePanel.Location = new System.Drawing.Point(171, 275);
-            this.HomePanel.Name = "HomePanel";
-            this.HomePanel.Size = new System.Drawing.Size(1085, 582);
-            this.HomePanel.TabIndex = 42;
-            // 
-            // label17
-            // 
-            this.label17.AutoSize = true;
-            this.label17.Font = new System.Drawing.Font("Monotype Corsiva", 48F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label17.ForeColor = System.Drawing.SystemColors.ButtonFace;
-            this.label17.Location = new System.Drawing.Point(121, 236);
-            this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(842, 79);
-            this.label17.TabIndex = 6;
-            this.label17.Text = "Seamless Machine Planning Board";
-            // 
-            // button5
-            // 
-            this.button5.BackColor = System.Drawing.Color.RosyBrown;
-            this.button5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button5.Location = new System.Drawing.Point(972, 611);
-            this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(96, 34);
-            this.button5.TabIndex = 5;
-            this.button5.Text = "Save";
-            this.button5.UseVisualStyleBackColor = false;
             // 
             // panel1
             // 
@@ -719,7 +718,6 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panel3.BackColor = System.Drawing.SystemColors.GradientInactiveCaption;
             this.panel3.Controls.Add(this.orderInfoWarningLbl);
-            this.panel3.Controls.Add(this.panel4);
             this.panel3.Controls.Add(this.orderInfoWarningLabel);
             this.panel3.Controls.Add(this.hiddenIDtextBox);
             this.panel3.Controls.Add(this.groupBox5);
@@ -797,6 +795,27 @@
             this.groupBox5.TabIndex = 30;
             this.groupBox5.TabStop = false;
             // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Font = new System.Drawing.Font("Microsoft Tai Le", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label5.Location = new System.Drawing.Point(64, 114);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(33, 16);
+            this.label5.TabIndex = 53;
+            this.label5.Text = "CHD";
+            // 
+            // CHD
+            // 
+            this.CHD.CustomFormat = "dd/MM/yyyy";
+            this.CHD.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+            this.CHD.Location = new System.Drawing.Point(104, 112);
+            this.CHD.Name = "CHD";
+            this.CHD.Size = new System.Drawing.Size(117, 21);
+            this.CHD.TabIndex = 52;
+            this.CHD.Value = new System.DateTime(2019, 2, 5, 11, 53, 30, 0);
+            this.CHD.ValueChanged += new System.EventHandler(this.CHD_ValueChanged);
+            // 
             // LCBtn
             // 
             this.LCBtn.BackColor = System.Drawing.Color.RosyBrown;
@@ -818,17 +837,6 @@
             this.label26.Size = new System.Drawing.Size(73, 16);
             this.label26.TabIndex = 51;
             this.label26.Text = "Machine No";
-            // 
-            // MachineComboBox
-            // 
-            this.MachineComboBox.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
-            this.MachineComboBox.FormattingEnabled = true;
-            this.MachineComboBox.Location = new System.Drawing.Point(104, 23);
-            this.MachineComboBox.Name = "MachineComboBox";
-            this.MachineComboBox.Size = new System.Drawing.Size(117, 22);
-            this.MachineComboBox.TabIndex = 50;
-            this.MachineComboBox.Text = "Select Machines";
-            this.MachineComboBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.MachineComboBox_KeyPress);
             // 
             // addToProductioncheckBox
             // 
@@ -869,6 +877,17 @@
             this.newDaysTextBox.ReadOnly = true;
             this.newDaysTextBox.Size = new System.Drawing.Size(117, 21);
             this.newDaysTextBox.TabIndex = 45;
+            // 
+            // endDateTimePicker
+            // 
+            this.endDateTimePicker.CustomFormat = "dd/MM/yyyy";
+            this.endDateTimePicker.Enabled = false;
+            this.endDateTimePicker.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
+            this.endDateTimePicker.Location = new System.Drawing.Point(104, 90);
+            this.endDateTimePicker.Name = "endDateTimePicker";
+            this.endDateTimePicker.Size = new System.Drawing.Size(117, 21);
+            this.endDateTimePicker.TabIndex = 19;
+            this.endDateTimePicker.Value = new System.DateTime(2019, 2, 5, 11, 53, 30, 0);
             // 
             // newOrderQtyTextBox
             // 
@@ -1579,38 +1598,16 @@
             this.contextMenuStrip3.Name = "contextMenuStrip3";
             this.contextMenuStrip3.Size = new System.Drawing.Size(61, 4);
             // 
-            // endDateTimePicker
+            // MachineComboBox
             // 
-            this.endDateTimePicker.CustomFormat = "dd/MM/yyyy";
-            this.endDateTimePicker.Enabled = false;
-            this.endDateTimePicker.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.endDateTimePicker.Location = new System.Drawing.Point(104, 90);
-            this.endDateTimePicker.Name = "endDateTimePicker";
-            this.endDateTimePicker.Size = new System.Drawing.Size(117, 21);
-            this.endDateTimePicker.TabIndex = 19;
-            this.endDateTimePicker.Value = new System.DateTime(2019, 2, 5, 11, 53, 30, 0);
-            // 
-            // CHD
-            // 
-            this.CHD.CustomFormat = "dd/MM/yyyy";
-            this.CHD.Enabled = false;
-            this.CHD.Format = System.Windows.Forms.DateTimePickerFormat.Custom;
-            this.CHD.Location = new System.Drawing.Point(104, 112);
-            this.CHD.Name = "CHD";
-            this.CHD.Size = new System.Drawing.Size(117, 21);
-            this.CHD.TabIndex = 52;
-            this.CHD.Value = new System.DateTime(2019, 2, 5, 11, 53, 30, 0);
-            this.CHD.ValueChanged += new System.EventHandler(this.CHD_ValueChanged);
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Font = new System.Drawing.Font("Microsoft Tai Le", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.Location = new System.Drawing.Point(64, 114);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(33, 16);
-            this.label5.TabIndex = 53;
-            this.label5.Text = "CHD";
+            this.MachineComboBox.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+            this.MachineComboBox.FormattingEnabled = true;
+            this.MachineComboBox.Location = new System.Drawing.Point(104, 23);
+            this.MachineComboBox.Name = "MachineComboBox";
+            this.MachineComboBox.Size = new System.Drawing.Size(117, 22);
+            this.MachineComboBox.TabIndex = 50;
+            this.MachineComboBox.Text = "Select Machines";
+            this.MachineComboBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.MachineComboBox_KeyPress);
             // 
             // Home
             // 
@@ -1620,6 +1617,8 @@
             this.AutoValidate = System.Windows.Forms.AutoValidate.EnableAllowFocusChange;
             this.BackColor = System.Drawing.SystemColors.ControlDarkDark;
             this.ClientSize = new System.Drawing.Size(1238, 597);
+            this.Controls.Add(this.HomePanel);
+            this.Controls.Add(this.panel4);
             this.Controls.Add(this.panel3);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.panel2);
@@ -1636,11 +1635,11 @@
             this.panel2.ResumeLayout(false);
             this.panel4.ResumeLayout(false);
             this.panel4.PerformLayout();
+            this.HomePanel.ResumeLayout(false);
+            this.HomePanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Grid_WorkDays_Info)).EndInit();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
-            this.HomePanel.ResumeLayout(false);
-            this.HomePanel.PerformLayout();
             this.panel1.ResumeLayout(false);
             this.groupBox4.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.machineInfoDataGridView)).EndInit();
