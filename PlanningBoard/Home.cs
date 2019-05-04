@@ -1670,7 +1670,10 @@ namespace PlanningBoard
             {
                 orderInfoDetailsdataGridView.Rows.Clear();
                 LoadOrderInfoGrid();
-                //LoadOrdeWiseGrid();
+                if (buyerComboBox.SelectedIndex != 0 && styleComboBox.SelectedIndex != 0 && sizeComboBox.SelectedIndex != 0 && partComboBox.SelectedIndex != 0)
+                {
+                    SetDiaSAM();
+                }
             }
         }
 
@@ -1680,16 +1683,19 @@ namespace PlanningBoard
             {
                 orderInfoDetailsdataGridView.Rows.Clear();
                 LoadOrderInfoGrid();
-                //LoadOrdeWiseGrid();
+                if (buyerComboBox.SelectedIndex != 0 && styleComboBox.SelectedIndex != 0 && sizeComboBox.SelectedIndex != 0 && partComboBox.SelectedIndex != 0)
+                {
+                    SetDiaSAM();
+                }
             }
         }
 
         private void sizeComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            //if (hiddenIDtextBox.Text == "")
-            //{
-                //LoadOrdeWiseGrid();
-            //}
+            if (buyerComboBox.SelectedIndex != 0 && styleComboBox.SelectedIndex != 0 && sizeComboBox.SelectedIndex != 0 && partComboBox.SelectedIndex != 0)
+            {
+                SetDiaSAM();
+            }
         }
 
         private void diaComboBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -1703,10 +1709,61 @@ namespace PlanningBoard
 
         private void partComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            //if (hiddenIDtextBox.Text == "")
-            //{
-                //LoadOrdeWiseGrid();
-            //}
+            if (buyerComboBox.SelectedIndex != 0 && styleComboBox.SelectedIndex != 0 && sizeComboBox.SelectedIndex != 0 && partComboBox.SelectedIndex != 0)
+            {
+                SetDiaSAM();
+            }
+        }
+
+        private void SetDiaSAM()
+        {
+            string connectionStr = ConnectionManager.connectionString; SqlDataReader reader;
+            SqlCommand cm = new SqlCommand(); SqlConnection cn = new SqlConnection(connectionStr); cm.Connection = cn; cn.Open();
+
+            try
+            {
+                int buyerName = ((KeyValuePair<int, string>)buyerComboBox.SelectedItem).Key;
+                int styleName = ((KeyValuePair<int, string>)styleComboBox.SelectedItem).Key;
+                int sizeNo = ((KeyValuePair<int, string>)sizeComboBox.SelectedItem).Key;
+                int bodyPart = ((KeyValuePair<int, string>)partComboBox.SelectedItem).Key;
+
+                string query = "SELECT TOP 1 * FROM Order_Info WHERE Buyer = "+buyerName+" AND Style = "+styleName+" AND Size = "+sizeNo+" AND BodyPart = "+bodyPart;
+
+                if (CommonFunctions.recordExist(query))
+                {
+                    query = "SELECT TOP 1 * FROM Order_Info WHERE Buyer = " + buyerName + " AND Style = " + styleName + " AND Size = " + sizeNo + " AND BodyPart = " + bodyPart + " order by Id desc";
+                    cm.CommandText = query;
+                    reader = cm.ExecuteReader();
+
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            diaComboBox.SelectedValue = reader.IsDBNull(reader.GetOrdinal("Dia")) == true ? 0 : Convert.ToInt32(reader["Dia"]);
+                            samTextBox.Text = reader.IsDBNull(reader.GetOrdinal("SAM")) == true ? "" : reader["SAM"].ToString();
+                        }
+                    }
+                    else
+                    {
+                        diaComboBox.SelectedValue = 0;
+                        samTextBox.Text = "";
+                    }
+                }
+                else
+                {
+                    diaComboBox.SelectedValue = 0;
+                    samTextBox.Text = "";
+                }
+            }
+            catch (Exception ee)
+            {
+                MessageBox.Show("" + ee.ToString());
+            }
+
+            finally
+            {
+                cn.Close();
+            }
         }
 
         private void orderInfoDetailsdataGridView_CellMouseUp(object sender, DataGridViewCellMouseEventArgs e)
@@ -1945,9 +2002,21 @@ namespace PlanningBoard
         {
             if (shipDatePicker.Value < DateTime.Now.Date)
             {
-                MessageBox.Show("Knit Closing Date can not be smaller than current date!!!");
-                shipDatePicker.Value = DateTime.Now.Date;
-                return;
+                if (hiddenIDtextBox.Text != "")
+                {
+                    if (!CommonFunctions.recordExist("SELECT Top 1 * FROM PlanTable WHERE OrderID = " + Convert.ToInt32(hiddenIDtextBox.Text)))
+                    {
+                        MessageBox.Show("Knit Closing Date can not be smaller than current date!!!");
+                        shipDatePicker.Value = DateTime.Now.Date;
+                        return;
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Knit Closing Date can not be smaller than current date!!!");
+                    shipDatePicker.Value = DateTime.Now.Date;
+                    return;
+                }
             }
 
             else
