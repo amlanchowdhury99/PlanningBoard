@@ -39,7 +39,7 @@ namespace PlanningBoard
             p.Add(panel3);
             p.Add(panel4);
             p.Add(HomePanel);
-            
+
         }
 
         private void Home_Load(object sender, EventArgs e)
@@ -102,27 +102,27 @@ namespace PlanningBoard
 
         private void button4_Click(object sender, EventArgs e)
         {
-            
+
         }
 
         private void Home_MouseHover(object sender, EventArgs e)
         {
-            
+
         }
 
         private void Home_MouseLeave(object sender, EventArgs e)
         {
-            
+
         }
 
         private void button3_Click(object sender, EventArgs e)
         {
-            
+
         }
 
         private void button5_Click(object sender, EventArgs e)
         {
-            
+
         }
 
         private void machineEntryForm_Load(object sender, EventArgs e)
@@ -154,13 +154,13 @@ namespace PlanningBoard
             ResetWorkingDays();
             Load_WorkingDays_ComboBox();
             labelAlert.Visible = false;
-            
+
 
         }
 
         private void Home_MouseEnter(object sender, EventArgs e)
         {
-            
+
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -182,12 +182,12 @@ namespace PlanningBoard
             string mcNo = row.Cells[1].Value.ToString();
 
             Boolean result = true;
-            
+
             String query = "SELECT SUM(PlanQty) AS TotalPlanQty, (SELECT SUM(OrderQty) FROM (SELECT DISTINCT OrderID, OrderQty FROM PlanTable WHERE TaskDate >= '" + DateTime.Now.AddDays(-7) + "' AND MachineNo = " + Convert.ToInt32(mcNo) + " GROUP BY OrderID,OrderQty) as e ) AS TotalOrderQty, SUM(ActualQty) AS TotalActualQty FROM PlanTable WHERE TaskDate >= '" + DateTime.Now.AddDays(-7) + "' AND MachineNo = " + Convert.ToInt32(mcNo);
             SqlDataReader reader = CommonFunctions.GetFromDB(query);
-            if(reader.HasRows)
+            if (reader.HasRows)
             {
-                while(reader.Read())
+                while (reader.Read())
                 {
                     int TotalPlanQty = reader.IsDBNull(reader.GetOrdinal("TotalPlanQty")) == true ? 0 : Convert.ToInt32(reader["TotalPlanQty"]);
                     int TotalActualQty = reader.IsDBNull(reader.GetOrdinal("TotalActualQty")) == true ? 0 : Convert.ToInt32(reader["TotalActualQty"]);
@@ -196,18 +196,18 @@ namespace PlanningBoard
                 }
             }
 
-            if(result)
+            if (result)
             {
                 MNotextBox.Text = row.Cells[1].Value.ToString();
                 DiaCombo.Text = row.Cells[2].Value.ToString();
 
                 if (row.Cells[3].Value == VariableDecleration_Class.Status.Active.ToString())
                 {
-                    MStatuscomboBox.SelectedIndex = 1; 
+                    MStatuscomboBox.SelectedIndex = 1;
                 }
                 else
                 {
-                    MStatuscomboBox.SelectedIndex = 0; 
+                    MStatuscomboBox.SelectedIndex = 0;
                 }
                 MNotextBox.ReadOnly = true;
             }
@@ -253,8 +253,8 @@ namespace PlanningBoard
                 int MachineDiaKey = ((KeyValuePair<int, string>)DiaCombo.SelectedItem).Key;
                 string MachineDiaValue = ((KeyValuePair<int, string>)DiaCombo.SelectedItem).Value;
                 int MachineStatus;
-                
-                if(MStatuscomboBox.Text.Trim() == "In-Active")
+
+                if (MStatuscomboBox.Text.Trim() == "In-Active")
                 {
                     MachineStatus = Convert.ToInt32(VariableDecleration_Class.Status.InActive);
                 }
@@ -360,7 +360,7 @@ namespace PlanningBoard
 
         private void machineInfoDataGridView_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            
+
         }
 
         private void groupBox1_Enter(object sender, EventArgs e)
@@ -405,7 +405,7 @@ namespace PlanningBoard
                     }
                 }
 
-                
+
 
                 query = " SELECT a.Id, a.PurchaseOrderNo, a.Quantity, a.ShipmentDate, a.SAM, a.Efficiency, a.Status, b.BuyerName, c.StyleName, d.SizeName, e.Dia, f.PartName FROM (" + subquery + ") a, Buyer b, Style c, Size d, Dia e, BodyPart f " +
                     "WHERE a.Buyer = b.Id AND a.Style = c.Id AND a.Size = d.Id AND a.Dia = e.Id AND a.BodyPart = f.Id order by ShipmentDate asc";
@@ -515,7 +515,7 @@ namespace PlanningBoard
                     {
                         SizeList.Add(0, "-- Select Size--");
                     }
-                    
+
                     while (reader.Read())
                     {
                         if (!SizeList.Keys.Contains(Convert.ToInt32(reader["Id"])))
@@ -865,7 +865,7 @@ namespace PlanningBoard
                 }
 
                 string purchaseOrderNumber = pOTextBox.Text;
-                int buyerName = ((KeyValuePair < int, string>)buyerComboBox.SelectedItem).Key;
+                int buyerName = ((KeyValuePair<int, string>)buyerComboBox.SelectedItem).Key;
                 int styleName = ((KeyValuePair<int, string>)styleComboBox.SelectedItem).Key;
                 int sizeNo = ((KeyValuePair<int, string>)sizeComboBox.SelectedItem).Key;
                 int dia = ((KeyValuePair<int, string>)diaComboBox.SelectedItem).Key;
@@ -878,120 +878,89 @@ namespace PlanningBoard
                 int status = Convert.ToInt32((VariableDecleration_Class.Status.Pending));
                 string Remarks = remarkTextBox.Text;
                 int orderQty = Convert.ToInt32(qtyTextBox.Text);
+                string query = "";
 
-                string query1 = " (SELECT Count(*) FROM Order_Info WHERE Buyer = " + buyerName + " AND Style = " + styleName + " AND Size = " + sizeNo + " AND Dia = " + dia + " AND BodyPart = " + bodyPart + " AND PurchaseOrderNo = '" + purchaseOrderNumber + "' )";
+                query = " (SELECT Count(*) FROM Order_Info WHERE Buyer = " + buyerName + " AND Style = " + styleName + " AND Size = " + sizeNo + " AND Dia = " + dia + " AND BodyPart = " + bodyPart + " AND PurchaseOrderNo = '" + purchaseOrderNumber + "' )";
 
-
-                if (CommonFunctions.GetNumberForRows(query1))
+                //if (CommonFunctions.GetNumberForRows(query))
+                //{
+                if (hiddenIDtextBox.Text.Trim() != "")
                 {
-                    string query = " SELECT CASE WHEN (" + query1 + ") = 1 THEN CAST( 1 as BIT ) ELSE CAST( 0 as BIT ) END AS A FROM Order_Info WHERE Buyer = " + buyerName + " AND Style = " + styleName + " AND Size = " + sizeNo + " AND Dia = " + dia + " AND BodyPart = " + bodyPart + " AND PurchaseOrderNo = '" + purchaseOrderNumber + "'";
+                    query = "SELECT * FROM Order_Info WHERE Buyer = " + buyerName + " AND Style = " + styleName + " AND Size = " + sizeNo + " AND Dia = " + dia + " AND BodyPart = " + bodyPart + " AND PurchaseOrderNo = '" + purchaseOrderNumber + "'";
 
-                    if (!CommonFunctions.IsTrue(query))
+                    if (!CommonFunctions.recordExist(query))
                     {
-                        if (hiddenIDtextBox.Text.Trim() != "")
+                        query = "UPDATE Order_Info SET Buyer = " + buyerName + ", Style = " + styleName + ", Size = " + sizeNo + ", Dia = " + dia + ", BodyPart = " + bodyPart + ", PurchaseOrderNo = '" + purchaseOrderNumber + "', Quantity = " + qty + ", ShipmentDate = '" + shipdate + "', CHD = '" + chd + "', SAM = " + SAMNo + ", Efficiency = " + eff + ", Status = " + status + " WHERE Id = " + Convert.ToInt32(hiddenIDtextBox.Text);
+                        if (CommonFunctions.ExecutionToDB(query, 2))
                         {
-                            query = "SELECT * FROM Order_Info WHERE Id = " + Convert.ToInt32(hiddenIDtextBox.Text);
-                            SqlDataReader reader = CommonFunctions.GetFromDB(query);
-                            if (reader.HasRows)
-                            {
-                                while (reader.Read())
-                                {
-                                    if (hiddenIDtextBox.Text != reader["Id"].ToString())
-                                    {
-                                        MessageBox.Show("Same Record Exists Already! Please Change the Parameter!!");
-                                        return;
-                                    }
-                                }
-                            }
-
-                            query = "UPDATE Order_Info SET Buyer = " + buyerName + ", Style = " + styleName + ", Size = " + sizeNo + ", Dia = " + dia + ", BodyPart = " + bodyPart + ", PurchaseOrderNo = '" + purchaseOrderNumber + "', Quantity = " + qty + ", ShipmentDate = '" + shipdate + "', CHD = '" + chd + "', SAM = " + SAMNo + ", Efficiency = " + eff + ", Status = " + status + " WHERE Id = " + Convert.ToInt32(hiddenIDtextBox.Text);
-                            if (CommonFunctions.ExecutionToDB(query, 2))
-                            {
-                                //if (CommonFunctions.recordExist("SELECT * FROM PlanTable WHERE OrderID = " + Convert.ToInt32(hiddenIDtextBox.Text)))
-                                //{
-                                //    query = "UPDATE PlanTable SET OrderQty = " + qty + ", SAM = " + SAMNo + " WHERE OrderID = " + Convert.ToInt32(hiddenIDtextBox.Text);
-                                //    if (CommonFunctions.ExecutionToDB(query, 3))
-                                //    {
-                                //        LoadOrderInfoGrid();
-                                //        ResetOrderInfo();
-                                //    }
-                                //}
-                                LoadOrderInfoGrid();
-                                //ResetOrderInfo();
-                            }
-                        }
-                        else
-                        {
-                            if (CommonFunctions.rowsCount > 0)
-                            {
-                                MessageBox.Show("Same Record Exists Already! Please Change the Parameter!!");
-                                return;
-                            }
-
-
-                            query = "INSERT INTO Order_Info(Buyer, Style, Size, Dia, BodyPart, Quantity, ShipmentDate, CHD, SAM, Efficiency, Status, Remarks, PurchaseOrderNo) VALUES (" + buyerName + "," + styleName + "," + sizeNo + "," + dia + "," + bodyPart + "," + qty + ",'" + shipdate + "','" + chd + "'," + SAMNo + "," + eff + "," + status + ", '" + Remarks + "', '" + purchaseOrderNumber + "')";
-                            if (CommonFunctions.ExecutionToDB(query, 1))
-                            {
-                                LoadOrderInfoGrid();
-                            }
-                        }
-
-                        if (orderWisePlandataGridView.Rows.Count > 0 && addToProductioncheckBox.Checked == true)
-                        {
-                            int planQty = Convert.ToInt32(newOrderQtyTextBox.Text);
-                            int orderID = 0; Boolean result = false;
-                            string connectionStr = ConnectionManager.connectionString;
-                            SqlConnection cn = new SqlConnection(connectionStr);
-                            SqlCommand cm = new SqlCommand();
-                            cm.Connection = cn;
-                            cn.Open();
-                            cm.CommandText = "SELECT Id From Order_Info WHERE Buyer = " + buyerName + " AND Style = " + styleName + " AND Size = " + sizeNo + " AND Dia = " + dia + " AND BodyPart = " + bodyPart + " AND PurchaseOrderNo = '" + purchaseOrderNumber + "'";
-                            SqlDataReader reader1 = cm.ExecuteReader();
-                            if (reader1.HasRows)
-                            {
-                                while (reader1.Read())
-                                {
-                                    orderID = Convert.ToInt32(reader1["Id"]);
-                                }
-                            }
-                            cn.Close();
-                            foreach (DataGridViewRow row in orderWisePlandataGridView.Rows)
-                            {
-                                if (row.Index != orderWisePlandataGridView.Rows.Count - 1)
-                                {
-                                    if (Convert.ToInt32(row.Cells[3].Value) > 0 && Convert.ToInt32(row.Cells[5].Value) > 0)
-                                    {
-                                        int machineNo = Convert.ToInt32(row.Cells[1].Value);
-                                        int capacity = Convert.ToInt32(row.Cells[3].Value);
-                                        int remainQty = Convert.ToInt32(row.Cells[3].Value) - (Convert.ToInt32(row.Cells[4].Value) + Convert.ToInt32(row.Cells[5].Value));
-                                        remainQty = remainQty < 0 ? 0 : remainQty;
-                                        int plnQty = Convert.ToInt32(row.Cells[5].Value);
-                                        int efficiency = Convert.ToInt32(row.Cells[8].Value);
-                                        int minute = Convert.ToInt32(row.Cells[7].Value);
-                                        DateTime taskDate = DateTime.ParseExact(row.Cells[2].Value.ToString(), "dd/MM/yyyy", null);
-                                        int active = Convert.ToInt32(row.Cells[3].Value) < 1 ? 0 : 1;
-                                        query = "INSERT INTO PlanTable (MachineNo, TaskDate, OrderID, Capacity, PlanQty, RemainingQty, OrderQty, Efficiency, SAM, Minute, RevertVal, ActualQty, Status, Production) " +
-                                                "VALUES (" + machineNo + ",'" + taskDate + "'," + orderID + "," + capacity + "," + plnQty + "," + remainQty + "," + orderQty + "," + efficiency + "," + Convert.ToDouble(samTextBox.Text) + "," + minute + ", 0, 0, 0, 1)";
-                                        result = CommonFunctions.ExecutionToDB(query, 3);
-                                    }
-                                }
-                            }
-                            if (result == true)
-                            {
-                                MessageBox.Show("Added to PlanTable Successfully!!!");
-                                orderWisePlandataGridView.Rows.Clear();
-                                return;
-                            }
+                            LoadOrderInfoGrid();
                         }
                     }
-                    else
+                }
+                else
+                {
+                    query = " (SELECT Count(*) FROM Order_Info WHERE Buyer = " + buyerName + " AND Style = " + styleName + " AND Size = " + sizeNo + " AND Dia = " + dia + " AND BodyPart = " + bodyPart + " AND PurchaseOrderNo = '" + purchaseOrderNumber + "' )";
+                    
+                    if (!CommonFunctions.GetNumberForRows(query))
                     {
-                        MessageBox.Show("Same Record Exists Already! Please Change the Parameter!!");
                         return;
                     }
 
-                    
+                    query = "INSERT INTO Order_Info(Buyer, Style, Size, Dia, BodyPart, Quantity, ShipmentDate, CHD, SAM, Efficiency, Status, Remarks, PurchaseOrderNo) VALUES (" + buyerName + "," + styleName + "," + sizeNo + "," + dia + "," + bodyPart + "," + qty + ",'" + shipdate + "','" + chd + "'," + SAMNo + "," + eff + "," + status + ", '" + Remarks + "', '" + purchaseOrderNumber + "')";
+                    if (CommonFunctions.ExecutionToDB(query, 1))
+                    {
+                        LoadOrderInfoGrid();
+                    }
                 }
+
+                if (orderWisePlandataGridView.Rows.Count > 0 && addToProductioncheckBox.Checked == true)
+                {
+                    int planQty = Convert.ToInt32(newOrderQtyTextBox.Text);
+                    int orderID = 0; Boolean result = false;
+                    string connectionStr = ConnectionManager.connectionString;
+                    SqlConnection cn = new SqlConnection(connectionStr);
+                    SqlCommand cm = new SqlCommand();
+                    cm.Connection = cn;
+                    cn.Open();
+                    cm.CommandText = "SELECT Id From Order_Info WHERE Buyer = " + buyerName + " AND Style = " + styleName + " AND Size = " + sizeNo + " AND Dia = " + dia + " AND BodyPart = " + bodyPart + " AND PurchaseOrderNo = '" + purchaseOrderNumber + "'";
+                    SqlDataReader reader1 = cm.ExecuteReader();
+                    if (reader1.HasRows)
+                    {
+                        while (reader1.Read())
+                        {
+                            orderID = Convert.ToInt32(reader1["Id"]);
+                        }
+                    }
+                    cn.Close();
+                    foreach (DataGridViewRow row in orderWisePlandataGridView.Rows)
+                    {
+                        if (row.Index != orderWisePlandataGridView.Rows.Count - 1)
+                        {
+                            if (Convert.ToInt32(row.Cells[3].Value) > 0 && Convert.ToInt32(row.Cells[5].Value) > 0)
+                            {
+                                int machineNo = Convert.ToInt32(row.Cells[1].Value);
+                                int capacity = Convert.ToInt32(row.Cells[3].Value);
+                                int remainQty = Convert.ToInt32(row.Cells[3].Value) - (Convert.ToInt32(row.Cells[4].Value) + Convert.ToInt32(row.Cells[5].Value));
+                                remainQty = remainQty < 0 ? 0 : remainQty;
+                                int plnQty = Convert.ToInt32(row.Cells[5].Value);
+                                int efficiency = Convert.ToInt32(row.Cells[8].Value);
+                                int minute = Convert.ToInt32(row.Cells[7].Value);
+                                DateTime taskDate = DateTime.ParseExact(row.Cells[2].Value.ToString(), "dd/MM/yyyy", null);
+                                int active = Convert.ToInt32(row.Cells[3].Value) < 1 ? 0 : 1;
+                                query = "INSERT INTO PlanTable (MachineNo, TaskDate, OrderID, Capacity, PlanQty, RemainingQty, OrderQty, Efficiency, SAM, Minute, RevertVal, ActualQty, Status, Production) " +
+                                        "VALUES (" + machineNo + ",'" + taskDate + "'," + orderID + "," + capacity + "," + plnQty + "," + remainQty + "," + orderQty + "," + efficiency + "," + Convert.ToDouble(samTextBox.Text) + "," + minute + ", 0, 0, 0, 1)";
+                                result = CommonFunctions.ExecutionToDB(query, 3);
+                            }
+                        }
+                    }
+                    if (result == true)
+                    {
+                        MessageBox.Show("Added to PlanTable Successfully!!!");
+                        orderWisePlandataGridView.Rows.Clear();
+                        return;
+                    }
+                }
+                //}
             }
 
             catch (Exception ee)
@@ -1116,7 +1085,7 @@ namespace PlanningBoard
                 diaComboBox.Enabled = false;
                 partComboBox.Enabled = false;
                 effTextBox.ReadOnly = true;
-            }            
+            }
             else
             {
                 pOTextBox.ReadOnly = true;
@@ -1229,7 +1198,7 @@ namespace PlanningBoard
 
         private void DeleteOrderInfo_Click(object sender, EventArgs e)
         {
-           
+
         }
 
         private void samTextBox_KeyPress(object sender, KeyPressEventArgs e)
@@ -1258,7 +1227,7 @@ namespace PlanningBoard
 
         private void orderInfoDetailsdataGridView_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            
+
         }
 
         private void LoadWorkingDaysGrid(string fromDate, string toDate, int McNo)
@@ -1270,7 +1239,7 @@ namespace PlanningBoard
                 int SL = 1;
                 int S1 = 1; string S2 = ""; int S3 = 0; int S4 = 0; string S5 = ""; bool S6 = false; int S7 = 0;
                 string query = "";
-                if(McNo < 0)
+                if (McNo < 0)
                 {
                     query = "SELECT * FROM WorkingDays WHERE WorkDate BETWEEN '" + fromDate + "' and '" + toDate + "' order by WorkDate asc";
                 }
@@ -1294,7 +1263,7 @@ namespace PlanningBoard
                         S7 = reader.IsDBNull(reader.GetOrdinal("Active")) == true ? Convert.ToInt32(VariableDecleration_Class.Status.Active) : Convert.ToInt32(reader["Active"]);
 
                         Grid_WorkDays_Info.Rows.Add(S1, S2, S3, S4, S5, S6, S7, false);
-                        
+
                         SL++;
                     }
                 }
@@ -1328,7 +1297,7 @@ namespace PlanningBoard
                     row.Cells[6].ReadOnly = true;
                     row.Cells[7].Value = true;
                     row.DefaultCellStyle.BackColor = Color.IndianRed;
-                } 
+                }
             }
         }
 
@@ -1372,7 +1341,7 @@ namespace PlanningBoard
         {
             try
             {
-                string query = "SELECT * FROM Machine_Info WHERE Status != " +0+" order by MachineNo asc";
+                string query = "SELECT * FROM Machine_Info WHERE Status != " + 0 + " order by MachineNo asc";
 
                 SqlDataReader reader = CommonFunctions.GetFromDB(query);
                 machineNoComboBox.DataSource = null;
@@ -1440,8 +1409,8 @@ namespace PlanningBoard
                 toDateTimePicker.Enabled = false;
                 machineNoComboBox.Enabled = false;
 
-                int mcNo=0;
-                if (machineNoComboBox.SelectedIndex!=0)
+                int mcNo = 0;
+                if (machineNoComboBox.SelectedIndex != 0)
                     mcNo = Convert.ToInt32(machineNoComboBox.Text);
 
                 SqlDataReader reader = null;
@@ -1450,11 +1419,48 @@ namespace PlanningBoard
 
                 for (DateTime date = Convert.ToDateTime(fromDate); date <= Convert.ToDateTime(toDate); date = date.AddDays(1))
                 {
-                        string query = "";
-                        if (mcNo != 0)
+                    string query = "";
+                    if (mcNo != 0)
+                    {
+                        query = "SELECT Top 1* FROM WorkingDays WHERE WorkDate = '" + date.Date.ToString() + "' AND MachineNo = " + mcNo;
+                        reader = CommonFunctions.GetFromDB(query);
+                        if (reader.HasRows)
                         {
-                            query = "SELECT Top 1* FROM WorkingDays WHERE WorkDate = '" + date.Date.ToString() + "' AND MachineNo = " + mcNo;
+                            while (reader.Read())
+                            {
+                                S1 = SL;
+                                S2 = reader.IsDBNull(reader.GetOrdinal("WorkDate")) == true ? "0/0/000" : Convert.ToDateTime(reader["WorkDate"]).Date.ToString("dd/MM/yyyy");
+                                S3 = reader.IsDBNull(reader.GetOrdinal("MachineNo")) == true ? 0 : Convert.ToInt32(reader["MachineNo"]);
+                                S4 = reader.IsDBNull(reader.GetOrdinal("Minute")) == true ? 1320 : Convert.ToInt32(reader["Minute"]);
+                                S5 = reader.IsDBNull(reader.GetOrdinal("DayName")) == true ? "" : reader["DayName"].ToString();
+                                S6 = Convert.ToInt32(reader["WorkDay"]) == 0 ? false : true;
+                                S7 = Convert.ToInt32(reader["Active"]);
+                            }
+                        }
+                        else
+                        {
+                            S1 = SL;
+                            S2 = date.Date.ToString("dd/MM/yyyy");
+                            S3 = mcNo;
+                            S4 = 1320;
+                            S5 = date.DayOfWeek.ToString();
+                            S6 = date.DayOfWeek == DayOfWeek.Friday ? false : true;
+                            S7 = S6 == true ? Convert.ToInt32(VariableDecleration_Class.Status.Active) : Convert.ToInt32(VariableDecleration_Class.Status.InActive);
+                        }
+
+                        Grid_WorkDays_Info.Rows.Add(S1, S2, S3, S4, S5, S6, S7);
+
+                        SL++;
+
+                    }
+
+                    else
+                    {
+                        for (int MachineNo = 1; MachineNo <= machineNoComboBox.Items.Count - 1; MachineNo++)
+                        {
+                            query = "SELECT Top 1* FROM WorkingDays WHERE WorkDate = '" + date.Date.ToString() + "' AND MachineNo = " + machineNoComboBox.Items[MachineNo].ToString();
                             reader = CommonFunctions.GetFromDB(query);
+
                             if (reader.HasRows)
                             {
                                 while (reader.Read())
@@ -1470,9 +1476,10 @@ namespace PlanningBoard
                             }
                             else
                             {
+                                //mcNo = Convert.ToInt32(machineNoComboBox.Items[MachineNo].ToString());
                                 S1 = SL;
                                 S2 = date.Date.ToString("dd/MM/yyyy");
-                                S3 = mcNo;
+                                S3 = Convert.ToInt32(machineNoComboBox.Items[MachineNo].ToString());
                                 S4 = 1320;
                                 S5 = date.DayOfWeek.ToString();
                                 S6 = date.DayOfWeek == DayOfWeek.Friday ? false : true;
@@ -1482,46 +1489,8 @@ namespace PlanningBoard
                             Grid_WorkDays_Info.Rows.Add(S1, S2, S3, S4, S5, S6, S7);
 
                             SL++;
-
                         }
-
-                        else
-                        {
-                            for (int MachineNo = 1; MachineNo <= machineNoComboBox.Items.Count-1; MachineNo++)
-                            {
-                                query = "SELECT Top 1* FROM WorkingDays WHERE WorkDate = '" + date.Date.ToString() + "' AND MachineNo = " + machineNoComboBox.Items[MachineNo].ToString()  ;
-                                reader = CommonFunctions.GetFromDB(query);
-
-                                if (reader.HasRows)
-                                {
-                                    while (reader.Read())
-                                    {
-                                        S1 = SL;
-                                        S2 = reader.IsDBNull(reader.GetOrdinal("WorkDate")) == true ? "0/0/000" : Convert.ToDateTime(reader["WorkDate"]).Date.ToString("dd/MM/yyyy");
-                                        S3 = reader.IsDBNull(reader.GetOrdinal("MachineNo")) == true ? 0 : Convert.ToInt32(reader["MachineNo"]);
-                                        S4 = reader.IsDBNull(reader.GetOrdinal("Minute")) == true ? 1320 : Convert.ToInt32(reader["Minute"]);
-                                        S5 = reader.IsDBNull(reader.GetOrdinal("DayName")) == true ? "" : reader["DayName"].ToString();
-                                        S6 = Convert.ToInt32(reader["WorkDay"]) == 0 ? false : true;
-                                        S7 = Convert.ToInt32(reader["Active"]);
-                                    }
-                                }
-                                else
-                                {
-                                    //mcNo = Convert.ToInt32(machineNoComboBox.Items[MachineNo].ToString());
-                                    S1 = SL;
-                                    S2 = date.Date.ToString("dd/MM/yyyy");
-                                    S3 = Convert.ToInt32(machineNoComboBox.Items[MachineNo].ToString());
-                                    S4 = 1320;
-                                    S5 = date.DayOfWeek.ToString();
-                                    S6 = date.DayOfWeek == DayOfWeek.Friday ? false : true;
-                                    S7 = S6 == true ? Convert.ToInt32(VariableDecleration_Class.Status.Active) : Convert.ToInt32(VariableDecleration_Class.Status.InActive);
-                                }
-
-                                Grid_WorkDays_Info.Rows.Add(S1, S2, S3, S4, S5, S6, S7);
-
-                                SL++;
-                            }
-                        }
+                    }
                 }
             }
 
@@ -1563,7 +1532,7 @@ namespace PlanningBoard
 
         private void BtnUpdate_Click(object sender, EventArgs e)
         {
-            
+
         }
 
         private void Minute_KeyPress(object sender, KeyPressEventArgs e)
@@ -1576,7 +1545,7 @@ namespace PlanningBoard
 
         private void panel4_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
         {
-            
+
         }
 
         private void orderInfoDetailsdataGridView_CellContentClick(object sender, DataGridViewCellEventArgs e)
@@ -1594,7 +1563,7 @@ namespace PlanningBoard
             {
                 LoadWorkingDaysGrid(fromDateTimePicker.Value.ToString(), toDateTimePicker.Value.ToString(), Convert.ToInt32(machineNoComboBox.Items[machineNoComboBox.SelectedIndex]));
             }
-            
+
         }
 
         private void panel4_Paint(object sender, PaintEventArgs e)
@@ -1702,8 +1671,8 @@ namespace PlanningBoard
         {
             //if (hiddenIDtextBox.Text == "")
             //{
-                //LoadOrdeWiseGrid();
-                LoadMachine();
+            //LoadOrdeWiseGrid();
+            LoadMachine();
             //}
         }
 
@@ -1727,7 +1696,7 @@ namespace PlanningBoard
                 int sizeNo = ((KeyValuePair<int, string>)sizeComboBox.SelectedItem).Key;
                 int bodyPart = ((KeyValuePair<int, string>)partComboBox.SelectedItem).Key;
 
-                string query = "SELECT TOP 1 * FROM Order_Info WHERE Buyer = "+buyerName+" AND Style = "+styleName+" AND Size = "+sizeNo+" AND BodyPart = "+bodyPart;
+                string query = "SELECT TOP 1 * FROM Order_Info WHERE Buyer = " + buyerName + " AND Style = " + styleName + " AND Size = " + sizeNo + " AND BodyPart = " + bodyPart;
 
                 if (CommonFunctions.recordExist(query))
                 {
@@ -2081,10 +2050,10 @@ namespace PlanningBoard
 
                 if (mcNo.Count > 0)
                 {
-                    int i = 0; 
+                    int i = 0;
                     while (i < mcNo.Count && temp > 0)
                     {
-                        int rowID = 0; int Capacity = 0; int MachineStatus = 0; 
+                        int rowID = 0; int Capacity = 0; int MachineStatus = 0;
 
                         int machineNo = Convert.ToInt32(mcNo[i]);
                         int tempMachine = 0;
@@ -2092,7 +2061,7 @@ namespace PlanningBoard
                         cn1.Open();
                         cm1.CommandText = "SELECT TaskDate FROM Planing_Board_Details WHERE Id = (SELECT MAX(Id) FROM Planing_Board_Details WHERE MachineNo = " + machineNo + " AND DiaID = " + Dia + ")";
                         reader1 = cm1.ExecuteReader();
-                        
+
                         if (reader1.HasRows)
                         {
                             while (reader1.Read())
@@ -2218,7 +2187,7 @@ namespace PlanningBoard
                     }
                 }
                 startDateTimePicker.Value = DateTime.ParseExact(orderWisePlandataGridView.Rows[0].Cells[2].Value.ToString(), "dd/MM/yyyy", null);
-                endDateTimePicker.Value = DateTime.ParseExact(orderWisePlandataGridView.Rows[orderWisePlandataGridView.Rows.Count-1].Cells[2].Value.ToString(), "dd/MM/yyyy", null);
+                endDateTimePicker.Value = DateTime.ParseExact(orderWisePlandataGridView.Rows[orderWisePlandataGridView.Rows.Count - 1].Cells[2].Value.ToString(), "dd/MM/yyyy", null);
                 if (temp > 0)
                 {
                     orderInfoWarningLbl.Text = "Knit Close Date Exceeds!!! Left Plan Qty is " + temp + ". No machine available!!! ";

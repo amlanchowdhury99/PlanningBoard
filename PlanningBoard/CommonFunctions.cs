@@ -32,7 +32,7 @@ namespace PlanningBoard
                 cmd = new SqlCommand(sSQL, connection);
                 reader = cmd.ExecuteReader();
 
-                if (reader.Read())
+                if (reader.Read() && reader.HasRows)
                 { 
                     return true; 
                 }
@@ -215,7 +215,6 @@ namespace PlanningBoard
         {
             try
             {
-
                 if (CommonFunctions.connection.State != ConnectionState.Open)
                 {
                     connection.Open();
@@ -226,7 +225,7 @@ namespace PlanningBoard
 
                 if (rowsCount > -1)
                 {
-                    if (rowsCount > 1)
+                    if (rowsCount > 0)
                     {
                         MessageBox.Show("Same Record Exists Already!!!");
                         if (CommonFunctions.connection.State == ConnectionState.Open)
@@ -238,9 +237,7 @@ namespace PlanningBoard
                     else
                     {
                         return true;
-                    }
-                    
-                }
+                    }                }
                 else
                 {
                     if (CommonFunctions.connection.State == ConnectionState.Open)
