@@ -2077,22 +2077,22 @@ namespace PlanningBoard
 
                         while (TaskDate.Date <= endDate.Date && temp > 0)
                         {
-                            int TotalRestActualQty = 0; int TotalRestPlanQty = 0; int RecordCount = 0; int TotalRestSam = 0; int TotalRestEfficiency = 0; int Minute = 0; int NewCapacity = 0;
+                            int TotalRestActualQty = 0; int TotalRestPlanQty = 0; int RecordCount = 0; int TotalRestSam = 0; int TotalRestEfficiency = 0; int Minute = 0; int NewCapacity = 0;  int OldCap = 0;
 
                             if (machineNo != tempMachine)
                             {
                                 tempMachine = machineNo;
                                 j = 0;
                             }
-                            int newPlanQty = 0; int remainingQty = 0;
+                            int newPlanQty = 0; int remainingQty = 0; int restMinute = 0;
 
-                            cm2.CommandText = " SELECT  Top 1*, (SELECT SUM(PlanQty) FROM PlanTable WHERE MachineNo = " + machineNo + " AND TaskDate = '" + TaskDate + "') AS TotalRestPlanQty, " +
+                            cm2.CommandText = " SELECT Top 1*, (SELECT SUM(PlanQty) FROM PlanTable WHERE MachineNo = " + machineNo + " AND TaskDate = '" + TaskDate + "') AS TotalRestPlanQty, " +
                                               " (SELECT SUM(ActualQty) FROM PlanTable WHERE MachineNo = " + machineNo + " AND TaskDate = '" + TaskDate + "') AS TotalRestActualQty, " +
-                                              " (SELECT SUM(SAM) FROM PlanTable WHERE MachineNo = " + machineNo + " AND TaskDate = '" + TaskDate + "') AS TotalRestSam, " +
+                                              //" (SELECT SUM(SAM) FROM PlanTable WHERE MachineNo = " + machineNo + " AND TaskDate = '" + TaskDate + "') AS TotalRestSam, " +
                                               " (SELECT Count(Id) FROM PlanTable WHERE MachineNo = " + machineNo + " AND TaskDate = '" + TaskDate + "') AS RecordCount, " +
                                               " (SELECT Minute FROM WorkingDays WHERE MachineNo = " + machineNo + " AND WorkDate = '" + TaskDate + "' AND Active = 1) AS Minute, " +
-                                              " (SELECT SUM(Efficiency) FROM PlanTable WHERE MachineNo = " + machineNo + " AND TaskDate = '" + TaskDate + "') AS TotalRestEfficiency FROM PlanTable " +
-                                              " WHERE MachineNo = " + machineNo + " AND TaskDate = '" + TaskDate + "' order by Id desc";
+                                              //" (SELECT SUM(Efficiency) FROM PlanTable WHERE MachineNo = " + machineNo + " AND TaskDate = '" + TaskDate + "') AS TotalRestEfficiency " +
+                                              " FROM PlanTable WHERE MachineNo = " + machineNo + " AND TaskDate = '" + TaskDate + "' order by Id desc";
                             cn2.Open();
                             reader2 = cm2.ExecuteReader();
 
@@ -2102,9 +2102,15 @@ namespace PlanningBoard
                                 {
                                     TotalRestActualQty = reader2.IsDBNull(reader2.GetOrdinal("TotalRestActualQty")) == true ? 0 : Convert.ToInt32(reader2["TotalRestActualQty"]);
                                     TotalRestPlanQty = reader2.IsDBNull(reader2.GetOrdinal("TotalRestPlanQty")) == true ? 0 : Convert.ToInt32(reader2["TotalRestPlanQty"]);
-                                    TotalRestSam = reader2.IsDBNull(reader2.GetOrdinal("TotalRestSam")) == true ? 0 : Convert.ToInt32(reader2["TotalRestSam"]);
-                                    TotalRestEfficiency = reader2.IsDBNull(reader2.GetOrdinal("TotalRestEfficiency")) == true ? 0 : Convert.ToInt32(reader2["TotalRestEfficiency"]);
+                                    TotalRestSam = reader2.IsDBNull(reader2.GetOrdinal("SAM")) == true ? 0 : Convert.ToInt32(reader2["SAM"]);
+                                    TotalRestEfficiency = reader2.IsDBNull(reader2.GetOrdinal("Efficiency")) == true ? 0 : Convert.ToInt32(reader2["Efficiency"]);
+                                    OldCap = reader2.IsDBNull(reader2.GetOrdinal("Capacity")) == true ? 0 : Convert.ToInt32(reader2["Capacity"]);
+                                    //TotalRestSam = reader2.IsDBNull(reader2.GetOrdinal("TotalRestSam")) == true ? 0 : Convert.ToInt32(reader2["TotalRestSam"]);
+                                    //TotalRestEfficiency = reader2.IsDBNull(reader2.GetOrdinal("TotalRestEfficiency")) == true ? 0 : Convert.ToInt32(reader2["TotalRestEfficiency"]);
                                     RecordCount = reader2.IsDBNull(reader2.GetOrdinal("RecordCount")) == true ? 0 : Convert.ToInt32(reader2["RecordCount"]);
+
+                                    Minute = reader2.IsDBNull(reader2.GetOrdinal("Minute")) == true ? 0 : Convert.ToInt32(reader2["Minute"]);
+                                    restMinute = reader2.IsDBNull(reader2.GetOrdinal("restMinute")) == true ? Minute : Convert.ToInt32(reader2["restMinute"]);
                                 }
                             }
                             cn2.Close();
@@ -2125,10 +2131,18 @@ namespace PlanningBoard
                                 }
                                 cn3.Close();
 
-                                efficiency = LCFlag == true ? j > LcArray.Count - 1 ? LcArray[LcArray.Count - 1] : LcArray[j] : Convert.ToInt32(Convert.ToDouble(effTextBox.Text));
-                                double UpdatedSam = (TotalRestSam + sam) / (RecordCount + 1);
-                                double UpdatedEfficiency = (double)((TotalRestEfficiency + efficiency) / (RecordCount + 1));
-                                NewCapacity = Convert.ToInt32(Math.Floor((double)((Minute * (UpdatedEfficiency / 100.00)) / UpdatedSam)));
+                                if (restMinute > 60)
+                                {
+                                    efficiency = LCFlag == true ? j > LcArray.Count - 1 ? LcArray[LcArray.Count - 1] : LcArray[j] : Convert.ToInt32(Convert.ToDouble(effTextBox.Text));
+                                    double UpdatedSam = (TotalRestSam + sam) / (RecordCount + 1);
+                                    double UpdatedEfficiency = (double)((TotalRestEfficiency + efficiency) / (RecordCount + 1));
+
+                                    NewCapacity = Convert.ToInt32(Math.Floor((double)((Minute * (UpdatedEfficiency / 100.00)) / UpdatedSam)));
+
+                                    //NewCapacity = Convert.ToInt32(Math.Floor((double)((Minute * (UpdatedEfficiency / 100.00)) / UpdatedSam)));
+                                }
+
+                                
 
                                 if (TotalRestActualQty == 0)
                                 {
