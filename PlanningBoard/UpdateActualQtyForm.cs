@@ -264,18 +264,19 @@ namespace PlanningBoard
 
             try
             {
-                string query = "SELECT Id, Capacity, PlanQty, RemainingQty FROM PlanTable WHERE MachineNo = " + mc + " AND TaskDate = '" + tempDate + "'";
+                string query = "SELECT Id, SAM, Capacity, PlanQty, RemainingQty FROM PlanTable WHERE MachineNo = " + mc + " AND TaskDate = '" + tempDate + "'";
                 cm.CommandText = query;
                 SqlDataReader reader = cm.ExecuteReader();
                 while (reader.Read())
                 {
                     int rowID = Convert.ToInt32(reader["Id"]);
                     int cap = Convert.ToInt32(reader["Capacity"]);
+                    int sam = Convert.ToInt32(reader["SAM"]);
                     ttlplanQty = ttlplanQty + Convert.ToInt32(reader["PlanQty"]);
                     int RemainingQty = cap - ttlplanQty;
                     RemainingQty = RemainingQty < 0 ? 0 : RemainingQty;
                     SqlCommand cm1 = new SqlCommand(); SqlConnection cn1 = new SqlConnection(connectionStr); cm1.Connection = cn1; cn1.Open();
-                    query = "UPDATE PlanTable SET RemainingQty = " + RemainingQty + " WHERE Id = " + rowID;
+                    query = "UPDATE PlanTable SET RemainingQty = " + RemainingQty + ", RemainingMinute = " + (RemainingQty * sam) + " WHERE Id = " + rowID;
                     cm1.CommandText = query;
                     cm1.ExecuteNonQuery();
                     cn1.Close();
@@ -301,7 +302,7 @@ namespace PlanningBoard
                 string query = " SELECT CASE WHEN PlanQty >= " + value + " THEN CAST( 1 as BIT ) ELSE CAST( 0 as BIT ) END AS A FROM PlanTable WHERE OrderID = " + orderID + " AND MachineNo =  " + mc + " AND TaskDate = '" + TempDate + "'";
                 if (CommonFunctions.IsTrue(query))
                 {
-                    query = "UPDATE PlanTable SET PlanQty = PlanQty - " + value + ", RemainingQty = RemainingQty + " + value + " WHERE OrderID = " + orderID + " AND MachineNo =  " + mc + " AND TaskDate = '" + TempDate + "'";
+                    query = "UPDATE PlanTable SET PlanQty = PlanQty - " + value + ", RemainingMinute = (RemainingQty + " + value + ") * SAM, RemainingQty = RemainingQty + " + value + " WHERE OrderID = " + orderID + " AND MachineNo =  " + mc + " AND TaskDate = '" + TempDate + "'";
                     Result = CommonFunctions.ExecutionToDB(query, 3);
                     UpdateRemainingQty(mc, TempDate);
                 }
@@ -316,7 +317,7 @@ namespace PlanningBoard
                         tempo = Convert.ToInt32(reader1["PlanQty"]);
                     }
                     cn.Close();
-                    query = "UPDATE PlanTable SET RemainingQty = RemainingQty + " + tempo + ", PlanQty = 0 WHERE OrderID = " + orderID + " AND MachineNo =  " + mc + " AND TaskDate = '" + TempDate + "'";
+                    query = "UPDATE PlanTable SET RemainingMinute = (RemainingQty + " + value + ") * SAM, RemainingQty = RemainingQty + " + tempo + ", PlanQty = 0 WHERE OrderID = " + orderID + " AND MachineNo =  " + mc + " AND TaskDate = '" + TempDate + "'";
                     Result = CommonFunctions.ExecutionToDB(query, 3);
                     UpdateRemainingQty(mc, TempDate);
                     AdjustImmediateEntry(orderID, mc, TempDate, value - tempo);
@@ -516,11 +517,11 @@ namespace PlanningBoard
                                 {
                                     if (GetLeftPlanQty(mc, TempDate, orderID) >= value)
                                     {
-                                        query = "UPDATE PlanTable SET PlanQty = PlanQty + " + value + ", RemainingQty = RemainingQty - " + value + " WHERE Id = " + rowID;
+                                        query = "UPDATE PlanTable SET PlanQty = PlanQty + " + value + ", RemainingMinute = (RemainingQty - " + value + ") * SAM, RemainingQty = RemainingQty - " + value + " WHERE Id = " + rowID;
                                     }
                                     else
                                     {
-                                        query = "UPDATE PlanTable SET PlanQty = PlanQty + RemainingQty, RemainingQty = 0 WHERE Id = " + rowID;
+                                        query = "UPDATE PlanTable SET PlanQty = PlanQty + RemainingQty, RemainingMinute = 0, RemainingQty = 0 WHERE Id = " + rowID;
                                     }
 
                                     Result = CommonFunctions.ExecutionToDB(query, 3);
@@ -567,11 +568,11 @@ namespace PlanningBoard
 
                                         if (LeftPlanQty > tempVal)
                                         {
-                                            query = "UPDATE PlanTable SET PlanQty = PlanQty + " + tempVal + ", RemainingQty = RemainingQty - " + tempVal + " WHERE MachineNo = " + mc + " AND OrderID = " + orderID + " AND TaskDate = '" + TempDate + "'";
+                                            query = "UPDATE PlanTable SET PlanQty = PlanQty + " + tempVal + ", RemainingMinute = (RemainingQty - " + tempVal + ") * SAM, RemainingQty = RemainingQty - " + tempVal + " WHERE MachineNo = " + mc + " AND OrderID = " + orderID + " AND TaskDate = '" + TempDate + "'";
                                         }
                                         else
                                         {
-                                            query = "UPDATE PlanTable SET PlanQty = PlanQty + " + tempVal + ", RemainingQty = 0 WHERE MachineNo = " + mc + " AND OrderID = " + orderID + " AND TaskDate = '" + TempDate + "'";
+                                            query = "UPDATE PlanTable SET PlanQty = PlanQty + " + tempVal + ", RemainingMinute = 0 , RemainingQty = 0 WHERE MachineNo = " + mc + " AND OrderID = " + orderID + " AND TaskDate = '" + TempDate + "'";
                                         }
 
                                         Boolean result = CommonFunctions.ExecutionToDB(query, 3);
@@ -704,7 +705,7 @@ namespace PlanningBoard
                     if (id1 != id2 && ActualQty == 0)
                     {
                         cn2.Open();
-                        query = "UPDATE PlanTable SET RemainingQty = RemainingQty + " + val + ", PlanQty = PlanQty - " + val + " WHERE OrderID = " + orderID + " AND MachineNo =  " + MachineNumber + " AND TaskDate = '" + date + "'";
+                        query = "UPDATE PlanTable SET RemainingMinute = (RemainingQty + " + val + ") * SAM, RemainingQty = RemainingQty + " + val + ", PlanQty = PlanQty - " + val + " WHERE OrderID = " + orderID + " AND MachineNo =  " + MachineNumber + " AND TaskDate = '" + date + "'";
                         cm2.CommandText = query;
                         cm2.ExecuteNonQuery();
                         cn2.Close();
