@@ -172,19 +172,16 @@ namespace PlanningBoard
                 {
                     if (CommonFunctions.recordExist("SELECT * FROM WorkingDays WHERE MachineNo = " + MachineComboBox.SelectedItem + " AND Active = 1 AND WorkDate = '" + TaskDate + "'"))
                     {
-                        if (!CommonFunctions.recordExist("SELECT * FROM PlanTable WHERE  RevertVal !=  1 AND MachineNo = " + MachineComboBox.SelectedItem + " AND TaskDate = '" + TaskDate + "'"))
+                        if (!CommonFunctions.recordExist("SELECT * FROM PlanTable WHERE RevertVal !=  1 AND MachineNo = " + MachineComboBox.SelectedItem + " AND TaskDate = '" + TaskDate + "'"))
                         {
                             try
                             {
-                                ChangeFlag = true;
-                                int Capacity = 0;
-                                int PlanQty = 0;
-                                string GetDate = "";
-                                int Efficiency = 0;
-                                double SAM = 0;
-                                int GetCount = 1;
-                                int TotalPlanQty = 0;
-                                string query = "select (SELECT COUNT (Id) from PlanTable where TaskDate = '" + planDate.ToString() + "' and MachineNo='" + MachineNo + "') as RecordCount, Id, MachineNo, TaskDate, OrderID, Capacity, PlanQty, RemainingQty, OrderQty, Efficiency, Minute, Status, SAM from PlanTable where TaskDate = '" + planDate.ToString() + "' and MachineNo='" + MachineNo + "' order by TaskDate,Id asc";
+                                ChangeFlag = true; int Capacity = 0; int PlanQty = 0; int Efficiency = 0; double SAM = 0; int GetCount = 1; int TotalPlanQty = 0; int RemainingMinute = 0; int RemainingQty = 0;
+
+                                string query = " select (SELECT COUNT (Id) from PlanTable where TaskDate = '" + planDate.ToString() + "' and MachineNo='" + MachineNo + "') as RecordCount, "+
+                                               " (SELECT SUM(PlanQty) FROM PlanTable WHERE MachineNo = " + MachineNo + " AND TaskDate = '" + planDate.ToString() + "') AS TotalRestPlanQty, " +
+                                               " * from PlanTable where "+
+                                               " TaskDate = '" + planDate.ToString() + "' and MachineNo='" + MachineNo + "' order by TaskDate,Id asc";
                                 string connectionStr = ConnectionManager.connectionString;
                                 SqlCommand cm = new SqlCommand();
                                 SqlConnection cn = new SqlConnection(connectionStr);
@@ -203,7 +200,7 @@ namespace PlanningBoard
                                     int GetMinute = 0;
                                     cn1.Open();
                                     cm1.Connection = cn1;
-                                    cm1.CommandText = "SELECT Minute FROM WorkingDays where MachineNo='" + MachineComboBox.SelectedItem + "' and Active = 1 and WorkDate='" + TaskDate + "'";
+                                    cm1.CommandText = "SELECT Minute FROM WorkingDays where MachineNo = '" + MachineComboBox.SelectedItem + "' and Active = 1 and WorkDate = '" + TaskDate + "'";
                                     reader1 = cm1.ExecuteReader();
                                     while (reader1.Read())
                                     {
@@ -211,18 +208,14 @@ namespace PlanningBoard
                                     }
                                     cn1.Close();
 
-                                    SAM = SAM + Convert.ToDouble(reader["SAM"]);
-                                    Efficiency = Efficiency + Convert.ToInt16(reader["Efficiency"]);
-                                    SAM = SAM / GetCount;
-                                    Efficiency = Convert.ToInt32(Math.Floor((Double)(Efficiency / GetCount)));
-                                    Capacity = (int)(Math.Floor((GetMinute * Efficiency / 100) / SAM));
+                                    Capacity = Convert.ToInt16(reader["Capacity"]);
                                     PlanQty = Convert.ToInt16(reader["PlanQty"]);
-                                    TotalPlanQty = TotalPlanQty + PlanQty;
-                                    PlanQty = Convert.ToInt32(reader["RecordCount"]) - 1 == GetCount ? TotalPlanQty > Capacity ? PlanQty - (TotalPlanQty - Capacity) : PlanQty : PlanQty;
+                                    RemainingMinute = Convert.ToInt16(reader["RemainingMinute"]);
+                                    RemainingQty = Convert.ToInt16(reader["RemainingQty"]);
 
                                     cn2.Open();
                                     cm2.Connection = cn2;
-                                    cm2.CommandText = "UPDATE PlanTable SET MachineNo = " + MachineComboBox.SelectedItem + ", TaskDate='" + TaskDate + "',Capacity='" + Capacity + "',RemainingQty='" + (Capacity - PlanQty) + "',Status=1 where Id='" + Convert.ToInt16(reader["Id"]) + "'";
+                                    cm2.CommandText = "UPDATE PlanTable SET MachineNo = " + MachineComboBox.SelectedItem + ", TaskDate='" + TaskDate + "', Capacity='" + Capacity + "', PlanQty = " + PlanQty + ", RemainingMinute='" + RemainingMinute + "', RemainingQty='" + RemainingQty + "', Status = 1 where Id='" + Convert.ToInt16(reader["Id"]) + "'";
                                     cm2.ExecuteReader();
                                     cn2.Close();
 

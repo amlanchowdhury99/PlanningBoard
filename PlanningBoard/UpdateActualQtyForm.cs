@@ -317,7 +317,7 @@ namespace PlanningBoard
                         tempo = Convert.ToInt32(reader1["PlanQty"]);
                     }
                     cn.Close();
-                    query = "UPDATE PlanTable SET RemainingMinute = (RemainingQty + " + value + ") * SAM, RemainingQty = RemainingQty + " + tempo + ", PlanQty = 0 WHERE OrderID = " + orderID + " AND MachineNo =  " + mc + " AND TaskDate = '" + TempDate + "'";
+                    query = "UPDATE PlanTable SET RemainingMinute = (RemainingQty + " + tempo + ") * SAM, RemainingQty = RemainingQty + " + tempo + ", PlanQty = 0 WHERE OrderID = " + orderID + " AND MachineNo =  " + mc + " AND TaskDate = '" + TempDate + "'";
                     Result = CommonFunctions.ExecutionToDB(query, 3);
                     UpdateRemainingQty(mc, TempDate);
                     AdjustImmediateEntry(orderID, mc, TempDate, value - tempo);
@@ -759,12 +759,12 @@ namespace PlanningBoard
 
                 if (CommonFunctions.recordExist("SELECT Id FROM PlanTable WHERE MachineNo = " + mc + " AND TaskDate = '" + TempDate + "' AND OrderID = " + orderID))
                 {
-                    query = "UPDATE PlanTable SET PlanQty = PlanQty +" + tempVal + ", RemainingQty = RemainingQty - " + tempVal + " WHERE MachineNo = " + mc + " AND TaskDate = '" + TempDate + "' AND OrderID = " + orderID;
+                    query = "UPDATE PlanTable SET PlanQty = PlanQty +" + tempVal + ", RemainingMinute = (RemainingQty - " + tempVal + ") * SAM, RemainingQty = RemainingQty - " + tempVal + " WHERE MachineNo = " + mc + " AND TaskDate = '" + TempDate + "' AND OrderID = " + orderID;
                 }
                 else
                 {
-                    query = "INSERT INTO PlanTable (MachineNo, TaskDate, OrderID, Capacity, PlanQty, RemainingQty, OrderQty, Efficiency, SAM, Minute, RevertVal, ActualQty, Status, Production) " +
-                        "VALUES (" + mc + ",'" + TempDate + "'," + orderID + "," + Capacity + "," + tempVal + "," + (Capacity - tempVal) + "," + orderQty + "," + Efficiency + "," + SAM + "," + Minute + ", 0, 0, 0, 1)";
+                    query = "INSERT INTO PlanTable (MachineNo, TaskDate, OrderID, Capacity, PlanQty, RemainingQty, OrderQty, Efficiency, SAM, Minute, RevertVal, ActualQty, Status, Production, RemainingMinute) " +
+                        "VALUES (" + mc + ",'" + TempDate + "'," + orderID + "," + Capacity + "," + tempVal + "," + (Capacity - tempVal) + "," + orderQty + "," + Efficiency + "," + SAM + "," + Minute + ", 0, 0, 0, 1, " + ((Capacity - tempVal)*SAM) + ")";
                 }
                 cm2.CommandText = query;
                 cm2.ExecuteNonQuery();
@@ -811,21 +811,30 @@ namespace PlanningBoard
 
                 if (RecordExist)
                 {
-                    query = "SELECT SUM(PlanQty) AS RestPlanQty, SUM(SAM) As TotalSAM, Count(*) AS RestEfficiencyNumber, SUM(Efficiency) AS TotalRestEfficiency, SUM(Minute) AS TotalRestMinute, (SELECT TOP 1 Minute FROM WorkingDays WHERE MachineNo = "
+                    query = "SELECT Top 1*, (SELECT SUM(PlanQty) FROM PlanTable WHERE MachineNo = " + mc + " AND TaskDate = '" + TempDate.Date + "') AS RestPlanQty, (SELECT TOP 1 Minute FROM WorkingDays WHERE MachineNo = "
                     + mc + " AND WorkDate = '" + TempDate.Date + "') AS Minute, (SELECT TOP 1 Active FROM WorkingDays WHERE MachineNo = "
                     + mc + " AND WorkDate = '" + TempDate.Date + "') AS Active FROM PlanTable WHERE MachineNo = "
                     + mc + " AND TaskDate = '" + TempDate.Date + "'";
+
+                    //query = "SELECT SUM(PlanQty) AS RestPlanQty, SUM(SAM) As TotalSAM, Count(*) AS RestEfficiencyNumber, SUM(Efficiency) AS TotalRestEfficiency, (SELECT TOP 1 Minute FROM WorkingDays WHERE MachineNo = "
+                    //+ mc + " AND WorkDate = '" + TempDate.Date + "') AS Minute, (SELECT TOP 1 Active FROM WorkingDays WHERE MachineNo = "
+                    //+ mc + " AND WorkDate = '" + TempDate.Date + "') AS Active FROM PlanTable WHERE MachineNo = "
+                    //+ mc + " AND TaskDate = '" + TempDate.Date + "'";
                     cm1.CommandText = query;
                     reader1 = cm1.ExecuteReader();
                     while (reader1.Read())
                     {
                         int TotalRestPlanQty = reader1.IsDBNull(reader1.GetOrdinal("RestPlanQty")) == true ? 0 : (int)reader1["RestPlanQty"];
-                        Double TotalRestEfficiency = reader1.IsDBNull(reader1.GetOrdinal("TotalRestEfficiency")) == true ? 0 : Convert.ToDouble(reader1["TotalRestEfficiency"]);
-                        Double RestEfficiencyNumber = reader1.IsDBNull(reader1.GetOrdinal("RestEfficiencyNumber")) == true ? 0 : Convert.ToDouble(reader1["RestEfficiencyNumber"]);
-                        Double TotalSam = reader1.IsDBNull(reader1.GetOrdinal("TotalSAM")) == true ? 0 + SAM : (Convert.ToDouble(reader1["TotalSAM"]) + SAM);
-                        Double AVGSAM = TotalSam / (RestEfficiencyNumber + 1);
-                        Double AvgEff = (Convert.ToDouble((TotalRestEfficiency + Efficiency) / (RestEfficiencyNumber + 1)));
-                        Capacity = Convert.ToInt32(reader1["Active"]) == 0 ? 0 : (int)Math.Floor((Convert.ToDouble(Minute) * (Convert.ToDouble(AvgEff) / 100.00)) / (AVGSAM));
+                        int OldEff = reader1.IsDBNull(reader1.GetOrdinal("Efficiency")) == true ? 1 : Convert.ToInt32(reader1["Efficiency"]);
+                        int RemainingMinute = reader1.IsDBNull(reader1.GetOrdinal("RemainingMinute")) == true ? Minute : Convert.ToInt32(reader1["RemainingMinute"]);
+                        double updatedRemainingMinute = (int)Math.Floor((RemainingMinute * (Convert.ToDouble(Efficiency / 100.00))) / (Convert.ToDouble(OldEff / 100.00)));
+                        Capacity = TotalRestPlanQty + (int)Math.Floor(updatedRemainingMinute / SAM);
+                        //Double TotalRestEfficiency = reader1.IsDBNull(reader1.GetOrdinal("TotalRestEfficiency")) == true ? 0 : Convert.ToDouble(reader1["TotalRestEfficiency"]);
+                        //Double RestEfficiencyNumber = reader1.IsDBNull(reader1.GetOrdinal("RestEfficiencyNumber")) == true ? 0 : Convert.ToDouble(reader1["RestEfficiencyNumber"]);
+                        //Double TotalSam = reader1.IsDBNull(reader1.GetOrdinal("TotalSAM")) == true ? 0 + SAM : (Convert.ToDouble(reader1["TotalSAM"]) + SAM);
+                        //Double AVGSAM = TotalSam / (RestEfficiencyNumber + 1);
+                        //Double AvgEff = (Convert.ToDouble((TotalRestEfficiency + Efficiency) / (RestEfficiencyNumber + 1)));
+                        //Capacity = Convert.ToInt32(reader1["Active"]) == 0 ? 0 : (int)Math.Floor((Convert.ToDouble(Minute) * (Convert.ToDouble(AvgEff) / 100.00)) / (AVGSAM));
                     }
                 }
                 else

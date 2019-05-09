@@ -2107,7 +2107,7 @@ namespace PlanningBoard
                                     OldEff = reader2.IsDBNull(reader2.GetOrdinal("Efficiency")) == true ? 1 : Convert.ToInt32(reader2["Efficiency"]);
                                     Minute = reader2.IsDBNull(reader2.GetOrdinal("Minute")) == true ? 0 : Convert.ToInt32(reader2["Minute"]);
                                     RemainingMinute = reader2.IsDBNull(reader2.GetOrdinal("RemainingMinute")) == true ? 0 : Convert.ToInt32(reader2["RemainingMinute"]);
-                                    RecordCount = reader2.IsDBNull(reader2.GetOrdinal("RecordCount")) == true ? 0 : Convert.ToInt32(reader2["RecordCount"]);
+                                    //RecordCount = reader2.IsDBNull(reader2.GetOrdinal("RecordCount")) == true ? 0 : Convert.ToInt32(reader2["RecordCount"]);
                                     //TotalRestSam = reader2.IsDBNull(reader2.GetOrdinal("TotalRestSam")) == true ? 0 : Convert.ToInt32(reader2["TotalRestSam"]);
                                     //TotalRestEfficiency = reader2.IsDBNull(reader2.GetOrdinal("TotalRestEfficiency")) == true ? 0 : Convert.ToInt32(reader2["TotalRestEfficiency"]);
                                     
