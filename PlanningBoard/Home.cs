@@ -1333,6 +1333,7 @@ namespace PlanningBoard
             Grid_WorkDays_Info.Columns[0].ReadOnly = true;
             Grid_WorkDays_Info.Columns[1].ReadOnly = true;
             Grid_WorkDays_Info.Columns[2].ReadOnly = true;
+            Grid_WorkDays_Info.Columns[3].ReadOnly = true;
             Grid_WorkDays_Info.Columns[4].ReadOnly = true;
             Grid_WorkDays_Info.Columns[7].ReadOnly = true;
             Grid_WorkDays_Info.Columns[7].Visible = false;

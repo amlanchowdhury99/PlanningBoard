@@ -811,10 +811,10 @@ namespace PlanningBoard
 
                 if (RecordExist)
                 {
-                    query = "SELECT Top 1*, (SELECT SUM(PlanQty) FROM PlanTable WHERE MachineNo = " + mc + " AND TaskDate = '" + TempDate.Date + "') AS RestPlanQty, (SELECT TOP 1 Minute FROM WorkingDays WHERE MachineNo = "
-                    + mc + " AND WorkDate = '" + TempDate.Date + "') AS Minute, (SELECT TOP 1 Active FROM WorkingDays WHERE MachineNo = "
-                    + mc + " AND WorkDate = '" + TempDate.Date + "') AS Active FROM PlanTable WHERE MachineNo = "
-                    + mc + " AND TaskDate = '" + TempDate.Date + "'";
+                    query = " SELECT Top 1*, (SELECT SUM(PlanQty) FROM PlanTable WHERE MachineNo = " + mc + " AND TaskDate = '" + TempDate.Date + "') AS RestPlanQty, "
+                            + "(SELECT TOP 1 Minute FROM WorkingDays WHERE MachineNo = "+ mc + " AND WorkDate = '" + TempDate.Date + "') AS Minute, (SELECT TOP 1 Active FROM WorkingDays WHERE MachineNo = "
+                            + mc + " AND WorkDate = '" + TempDate.Date + "') AS Active FROM PlanTable WHERE MachineNo = "
+                            + mc + " AND TaskDate = '" + TempDate.Date + "'";
 
                     //query = "SELECT SUM(PlanQty) AS RestPlanQty, SUM(SAM) As TotalSAM, Count(*) AS RestEfficiencyNumber, SUM(Efficiency) AS TotalRestEfficiency, (SELECT TOP 1 Minute FROM WorkingDays WHERE MachineNo = "
                     //+ mc + " AND WorkDate = '" + TempDate.Date + "') AS Minute, (SELECT TOP 1 Active FROM WorkingDays WHERE MachineNo = "

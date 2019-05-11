@@ -41,9 +41,6 @@
             this.SaveWorkDays = new System.Windows.Forms.Button();
             this.labelAlert = new System.Windows.Forms.Label();
             this.textBox1 = new System.Windows.Forms.TextBox();
-            this.HomePanel = new System.Windows.Forms.Panel();
-            this.label17 = new System.Windows.Forms.Label();
-            this.button5 = new System.Windows.Forms.Button();
             this.Grid_WorkDays_Info = new System.Windows.Forms.DataGridView();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.resetButton = new System.Windows.Forms.Button();
@@ -56,6 +53,9 @@
             this.label15 = new System.Windows.Forms.Label();
             this.label16 = new System.Windows.Forms.Label();
             this.BtnUpdate = new System.Windows.Forms.Button();
+            this.HomePanel = new System.Windows.Forms.Panel();
+            this.label17 = new System.Windows.Forms.Label();
+            this.button5 = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.machineInfoDataGridView = new System.Windows.Forms.DataGridView();
@@ -82,6 +82,7 @@
             this.CHD = new System.Windows.Forms.DateTimePicker();
             this.LCBtn = new System.Windows.Forms.Button();
             this.label26 = new System.Windows.Forms.Label();
+            this.MachineComboBox = new PlanningBoard.CheckComboBox();
             this.addToProductioncheckBox = new System.Windows.Forms.CheckBox();
             this.LCText = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
@@ -160,12 +161,11 @@
             this.checkAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.unCheckAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStrip3 = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.MachineComboBox = new PlanningBoard.CheckComboBox();
             this.panel2.SuspendLayout();
             this.panel4.SuspendLayout();
-            this.HomePanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Grid_WorkDays_Info)).BeginInit();
             this.groupBox2.SuspendLayout();
+            this.HomePanel.SuspendLayout();
             this.panel1.SuspendLayout();
             this.groupBox4.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.machineInfoDataGridView)).BeginInit();
@@ -351,43 +351,6 @@
             this.textBox1.TabIndex = 15;
             this.textBox1.Visible = false;
             // 
-            // HomePanel
-            // 
-            this.HomePanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.HomePanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(64)))));
-            this.HomePanel.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("HomePanel.BackgroundImage")));
-            this.HomePanel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.HomePanel.Controls.Add(this.label17);
-            this.HomePanel.Controls.Add(this.button5);
-            this.HomePanel.Location = new System.Drawing.Point(140, 6);
-            this.HomePanel.Name = "HomePanel";
-            this.HomePanel.Size = new System.Drawing.Size(1088, 582);
-            this.HomePanel.TabIndex = 42;
-            // 
-            // label17
-            // 
-            this.label17.AutoSize = true;
-            this.label17.Font = new System.Drawing.Font("Monotype Corsiva", 48F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label17.ForeColor = System.Drawing.SystemColors.ButtonFace;
-            this.label17.Location = new System.Drawing.Point(121, 236);
-            this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(842, 79);
-            this.label17.TabIndex = 6;
-            this.label17.Text = "Seamless Machine Planning Board";
-            // 
-            // button5
-            // 
-            this.button5.BackColor = System.Drawing.Color.RosyBrown;
-            this.button5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button5.Location = new System.Drawing.Point(972, 611);
-            this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(96, 34);
-            this.button5.TabIndex = 5;
-            this.button5.Text = "Save";
-            this.button5.UseVisualStyleBackColor = false;
-            // 
             // Grid_WorkDays_Info
             // 
             this.Grid_WorkDays_Info.AllowUserToAddRows = false;
@@ -527,6 +490,43 @@
             this.BtnUpdate.Text = "Save";
             this.BtnUpdate.UseVisualStyleBackColor = false;
             this.BtnUpdate.Click += new System.EventHandler(this.BtnUpdate_Click);
+            // 
+            // HomePanel
+            // 
+            this.HomePanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.HomePanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(64)))));
+            this.HomePanel.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("HomePanel.BackgroundImage")));
+            this.HomePanel.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.HomePanel.Controls.Add(this.label17);
+            this.HomePanel.Controls.Add(this.button5);
+            this.HomePanel.Location = new System.Drawing.Point(140, 6);
+            this.HomePanel.Name = "HomePanel";
+            this.HomePanel.Size = new System.Drawing.Size(1088, 582);
+            this.HomePanel.TabIndex = 42;
+            // 
+            // label17
+            // 
+            this.label17.AutoSize = true;
+            this.label17.Font = new System.Drawing.Font("Monotype Corsiva", 48F, ((System.Drawing.FontStyle)((System.Drawing.FontStyle.Bold | System.Drawing.FontStyle.Italic))), System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label17.ForeColor = System.Drawing.SystemColors.ButtonFace;
+            this.label17.Location = new System.Drawing.Point(121, 236);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(842, 79);
+            this.label17.TabIndex = 6;
+            this.label17.Text = "Seamless Machine Planning Board";
+            // 
+            // button5
+            // 
+            this.button5.BackColor = System.Drawing.Color.RosyBrown;
+            this.button5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button5.Location = new System.Drawing.Point(972, 611);
+            this.button5.Name = "button5";
+            this.button5.Size = new System.Drawing.Size(96, 34);
+            this.button5.TabIndex = 5;
+            this.button5.Text = "Save";
+            this.button5.UseVisualStyleBackColor = false;
             // 
             // panel1
             // 
@@ -837,6 +837,17 @@
             this.label26.Size = new System.Drawing.Size(73, 16);
             this.label26.TabIndex = 51;
             this.label26.Text = "Machine No";
+            // 
+            // MachineComboBox
+            // 
+            this.MachineComboBox.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+            this.MachineComboBox.FormattingEnabled = true;
+            this.MachineComboBox.Location = new System.Drawing.Point(104, 23);
+            this.MachineComboBox.Name = "MachineComboBox";
+            this.MachineComboBox.Size = new System.Drawing.Size(117, 22);
+            this.MachineComboBox.TabIndex = 50;
+            this.MachineComboBox.Text = "Select Machines";
+            this.MachineComboBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.MachineComboBox_KeyPress);
             // 
             // addToProductioncheckBox
             // 
@@ -1598,17 +1609,6 @@
             this.contextMenuStrip3.Name = "contextMenuStrip3";
             this.contextMenuStrip3.Size = new System.Drawing.Size(61, 4);
             // 
-            // MachineComboBox
-            // 
-            this.MachineComboBox.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
-            this.MachineComboBox.FormattingEnabled = true;
-            this.MachineComboBox.Location = new System.Drawing.Point(104, 23);
-            this.MachineComboBox.Name = "MachineComboBox";
-            this.MachineComboBox.Size = new System.Drawing.Size(117, 22);
-            this.MachineComboBox.TabIndex = 50;
-            this.MachineComboBox.Text = "Select Machines";
-            this.MachineComboBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.MachineComboBox_KeyPress);
-            // 
             // Home
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1635,11 +1635,11 @@
             this.panel2.ResumeLayout(false);
             this.panel4.ResumeLayout(false);
             this.panel4.PerformLayout();
-            this.HomePanel.ResumeLayout(false);
-            this.HomePanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Grid_WorkDays_Info)).EndInit();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
+            this.HomePanel.ResumeLayout(false);
+            this.HomePanel.PerformLayout();
             this.panel1.ResumeLayout(false);
             this.groupBox4.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.machineInfoDataGridView)).EndInit();

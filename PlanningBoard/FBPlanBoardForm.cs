@@ -60,7 +60,6 @@ namespace PlanningBoard
         {
             try
             {
-
                 string query = "SELECT * FROM Machine_Info WHERE Status = 1 AND MachineDia = (SELECT Top 1 DiaID FROM Planing_Board_Details WHERE MachineNo ="+MachineNo+") order by MachineNo asc";
 
                 SqlDataReader reader = CommonFunctions.GetFromDB(query);
@@ -153,15 +152,7 @@ namespace PlanningBoard
                         return;
                     }
                 }
-                //else
-                //{
-                //    if (CommonFunctions.recordExist("SELECT * FROM WorkingDays WHERE MachineNo = " + MachineNo + " AND WorkDate = '" + FBPlanDateDateTimePicker.Value.AddDays(Convert.ToInt16(daysFBTextBox.Text)) + "'"))
-                //    {
-                //        MessageBox.Show("Invalid Backwording Plan!!!");
-                //        daysFBTextBox.Text = "";
-                //        return;
-                //    }
-                //}
+
                 ChangeFlag = true;
                 ReGenerate_Board();
             }
@@ -403,7 +394,8 @@ namespace PlanningBoard
                             cn4.Open();
                             cm4.Connection = cn4;
 
-                            cm4.CommandText = "UPDATE PlanTable SET TaskDate ='" + Convert.ToDateTime(reader2["TaskDate"]).AddDays(Getdays) + "', Capacity ='" + Capacity + "', RemainingQty ='" + (Capacity - PlanQty) + "', Status = 1 where Id='" + Convert.ToInt16(reader2["Id"]) + "'";
+                            cm4.CommandText = "UPDATE PlanTable SET TaskDate ='" + Convert.ToDateTime(reader2["TaskDate"]).AddDays(Getdays) + "', Status = 1 where Id='" + Convert.ToInt16(reader2["Id"]) + "'";
+                            //cm4.CommandText = "UPDATE PlanTable SET TaskDate ='" + Convert.ToDateTime(reader2["TaskDate"]).AddDays(Getdays) + "', Capacity ='" + Capacity + "', RemainingQty ='" + (Capacity - PlanQty) + "', Status = 1 where Id='" + Convert.ToInt16(reader2["Id"]) + "'";
                             cm4.ExecuteReader();
                         }
                         catch (Exception ex)
@@ -485,12 +477,6 @@ namespace PlanningBoard
                     TempDate = PrevUpdatedDate.AddDays(1);
                 }
 
-                //TempDate = DateDifference == true ? PrevUpdatedDate.AddDays(DifferenceInDays) // if DateDifference is true
-                //           : Flag == true ? TempDate < PrevUpdatedDate ? PrevUpdatedDate : TempDate : TempDate > PrevUpdatedDate ? PrevUpdatedDate : TempDate;
-
-
-                //TempDate = DateDifference == true ? Flag == true ? PrevUpdatedDate.AddDays(DifferenceInDays) : PrevUpdatedDate.AddDays(-DifferenceInDays) // if DateDifference is true
-                //           : Flag == true ? TempDate < PrevUpdatedDate ? PrevUpdatedDate : TempDate : TempDate > PrevUpdatedDate ? PrevUpdatedDate : TempDate; // if DateDifference is false
             }
             else
             {
@@ -530,29 +516,6 @@ namespace PlanningBoard
                     }
                     tempDate = tempDate.AddDays(1);
                 }
-
-                //if (Flag) // Backward
-                //{
-                //    while (tempDate < CurrentDate)
-                //    {
-                //        if (CommonFunctions.recordExist("SELECT * FROM WorkingDays WHERE MachineNo = '"+MachineNo+"' and WorkDate = '" + tempDate + "' and Active = 1 "))
-                //        {
-                //            DifferenceInDays++;
-                //        }
-                //        tempDate = tempDate.AddDays(1);
-                //    }
-                //}
-                //else // Forward
-                //{
-                //    while (tempDate > CurrentDate)
-                //    {
-                //        if (CommonFunctions.recordExist("SELECT * FROM WorkingDays WHERE MachineNo = '"+MachineNo+"' and WorkDate = '" + tempDate + "' and Active = 1 "))
-                //        {
-                //            DifferenceInDays++;
-                //        }
-                //        tempDate = tempDate.AddDays(-1);
-                //    }
-                //}
             }
             else
             {
