@@ -827,8 +827,17 @@ namespace PlanningBoard
                         int TotalRestPlanQty = reader1.IsDBNull(reader1.GetOrdinal("RestPlanQty")) == true ? 0 : (int)reader1["RestPlanQty"];
                         int OldEff = reader1.IsDBNull(reader1.GetOrdinal("Efficiency")) == true ? 1 : Convert.ToInt32(reader1["Efficiency"]);
                         int RemainingMinute = reader1.IsDBNull(reader1.GetOrdinal("RemainingMinute")) == true ? Minute : Convert.ToInt32(reader1["RemainingMinute"]);
-                        double updatedRemainingMinute = (int)Math.Floor((RemainingMinute * (Convert.ToDouble(Efficiency / 100.00))) / (Convert.ToDouble(OldEff / 100.00)));
-                        Capacity = TotalRestPlanQty + (int)Math.Floor(updatedRemainingMinute / SAM);
+
+                        if (RemainingMinute > 60)
+                        {
+                            double updatedRemainingMinute = (int)Math.Floor((RemainingMinute * (Convert.ToDouble(Efficiency / 100.00))) / (Convert.ToDouble(OldEff / 100.00)));
+                            Capacity = TotalRestPlanQty + (int)Math.Floor(updatedRemainingMinute / SAM);
+                        }
+                        else
+                        {
+                            Capacity = 0;
+                        }
+                        
                         //Double TotalRestEfficiency = reader1.IsDBNull(reader1.GetOrdinal("TotalRestEfficiency")) == true ? 0 : Convert.ToDouble(reader1["TotalRestEfficiency"]);
                         //Double RestEfficiencyNumber = reader1.IsDBNull(reader1.GetOrdinal("RestEfficiencyNumber")) == true ? 0 : Convert.ToDouble(reader1["RestEfficiencyNumber"]);
                         //Double TotalSam = reader1.IsDBNull(reader1.GetOrdinal("TotalSAM")) == true ? 0 + SAM : (Convert.ToDouble(reader1["TotalSAM"]) + SAM);

@@ -225,7 +225,7 @@ namespace PlanningBoard
 
                 if (rowsCount > -1)
                 {
-                    if (rowsCount > 0)
+                    if (rowsCount > 1)
                     {
                         MessageBox.Show("Same Record Exists Already!!!");
                         if (CommonFunctions.connection.State == ConnectionState.Open)
@@ -237,7 +237,8 @@ namespace PlanningBoard
                     else
                     {
                         return true;
-                    }                }
+                    }                
+                }
                 else
                 {
                     if (CommonFunctions.connection.State == ConnectionState.Open)

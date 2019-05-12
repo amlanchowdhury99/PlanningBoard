@@ -879,16 +879,26 @@ namespace PlanningBoard
                 string Remarks = remarkTextBox.Text;
                 int orderQty = Convert.ToInt32(qtyTextBox.Text);
                 string query = "";
+                string connectionStr = ConnectionManager.connectionString; SqlConnection cn1 = new SqlConnection(connectionStr); SqlCommand cm1 = new SqlCommand(); cm1.Connection = cn1; cn1.Open();
 
                 query = " (SELECT Count(*) FROM Order_Info WHERE Buyer = " + buyerName + " AND Style = " + styleName + " AND Size = " + sizeNo + " AND Dia = " + dia + " AND BodyPart = " + bodyPart + " AND PurchaseOrderNo = '" + purchaseOrderNumber + "' )";
 
-                //if (CommonFunctions.GetNumberForRows(query))
-                //{
                 if (hiddenIDtextBox.Text.Trim() != "")
                 {
-                    query = "SELECT * FROM Order_Info WHERE Buyer = " + buyerName + " AND Style = " + styleName + " AND Size = " + sizeNo + " AND Dia = " + dia + " AND BodyPart = " + bodyPart + " AND PurchaseOrderNo = '" + purchaseOrderNumber + "'";
+                    int Id1 = 0;
+                    query = "SELECT Id FROM Order_Info WHERE Buyer = " + buyerName + " AND Style = " + styleName + " AND Size = " + sizeNo + " AND Dia = " + dia + " AND BodyPart = " + bodyPart + " AND PurchaseOrderNo = '" + purchaseOrderNumber + "'";
+                    cm1.CommandText = query;
+                    SqlDataReader reader = cm1.ExecuteReader();
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            Id1 = Convert.ToInt32(reader["Id"]);
+                        }
+                    }
+                    cn1.Close();
 
-                    if (!CommonFunctions.recordExist(query))
+                    if (Id1 == Convert.ToInt32(hiddenIDtextBox.Text))
                     {
                         query = "UPDATE Order_Info SET Buyer = " + buyerName + ", Style = " + styleName + ", Size = " + sizeNo + ", Dia = " + dia + ", BodyPart = " + bodyPart + ", PurchaseOrderNo = '" + purchaseOrderNumber + "', Quantity = " + qty + ", ShipmentDate = '" + shipdate + "', CHD = '" + chd + "', SAM = " + SAMNo + ", Efficiency = " + eff + ", Status = " + status + " WHERE Id = " + Convert.ToInt32(hiddenIDtextBox.Text);
                         if (CommonFunctions.ExecutionToDB(query, 2))
@@ -896,32 +906,54 @@ namespace PlanningBoard
                             LoadOrderInfoGrid();
                         }
                     }
+                    else
+                    {
+                        query = "SELECT Id FROM Order_Info WHERE Buyer = " + buyerName + " AND Style = " + styleName + " AND Size = " + sizeNo + " AND Dia = " + dia + " AND BodyPart = " + bodyPart + " AND PurchaseOrderNo = '" + purchaseOrderNumber + "'";
+                        if (!CommonFunctions.recordExist(query))
+                        {
+                            query = "INSERT INTO Order_Info(Buyer, Style, Size, Dia, BodyPart, Quantity, ShipmentDate, CHD, SAM, Efficiency, Status, Remarks, PurchaseOrderNo) VALUES (" + buyerName + "," + styleName + "," + sizeNo + "," + dia + "," + bodyPart + "," + qty + ",'" + shipdate + "','" + chd + "'," + SAMNo + "," + eff + "," + status + ", '" + Remarks + "', '" + purchaseOrderNumber + "')";
+                            if (CommonFunctions.ExecutionToDB(query, 1))
+                            {
+                                LoadOrderInfoGrid();
+                            }
+                        }
+                        else
+                        {
+                            MessageBox.Show("Can not update another order while using this order!!!");
+                            return;
+                        }
+                    }
                 }
                 else
                 {
-                    query = " (SELECT Count(*) FROM Order_Info WHERE Buyer = " + buyerName + " AND Style = " + styleName + " AND Size = " + sizeNo + " AND Dia = " + dia + " AND BodyPart = " + bodyPart + " AND PurchaseOrderNo = '" + purchaseOrderNumber + "' )";
-                    
-                    if (!CommonFunctions.GetNumberForRows(query))
+                    query = "SELECT Id FROM Order_Info WHERE Buyer = " + buyerName + " AND Style = " + styleName + " AND Size = " + sizeNo + " AND Dia = " + dia + " AND BodyPart = " + bodyPart + " AND PurchaseOrderNo = '" + purchaseOrderNumber + "'";
+                    if (!CommonFunctions.recordExist(query))
                     {
+                        query = "INSERT INTO Order_Info(Buyer, Style, Size, Dia, BodyPart, Quantity, ShipmentDate, CHD, SAM, Efficiency, Status, Remarks, PurchaseOrderNo) VALUES (" + buyerName + "," + styleName + "," + sizeNo + "," + dia + "," + bodyPart + "," + qty + ",'" + shipdate + "','" + chd + "'," + SAMNo + "," + eff + "," + status + ", '" + Remarks + "', '" + purchaseOrderNumber + "')";
+                        if (CommonFunctions.ExecutionToDB(query, 1))
+                        {
+                            LoadOrderInfoGrid();
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("Duplicate Record Exist!!!");
                         return;
                     }
 
-                    query = "INSERT INTO Order_Info(Buyer, Style, Size, Dia, BodyPart, Quantity, ShipmentDate, CHD, SAM, Efficiency, Status, Remarks, PurchaseOrderNo) VALUES (" + buyerName + "," + styleName + "," + sizeNo + "," + dia + "," + bodyPart + "," + qty + ",'" + shipdate + "','" + chd + "'," + SAMNo + "," + eff + "," + status + ", '" + Remarks + "', '" + purchaseOrderNumber + "')";
-                    if (CommonFunctions.ExecutionToDB(query, 1))
-                    {
-                        LoadOrderInfoGrid();
-                    }
+                    //query = " (SELECT Count(*) FROM Order_Info WHERE Buyer = " + buyerName + " AND Style = " + styleName + " AND Size = " + sizeNo + " AND Dia = " + dia + " AND BodyPart = " + bodyPart + " AND PurchaseOrderNo = '" + purchaseOrderNumber + "' )";
+                    
+                    //if (!CommonFunctions.GetNumberForRows(query))
+                    //{
+                    //    return;
+                    //}
                 }
 
                 if (orderWisePlandataGridView.Rows.Count > 0 && addToProductioncheckBox.Checked == true)
                 {
                     int planQty = Convert.ToInt32(newOrderQtyTextBox.Text);
                     int orderID = 0; Boolean result = false;
-                    string connectionStr = ConnectionManager.connectionString;
-                    SqlConnection cn = new SqlConnection(connectionStr);
-                    SqlCommand cm = new SqlCommand();
-                    cm.Connection = cn;
-                    cn.Open();
+                    SqlConnection cn = new SqlConnection(connectionStr); SqlCommand cm = new SqlCommand(); cm.Connection = cn; cn.Open();
                     cm.CommandText = "SELECT Id From Order_Info WHERE Buyer = " + buyerName + " AND Style = " + styleName + " AND Size = " + sizeNo + " AND Dia = " + dia + " AND BodyPart = " + bodyPart + " AND PurchaseOrderNo = '" + purchaseOrderNumber + "'";
                     SqlDataReader reader1 = cm.ExecuteReader();
                     if (reader1.HasRows)
