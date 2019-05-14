@@ -2008,12 +2008,12 @@ namespace PlanningBoard
             {
                 if (hiddenIDtextBox.Text != "")
                 {
-                    if (!CommonFunctions.recordExist("SELECT Top 1 * FROM PlanTable WHERE OrderID = " + Convert.ToInt32(hiddenIDtextBox.Text)))
-                    {
-                        MessageBox.Show("Knit Closing Date can not be smaller than current date!!!");
-                        shipDatePicker.Value = DateTime.Now.Date;
-                        return;
-                    }
+                    //if (!CommonFunctions.recordExist("SELECT Top 1 * FROM PlanTable WHERE OrderID = " + Convert.ToInt32(hiddenIDtextBox.Text)))
+                    //{
+                    //    MessageBox.Show("Knit Closing Date can not be smaller than current date!!!");
+                    //    shipDatePicker.Value = DateTime.Now.Date;
+                    //    return;
+                    //}
                 }
                 else
                 {
