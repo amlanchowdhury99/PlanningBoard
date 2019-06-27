@@ -405,8 +405,6 @@ namespace PlanningBoard
                     }
                 }
 
-
-
                 query = " SELECT a.Id, a.PurchaseOrderNo, a.Quantity, a.ShipmentDate, a.SAM, a.Efficiency, a.Status, b.BuyerName, c.StyleName, d.SizeName, e.Dia, f.PartName FROM (" + subquery + ") a, Buyer b, Style c, Size d, Dia e, BodyPart f " +
                     "WHERE a.Buyer = b.Id AND a.Style = c.Id AND a.Size = d.Id AND a.Dia = e.Id AND a.BodyPart = f.Id order by ShipmentDate asc";
 
@@ -449,6 +447,34 @@ namespace PlanningBoard
                     CommonFunctions.connection.Close();
                 }
                 SaveOrderInfo.Enabled = true;
+                MakeOrderInfoGridReadOnly();
+            }
+        }
+
+        private void MakeOrderInfoGridReadOnly()
+        {
+            foreach (DataGridViewRow row in orderInfoDetailsdataGridView.Rows)
+            {
+                int ID = Convert.ToInt32(row.Cells[12].Value);
+
+                int OrderQty = Convert.ToInt32(row.Cells[7].Value); 
+                if (CommonFunctions.recordExist("SELECT * FROM PlanTable WHERE OrderID = " + ID))
+                {
+                    SqlDataReader reader = CommonFunctions.GetFromDB("SELECT SUM(ActualQty) AS TotalProducedQty FROM (SELECT * FROM PlanTable WHERE OrderID = " + ID + ") A");
+
+                    while (reader.Read())
+                    {
+                        int TotalProducedQty = Convert.ToInt32(reader["TotalProducedQty"]);
+                        if (OrderQty == TotalProducedQty)
+                        {
+                            row.DefaultCellStyle.BackColor = Color.IndianRed;
+                        }
+                        else
+                        {
+                            row.DefaultCellStyle.BackColor = Color.CornflowerBlue;
+                        }
+                    }
+                }
             }
         }
 
@@ -2085,33 +2111,24 @@ namespace PlanningBoard
 
                 if (mcNo.Count > 0)
                 {
-                    int i = 0;
-                    while (i < mcNo.Count && temp > 0)
+                    while (temp > 0)
                     {
-                        int rowID = 0; int Capacity = 0; int MachineStatus = 0;
+                        int i = 0;  int rowID = 0; int Capacity = 0; int MachineStatus = 0;
 
                         int machineNo = Convert.ToInt32(mcNo[i]);
                         int tempMachine = 0;
 
-                        cn1.Open();
-                        cm1.CommandText = "SELECT TaskDate FROM Planing_Board_Details WHERE Id = (SELECT MAX(Id) FROM Planing_Board_Details WHERE MachineNo = " + machineNo + " AND DiaID = " + Dia + ")";
-                        reader1 = cm1.ExecuteReader();
-
-                        if (reader1.HasRows)
-                        {
-                            while (reader1.Read())
-                            {
-                                TaskDate = reader1.IsDBNull(reader1.GetOrdinal("TaskDate")) == true ? DateTime.Now.Date : DateTime.Now.Date > Convert.ToDateTime(reader1["TaskDate"]) ? DateTime.Now.Date : Convert.ToDateTime(reader1["TaskDate"]);
-                            }
-                        }
-                        else
-                        {
-                            TaskDate = DateTime.Now.Date;
-                        }
-                        cn1.Close();
+                        TaskDate = getMinDate();
 
                         while (TaskDate.Date <= endDate.Date && temp > 0)
                         {
+                            i = 0;
+
+                            while (i < mcNo.Count && temp > 0)
+                            {
+
+                            }
+
                             int TotalRestActualQty = 0; int TotalRestPlanQty = 0; int RecordCount = 0; int TotalRestSam = 0; int TotalRestEfficiency = 0; int Minute = 0; int NewCapacity = 0;
 
                             if (machineNo != tempMachine)
@@ -2258,6 +2275,55 @@ namespace PlanningBoard
                 CalculateOrderWisePlanGridSum();
                 LCFlag = false;
             }
+        }
+
+        private DateTime getMinDate()
+        {
+            string connectionStr = ConnectionManager.connectionString; DateTime TaskDate = DateTime.Now.Date;
+            SqlConnection cn = new SqlConnection(connectionStr);
+            SqlCommand cm = new SqlCommand();
+            cm.Connection = cn;
+            cn.Open(); SqlDataReader reader;
+            SqlConnection cn1 = new SqlConnection(connectionStr);
+            SqlCommand cm1 = new SqlCommand();
+            cm1.Connection = cn1;
+            cn1.Open(); SqlDataReader reader1;
+
+            int i = 0; List<int> listIDs = new List<int>(); int minValue = 0;
+
+            while(i < mcNo.Count)
+            {
+                cm.CommandText = "SELECT Max(Id) As Id FROM Planing_Board_Details WHERE MachineNo = " + mcNo[i] + " AND DiaID = " + Dia;
+                reader = cm.ExecuteReader();
+                if (reader.HasRows)
+                {
+                    while (reader.Read())
+                    {
+                        listIDs.Add(Convert.ToInt32(reader["Id"]));
+                    }
+                }
+                i++;
+            }
+
+            if (listIDs.Count > 0)
+            {
+                cm1.CommandText = "SELECT TaskDate FROM Planing_Board_Details WHERE Id = " + minValue;
+                reader1 = cm1.ExecuteReader();
+
+                if (reader1.HasRows)
+                {
+                    while (reader1.Read())
+                    {
+                        TaskDate = reader1.IsDBNull(reader1.GetOrdinal("TaskDate")) == true ? DateTime.Now.Date : DateTime.Now.Date > Convert.ToDateTime(reader1["TaskDate"]) ? DateTime.Now.Date : Convert.ToDateTime(reader1["TaskDate"]);
+                    }
+                }
+            }
+
+            cn.Close();
+            cn1.Close();
+
+            return TaskDate;
+
         }
 
         private void CalculateOrderWisePlanGridSum()
