@@ -457,7 +457,7 @@ namespace PlanningBoard
             {
                 int ID = Convert.ToInt32(row.Cells[12].Value);
 
-                int OrderQty = Convert.ToInt32(row.Cells[7].Value); 
+                int OrderQty = Convert.ToInt32(row.Cells[7].Value);
                 if (CommonFunctions.recordExist("SELECT * FROM PlanTable WHERE OrderID = " + ID))
                 {
                     SqlDataReader reader = CommonFunctions.GetFromDB("SELECT SUM(ActualQty) AS TotalProducedQty FROM (SELECT * FROM PlanTable WHERE OrderID = " + ID + ") A");
@@ -968,7 +968,7 @@ namespace PlanningBoard
                     }
 
                     //query = " (SELECT Count(*) FROM Order_Info WHERE Buyer = " + buyerName + " AND Style = " + styleName + " AND Size = " + sizeNo + " AND Dia = " + dia + " AND BodyPart = " + bodyPart + " AND PurchaseOrderNo = '" + purchaseOrderNumber + "' )";
-                    
+
                     //if (!CommonFunctions.GetNumberForRows(query))
                     //{
                     //    return;
@@ -2111,40 +2111,36 @@ namespace PlanningBoard
 
                 if (mcNo.Count > 0)
                 {
-                    while (temp > 0)
+                    int i = 0; int rowID = 0; int Capacity = 0; int MachineStatus = 0;
+
+                    int machineNo = Convert.ToInt32(mcNo[i]);
+                    int tempMachine = 0;
+                    DateTime tempTaskDate = DateTime.MinValue.Date;
+
+                    TaskDate = getMinDate();
+
+                    while (TaskDate.Date <= endDate.Date && temp > 0)
                     {
-                        int i = 0;  int rowID = 0; int Capacity = 0; int MachineStatus = 0;
+                        i = 0;
 
-                        int machineNo = Convert.ToInt32(mcNo[i]);
-                        int tempMachine = 0;
-
-                        TaskDate = getMinDate();
-
-                        while (TaskDate.Date <= endDate.Date && temp > 0)
+                        if (TaskDate.Date != tempTaskDate)
                         {
-                            i = 0;
+                            tempTaskDate = TaskDate.Date;
+                        }
 
-                            while (i < mcNo.Count && temp > 0)
-                            {
-
-                            }
-
+                        while (i < mcNo.Count && temp > 0)
+                        {
                             int TotalRestActualQty = 0; int TotalRestPlanQty = 0; int RecordCount = 0; int TotalRestSam = 0; int TotalRestEfficiency = 0; int Minute = 0; int NewCapacity = 0;
-
-                            if (machineNo != tempMachine)
-                            {
-                                tempMachine = machineNo;
-                                j = 0;
-                            }
                             int newPlanQty = 0; int remainingQty = 0; int RemainingMinute = 0; int OldEff = 100;
 
+                            machineNo = Convert.ToInt32(mcNo[i]);
                             cm2.CommandText = " SELECT Top 1*, (SELECT SUM(PlanQty) FROM PlanTable WHERE MachineNo = " + machineNo + " AND TaskDate = '" + TaskDate + "') AS TotalRestPlanQty, " +
-                                              " (SELECT SUM(ActualQty) FROM PlanTable WHERE MachineNo = " + machineNo + " AND TaskDate = '" + TaskDate + "') AS TotalRestActualQty, " +
-                                              //" (SELECT SUM(SAM) FROM PlanTable WHERE MachineNo = " + machineNo + " AND TaskDate = '" + TaskDate + "') AS TotalRestSam, " +
-                                              " (SELECT Count(Id) FROM PlanTable WHERE MachineNo = " + machineNo + " AND TaskDate = '" + TaskDate + "') AS RecordCount, " +
-                                              " (SELECT Minute FROM WorkingDays WHERE MachineNo = " + machineNo + " AND WorkDate = '" + TaskDate + "' AND Active = 1) AS Minute " +
-                                              //" (SELECT SUM(Efficiency) FROM PlanTable WHERE MachineNo = " + machineNo + " AND TaskDate = '" + TaskDate + "') AS TotalRestEfficiency " +
-                                              " FROM PlanTable WHERE MachineNo = " + machineNo + " AND TaskDate = '" + TaskDate + "' order by Id desc";
+                                          " (SELECT SUM(ActualQty) FROM PlanTable WHERE MachineNo = " + machineNo + " AND TaskDate = '" + TaskDate + "') AS TotalRestActualQty, " +
+                                //" (SELECT SUM(SAM) FROM PlanTable WHERE MachineNo = " + machineNo + " AND TaskDate = '" + TaskDate + "') AS TotalRestSam, " +
+                                          " (SELECT Count(Id) FROM PlanTable WHERE MachineNo = " + machineNo + " AND TaskDate = '" + TaskDate + "') AS RecordCount, " +
+                                          " (SELECT Minute FROM WorkingDays WHERE MachineNo = " + machineNo + " AND WorkDate = '" + TaskDate + "' AND Active = 1) AS Minute " +
+                                //" (SELECT SUM(Efficiency) FROM PlanTable WHERE MachineNo = " + machineNo + " AND TaskDate = '" + TaskDate + "') AS TotalRestEfficiency " +
+                                          " FROM PlanTable WHERE MachineNo = " + machineNo + " AND TaskDate = '" + TaskDate + "' order by Id desc";
                             cn2.Open();
                             reader2 = cm2.ExecuteReader();
 
@@ -2152,6 +2148,7 @@ namespace PlanningBoard
                             {
                                 while (reader2.Read())
                                 {
+                                    remainingQty = reader2.IsDBNull(reader2.GetOrdinal("RemainingQty")) == true ? 0 : Convert.ToInt32(reader2["RemainingQty"]);
                                     TotalRestActualQty = reader2.IsDBNull(reader2.GetOrdinal("TotalRestActualQty")) == true ? 0 : Convert.ToInt32(reader2["TotalRestActualQty"]);
                                     TotalRestPlanQty = reader2.IsDBNull(reader2.GetOrdinal("TotalRestPlanQty")) == true ? 0 : Convert.ToInt32(reader2["TotalRestPlanQty"]);
                                     OldEff = reader2.IsDBNull(reader2.GetOrdinal("Efficiency")) == true ? 1 : Convert.ToInt32(reader2["Efficiency"]);
@@ -2160,7 +2157,7 @@ namespace PlanningBoard
                                     //RecordCount = reader2.IsDBNull(reader2.GetOrdinal("RecordCount")) == true ? 0 : Convert.ToInt32(reader2["RecordCount"]);
                                     //TotalRestSam = reader2.IsDBNull(reader2.GetOrdinal("TotalRestSam")) == true ? 0 : Convert.ToInt32(reader2["TotalRestSam"]);
                                     //TotalRestEfficiency = reader2.IsDBNull(reader2.GetOrdinal("TotalRestEfficiency")) == true ? 0 : Convert.ToInt32(reader2["TotalRestEfficiency"]);
-                                    
+
                                 }
                             }
                             cn2.Close();
@@ -2177,7 +2174,7 @@ namespace PlanningBoard
                                     while (reader3.Read())
                                     {
                                         Minute = Convert.ToInt32(reader3["Minute"]);
-                                        RemainingMinute = RemainingMinute == 0 ? Minute : RemainingMinute;
+                                        RemainingMinute = TotalRestPlanQty == 0 ? Minute : RemainingMinute;
                                     }
                                 }
                                 cn3.Close();
@@ -2187,14 +2184,12 @@ namespace PlanningBoard
                                     efficiency = LCFlag == true ? j > LcArray.Count - 1 ? LcArray[LcArray.Count - 1] : LcArray[j] : Convert.ToInt32(Convert.ToDouble(effTextBox.Text));
                                     double updatedRemainingMinute = (int)Math.Floor((RemainingMinute * (Convert.ToDouble(efficiency / 100.00))) / (Convert.ToDouble(OldEff / 100.00)));
                                     NewCapacity = TotalRestPlanQty + (int)Math.Floor(updatedRemainingMinute / sam);
-                                    
+
                                     //double UpdatedSam = (TotalRestSam + sam) / (RecordCount + 1);
                                     //double UpdatedEfficiency = (double)((TotalRestEfficiency + efficiency) / (RecordCount + 1));
 
                                     //NewCapacity = Convert.ToInt32(Math.Floor((double)((Minute * (UpdatedEfficiency / 100.00)) / UpdatedSam)));
                                 }
-
-                                
 
                                 if (TotalRestActualQty == 0)
                                 {
@@ -2227,7 +2222,6 @@ namespace PlanningBoard
                                     S10 = true;
                                     orderWisePlandataGridView.Rows.Add(S1, S2, S3, S4, S5, S6, S7, S8, S9, S10);
                                     SL++;
-                                    j++;
                                 }
                             }
                             else
@@ -2245,11 +2239,11 @@ namespace PlanningBoard
                                 orderWisePlandataGridView.Rows.Add(S1, S2, S3, S4, S5, S6, S7, S8, S9, S10);
                                 SL++;
                             }
-
-                            TaskDate = TaskDate.AddDays(1);
                             temp = temp - newPlanQty;
+                            i++;
                         }
-                        i++;
+                        TaskDate = TaskDate.AddDays(1);
+                        j++;
                     }
                 }
                 startDateTimePicker.Value = DateTime.ParseExact(orderWisePlandataGridView.Rows[0].Cells[2].Value.ToString(), "dd/MM/yyyy", null);
@@ -2283,31 +2277,37 @@ namespace PlanningBoard
             SqlConnection cn = new SqlConnection(connectionStr);
             SqlCommand cm = new SqlCommand();
             cm.Connection = cn;
-            cn.Open(); SqlDataReader reader;
+            SqlDataReader reader;
             SqlConnection cn1 = new SqlConnection(connectionStr);
             SqlCommand cm1 = new SqlCommand();
             cm1.Connection = cn1;
             cn1.Open(); SqlDataReader reader1;
 
-            int i = 0; List<int> listIDs = new List<int>(); int minValue = 0;
+            int i = 0; var listIDs = new List<int>(); int minValue = 0;
 
-            while(i < mcNo.Count)
+            while (i < mcNo.Count)
             {
-                cm.CommandText = "SELECT Max(Id) As Id FROM Planing_Board_Details WHERE MachineNo = " + mcNo[i] + " AND DiaID = " + Dia;
+                cn.Open();
+                cm.CommandText = "SELECT Max(Id) As Id FROM Planing_Board_Details WHERE MachineNo = " + mcNo[i] + " AND DiaID = " + ((KeyValuePair<int, string>)diaComboBox.SelectedItem).Key;
                 reader = cm.ExecuteReader();
                 if (reader.HasRows)
                 {
                     while (reader.Read())
                     {
-                        listIDs.Add(Convert.ToInt32(reader["Id"]));
+                        if (!reader.IsDBNull(reader.GetOrdinal("Id")))
+                        {
+                            listIDs.Add(Convert.ToInt32(reader["Id"]));
+                        }
+
                     }
                 }
                 i++;
+                cn.Close();
             }
 
             if (listIDs.Count > 0)
             {
-                cm1.CommandText = "SELECT TaskDate FROM Planing_Board_Details WHERE Id = " + minValue;
+                cm1.CommandText = "SELECT TaskDate FROM Planing_Board_Details WHERE Id = " + listIDs.Min();
                 reader1 = cm1.ExecuteReader();
 
                 if (reader1.HasRows)
@@ -2319,7 +2319,6 @@ namespace PlanningBoard
                 }
             }
 
-            cn.Close();
             cn1.Close();
 
             return TaskDate;
