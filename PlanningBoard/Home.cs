@@ -788,12 +788,30 @@ namespace PlanningBoard
         {
             try
             {
-                //if (pOTextBox.Text == "")
-                //{
-                //    MessageBox.Show("Please Enter Purchase Order No", VariableDecleration_Class.sMSGBOX);
-                //    pOTextBox.Focus();
-                //    return;
-                //}
+                string connectionStr = ConnectionManager.connectionString;
+                
+                if (hiddenIDtextBox.Text.Trim() != "")
+                {
+                    if (CommonFunctions.recordExist("SELECT Id FROM PlanTable WHERE OrderID = " + Convert.ToInt32(hiddenIDtextBox.Text)))
+                    {
+                        SqlConnection cn = new SqlConnection(connectionStr); SqlCommand cm = new SqlCommand(); cm.Connection = cn; cn.Open();
+                        cm.CommandText = "SELECT PlanQty From PlanTable WHERE OrderID = " + Convert.ToInt32(hiddenIDtextBox.Text);
+                        SqlDataReader reader = cm.ExecuteReader();
+                        if (reader.HasRows)
+                        {
+                            while (reader.Read())
+                            {
+                                if (Convert.ToInt32(qtyTextBox.Text) < Convert.ToInt32(reader["PlanQty"]))
+                                {
+                                    MessageBox.Show("Order Quantity can not be less than PlanQty in PlanTable!!!", VariableDecleration_Class.sMSGBOX);
+                                    qtyTextBox.Focus();
+                                    return;
+                                }
+                            }
+                        }
+                        cn.Close();
+                    }
+                }
                 if (buyerComboBox.SelectedIndex == 0)
                 {
                     MessageBox.Show("Please Enter Buyer Name", VariableDecleration_Class.sMSGBOX);
@@ -905,7 +923,7 @@ namespace PlanningBoard
                 string Remarks = remarkTextBox.Text;
                 int orderQty = Convert.ToInt32(qtyTextBox.Text);
                 string query = "";
-                string connectionStr = ConnectionManager.connectionString; SqlConnection cn1 = new SqlConnection(connectionStr); SqlCommand cm1 = new SqlCommand(); cm1.Connection = cn1; cn1.Open();
+                SqlConnection cn1 = new SqlConnection(connectionStr); SqlCommand cm1 = new SqlCommand(); cm1.Connection = cn1; cn1.Open();
 
                 query = " (SELECT Count(*) FROM Order_Info WHERE Buyer = " + buyerName + " AND Style = " + styleName + " AND Size = " + sizeNo + " AND Dia = " + dia + " AND BodyPart = " + bodyPart + " AND PurchaseOrderNo = '" + purchaseOrderNumber + "' )";
 
