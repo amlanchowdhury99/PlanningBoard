@@ -1433,6 +1433,38 @@ namespace PlanningBoard
                 myThread.Start();
             }
         }
+
+        private void DeletePlanBoard_Click(object sender, EventArgs e)
+        {
+            string connectionStr = ConnectionManager.connectionString; string query = ""; Boolean result = false;
+            SqlCommand cm = new SqlCommand(); SqlConnection cn = new SqlConnection(connectionStr); cm.Connection = cn; cn.Open();
+            try
+            {
+                if (toDateTimePicker.Value < fromDateTimePicker.Value)
+                {
+                    MessageBox.Show("FROM Date Can not be greater than TO Date", VariableDecleration_Class.sMSGBOX);
+                    toDateTimePicker.Focus();
+                    return;
+                }
+
+                fromDate = fromDateTimePicker.Value;
+                toDate = toDateTimePicker.Value;
+
+                query = "DELETE FROM PlanTable WHERE TaskDate BETWEEN '" + fromDate + "' AND '" + toDate + "'";
+                cm.CommandText = query; cm.ExecuteNonQuery();
+                cm.ExecuteNonQuery();
+                MessageBox.Show("Deleted Successfully!");
+                BtnGeneratePlan.PerformClick();
+            }
+            catch (Exception ee)
+            {
+                MessageBox.Show("" + ee.ToString());
+            }
+            finally
+            {
+                cn.Close();
+            }
+        }
     }
 
     public static class ExtensionMethods

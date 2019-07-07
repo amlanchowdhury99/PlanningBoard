@@ -52,6 +52,7 @@
             this.noProductionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.pinwheel = new System.Windows.Forms.PictureBox();
+            this.DeletePlanBoard = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.planBoardDataGridView)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.pBContextMenuStrip.SuspendLayout();
@@ -86,6 +87,7 @@
             // groupBox1
             // 
             this.groupBox1.BackColor = System.Drawing.Color.SlateGray;
+            this.groupBox1.Controls.Add(this.DeletePlanBoard);
             this.groupBox1.Controls.Add(this.Revert);
             this.groupBox1.Controls.Add(this.toDateTimePicker);
             this.groupBox1.Controls.Add(this.Search);
@@ -112,9 +114,9 @@
             // 
             this.Revert.BackColor = System.Drawing.Color.RosyBrown;
             this.Revert.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Revert.Location = new System.Drawing.Point(1179, 25);
+            this.Revert.Location = new System.Drawing.Point(1102, 25);
             this.Revert.Name = "Revert";
-            this.Revert.Size = new System.Drawing.Size(84, 27);
+            this.Revert.Size = new System.Drawing.Size(72, 27);
             this.Revert.TabIndex = 40;
             this.Revert.Text = "Revert";
             this.Revert.UseVisualStyleBackColor = false;
@@ -133,9 +135,9 @@
             // 
             this.Search.BackColor = System.Drawing.Color.RosyBrown;
             this.Search.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Search.Location = new System.Drawing.Point(1086, 25);
+            this.Search.Location = new System.Drawing.Point(1024, 24);
             this.Search.Name = "Search";
-            this.Search.Size = new System.Drawing.Size(84, 27);
+            this.Search.Size = new System.Drawing.Size(72, 27);
             this.Search.TabIndex = 39;
             this.Search.Text = "Search";
             this.Search.UseVisualStyleBackColor = false;
@@ -177,7 +179,7 @@
             this.MachineComboBox.FormattingEnabled = true;
             this.MachineComboBox.Location = new System.Drawing.Point(702, 25);
             this.MachineComboBox.Name = "MachineComboBox";
-            this.MachineComboBox.Size = new System.Drawing.Size(84, 27);
+            this.MachineComboBox.Size = new System.Drawing.Size(57, 27);
             this.MachineComboBox.TabIndex = 36;
             // 
             // MStatuscomboBox
@@ -194,11 +196,11 @@
             // 
             this.GenerateExcelBtn.BackColor = System.Drawing.Color.RosyBrown;
             this.GenerateExcelBtn.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.GenerateExcelBtn.Location = new System.Drawing.Point(993, 25);
+            this.GenerateExcelBtn.Location = new System.Drawing.Point(946, 25);
             this.GenerateExcelBtn.Name = "GenerateExcelBtn";
-            this.GenerateExcelBtn.Size = new System.Drawing.Size(87, 27);
+            this.GenerateExcelBtn.Size = new System.Drawing.Size(72, 27);
             this.GenerateExcelBtn.TabIndex = 18;
-            this.GenerateExcelBtn.Text = "Export Excel";
+            this.GenerateExcelBtn.Text = "Export";
             this.GenerateExcelBtn.UseVisualStyleBackColor = false;
             this.GenerateExcelBtn.Click += new System.EventHandler(this.GenerateExcelBtn_Click);
             // 
@@ -206,9 +208,9 @@
             // 
             this.BtnAddPlan.BackColor = System.Drawing.Color.RosyBrown;
             this.BtnAddPlan.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.BtnAddPlan.Location = new System.Drawing.Point(897, 25);
+            this.BtnAddPlan.Location = new System.Drawing.Point(870, 25);
             this.BtnAddPlan.Name = "BtnAddPlan";
-            this.BtnAddPlan.Size = new System.Drawing.Size(84, 27);
+            this.BtnAddPlan.Size = new System.Drawing.Size(70, 27);
             this.BtnAddPlan.TabIndex = 16;
             this.BtnAddPlan.Text = "Add Plan";
             this.BtnAddPlan.UseVisualStyleBackColor = false;
@@ -218,9 +220,9 @@
             // 
             this.BtnGeneratePlan.BackColor = System.Drawing.Color.RosyBrown;
             this.BtnGeneratePlan.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.BtnGeneratePlan.Location = new System.Drawing.Point(807, 25);
+            this.BtnGeneratePlan.Location = new System.Drawing.Point(792, 25);
             this.BtnGeneratePlan.Name = "BtnGeneratePlan";
-            this.BtnGeneratePlan.Size = new System.Drawing.Size(84, 27);
+            this.BtnGeneratePlan.Size = new System.Drawing.Size(72, 27);
             this.BtnGeneratePlan.TabIndex = 15;
             this.BtnGeneratePlan.Text = "Generate";
             this.BtnGeneratePlan.UseVisualStyleBackColor = false;
@@ -302,6 +304,18 @@
             this.pinwheel.TabStop = false;
             this.pinwheel.Visible = false;
             // 
+            // DeletePlanBoard
+            // 
+            this.DeletePlanBoard.BackColor = System.Drawing.Color.RosyBrown;
+            this.DeletePlanBoard.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.DeletePlanBoard.Location = new System.Drawing.Point(1180, 25);
+            this.DeletePlanBoard.Name = "DeletePlanBoard";
+            this.DeletePlanBoard.Size = new System.Drawing.Size(72, 27);
+            this.DeletePlanBoard.TabIndex = 41;
+            this.DeletePlanBoard.Text = "Erase All";
+            this.DeletePlanBoard.UseVisualStyleBackColor = false;
+            this.DeletePlanBoard.Click += new System.EventHandler(this.DeletePlanBoard_Click);
+            // 
             // PlanBoardDisplayForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -351,6 +365,7 @@
         private System.ComponentModel.BackgroundWorker backgroundWorker1;
         private System.Windows.Forms.PictureBox pinwheel;
         private System.Windows.Forms.ToolStripMenuItem noProductionToolStripMenuItem;
+        private System.Windows.Forms.Button DeletePlanBoard;
 
     }
 }

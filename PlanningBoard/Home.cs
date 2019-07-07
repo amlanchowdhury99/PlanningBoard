@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using System.Data.Sql;
 using System.Data.SqlClient;
 using System.Collections;
+using System.Runtime.InteropServices;
 
 namespace PlanningBoard
 {
@@ -31,6 +32,11 @@ namespace PlanningBoard
         public static Dictionary<int, string> DiaList = new Dictionary<int, string>();
         public static Dictionary<int, string> SizeList = new Dictionary<int, string>();
         public static Dictionary<int, string> PartList = new Dictionary<int, string>();
+
+        private const int EM_SETCUEBANNER = 0x1501;
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        private static extern Int32 SendMessage(IntPtr hWnd, int msg, int wParam, [MarshalAs(UnmanagedType.LPWStr)]string lParam);
 
         public Home()
         {
@@ -89,6 +95,7 @@ namespace PlanningBoard
             shipDatePicker.Value = DateTime.Now.Date;
             planDateTimePicker.CustomFormat = "dd/MM/yyyy";
             planDateTimePicker.Value = DateTime.Now.Date;
+            SendMessage(orderQtyPercentageTextBox.Handle, EM_SETCUEBANNER, 0, "Extra Qty in %");
             LoadComboBox();
             LoadOrderInfoGrid();
             MachineComboBox.CheckStateChanged += new System.EventHandler(MachineComboBox_CheckStateChanged);
@@ -380,7 +387,7 @@ namespace PlanningBoard
                 string query = "";
                 string subquery = "SELECT * FROM Order_Info ";
                 int SL = 1;
-                int S1 = 1; string S2 = ""; string S3 = ""; string S4 = ""; string S5 = ""; string S6 = ""; string S7 = ""; string S8 = ""; string S9 = ""; string S10 = ""; string S11 = ""; string S12 = "";
+                int S1 = 1; string S2 = ""; string S3 = ""; string S4 = ""; string S5 = ""; string S6 = ""; string S7 = ""; string S8 = ""; string S9 = ""; string S10 = ""; string S11 = ""; string S12 = ""; string S13 = ""; string S14 = "";
 
                 if (buyerComboBox.SelectedIndex < 0 || styleComboBox.SelectedIndex < 0)
                 {
@@ -405,7 +412,7 @@ namespace PlanningBoard
                     }
                 }
 
-                query = " SELECT a.Id, a.PurchaseOrderNo, a.Quantity, a.ShipmentDate, a.SAM, a.Efficiency, a.Status, b.BuyerName, c.StyleName, d.SizeName, e.Dia, f.PartName FROM (" + subquery + ") a, Buyer b, Style c, Size d, Dia e, BodyPart f " +
+                query = " SELECT a.Id, a.PurchaseOrderNo, a.OriginalOrderQty, a.Percentage, a.Quantity, a.ShipmentDate, a.SAM, a.Efficiency, a.Status, b.BuyerName, c.StyleName, d.SizeName, e.Dia, f.PartName FROM (" + subquery + ") a, Buyer b, Style c, Size d, Dia e, BodyPart f " +
                     "WHERE a.Buyer = b.Id AND a.Style = c.Id AND a.Size = d.Id AND a.Dia = e.Id AND a.BodyPart = f.Id order by ShipmentDate asc";
 
                 SqlDataReader reader = CommonFunctions.GetFromDB(query);
@@ -422,13 +429,15 @@ namespace PlanningBoard
                         S5 = reader.IsDBNull(reader.GetOrdinal("Dia")) == true ? "Not Defined" : reader["Dia"].ToString();
                         S6 = reader.IsDBNull(reader.GetOrdinal("PartName")) == true ? "Not Defined" : reader["PartName"].ToString();
                         S7 = reader.IsDBNull(reader.GetOrdinal("PurchaseOrderNo")) == true ? "Not Defined" : reader["PurchaseOrderNo"].ToString();
-                        S8 = reader.IsDBNull(reader.GetOrdinal("Quantity")) == true ? "0000" : Convert.ToString(reader["Quantity"]);
-                        S9 = reader.IsDBNull(reader.GetOrdinal("ShipmentDate")) == true ? "0/0/0000" : Convert.ToDateTime(reader["ShipmentDate"]).ToString("dd/MM/yyyy");
-                        S10 = reader.IsDBNull(reader.GetOrdinal("SAM")) == true ? "0.00" : Convert.ToString(reader["SAM"]);
-                        S11 = reader.IsDBNull(reader.GetOrdinal("Efficiency")) == true ? "0.00" : Convert.ToString(reader["Efficiency"]);
-                        S12 = Enum.GetName(typeof(VariableDecleration_Class.Status), reader.IsDBNull(reader.GetOrdinal("Status")) == true ? Convert.ToInt32(VariableDecleration_Class.Status.Pending) : Convert.ToInt32(reader["Status"]));
+                        S8 = reader.IsDBNull(reader.GetOrdinal("OriginalOrderQty")) == true ? "0000" : Convert.ToString(reader["OriginalOrderQty"]);
+                        S9 = reader.IsDBNull(reader.GetOrdinal("Percentage")) == true ? "0000" : Convert.ToString(reader["Percentage"]);
+                        S10 = reader.IsDBNull(reader.GetOrdinal("Quantity")) == true ? "0000" : Convert.ToString(reader["Quantity"]);
+                        S11 = reader.IsDBNull(reader.GetOrdinal("ShipmentDate")) == true ? "0/0/0000" : Convert.ToDateTime(reader["ShipmentDate"]).ToString("dd/MM/yyyy");
+                        S12 = reader.IsDBNull(reader.GetOrdinal("SAM")) == true ? "0.00" : Convert.ToString(reader["SAM"]);
+                        S13 = reader.IsDBNull(reader.GetOrdinal("Efficiency")) == true ? "0.00" : Convert.ToString(reader["Efficiency"]);
+                        S14 = Enum.GetName(typeof(VariableDecleration_Class.Status), reader.IsDBNull(reader.GetOrdinal("Status")) == true ? Convert.ToInt32(VariableDecleration_Class.Status.Pending) : Convert.ToInt32(reader["Status"]));
 
-                        orderInfoDetailsdataGridView.Rows.Add(S1, S2, S3, S4, S5, S6, S7, S8, S9, S10, S11, S12, Convert.ToInt32(reader["Id"]));
+                        orderInfoDetailsdataGridView.Rows.Add(S1, S2, S3, S4, S5, S6, S7, S8, S9, S10, S11, S12, S13, S14, Convert.ToInt32(reader["Id"]));
                         SL++;
                     }
                 }
@@ -455,9 +464,9 @@ namespace PlanningBoard
         {
             foreach (DataGridViewRow row in orderInfoDetailsdataGridView.Rows)
             {
-                int ID = Convert.ToInt32(row.Cells[12].Value);
+                int ID = Convert.ToInt32(row.Cells[14].Value);
 
-                int OrderQty = Convert.ToInt32(row.Cells[7].Value);
+                int OrderQty = Convert.ToInt32(row.Cells[9].Value);
                 if (CommonFunctions.recordExist("SELECT * FROM PlanTable WHERE OrderID = " + ID))
                 {
                     SqlDataReader reader = CommonFunctions.GetFromDB("SELECT SUM(ActualQty) AS TotalProducedQty FROM (SELECT * FROM PlanTable WHERE OrderID = " + ID + ") A");
@@ -467,7 +476,13 @@ namespace PlanningBoard
                         int TotalProducedQty = Convert.ToInt32(reader["TotalProducedQty"]);
                         if (OrderQty == TotalProducedQty)
                         {
+                            string connectionStr = ConnectionManager.connectionString;
+                            SqlConnection cn1 = new SqlConnection(connectionStr); SqlCommand cm1 = new SqlCommand(); cm1.Connection = cn1; cn1.Open();
                             row.DefaultCellStyle.BackColor = Color.IndianRed;
+                            string query = " UPDATE Order_Info SET Status = 3 WHERE Id = " + ID;
+                            cm1.CommandText = query;
+                            cm1.ExecuteNonQuery();
+                            cn1.Close();
                         }
                         else
                         {
@@ -861,6 +876,13 @@ namespace PlanningBoard
                     return;
                 }
 
+                if (orderQtyPercentageTextBox.Text.Trim() == "")
+                {
+                    MessageBox.Show("Percentage can not be empty", VariableDecleration_Class.sMSGBOX);
+                    orderQtyPercentageTextBox.Focus();
+                    return;
+                }
+
                 if (samTextBox.Text.Trim() == "")
                 {
                     MessageBox.Show("Please Enter SAM Value", VariableDecleration_Class.sMSGBOX);
@@ -914,14 +936,16 @@ namespace PlanningBoard
                 int sizeNo = ((KeyValuePair<int, string>)sizeComboBox.SelectedItem).Key;
                 int dia = ((KeyValuePair<int, string>)diaComboBox.SelectedItem).Key;
                 int bodyPart = ((KeyValuePair<int, string>)partComboBox.SelectedItem).Key;
-                double qty = Convert.ToDouble(qtyTextBox.Text);
+                int originalQty = Convert.ToInt32(qtyTextBox.Text);
+                int percentage = orderQtyPercentageTextBox.Text == "" ? 0 : Convert.ToInt32(orderQtyPercentageTextBox.Text);
+                int qty = percentage == 0 ? originalQty : originalQty + Convert.ToInt32(originalQty * (Convert.ToDouble(percentage) / 100.00));
                 DateTime shipdate = DateTime.ParseExact(shipDatePicker.Text, "dd/MM/yyyy", null).Date;
                 DateTime chd = DateTime.ParseExact(CHD.Text, "dd/MM/yyyy", null).Date;
                 double SAMNo = Convert.ToDouble(samTextBox.Text);
                 int eff = Convert.ToInt32(effTextBox.Text);
                 int status = Convert.ToInt32((VariableDecleration_Class.Status.Pending));
                 string Remarks = remarkTextBox.Text;
-                int orderQty = Convert.ToInt32(qtyTextBox.Text);
+                int orderQty = qty;
                 string query = "";
                 SqlConnection cn1 = new SqlConnection(connectionStr); SqlCommand cm1 = new SqlCommand(); cm1.Connection = cn1; cn1.Open();
 
@@ -944,10 +968,16 @@ namespace PlanningBoard
 
                     if (Id1 == Convert.ToInt32(hiddenIDtextBox.Text))
                     {
-                        query = "UPDATE Order_Info SET Buyer = " + buyerName + ", Style = " + styleName + ", Size = " + sizeNo + ", Dia = " + dia + ", BodyPart = " + bodyPart + ", PurchaseOrderNo = '" + purchaseOrderNumber + "', Quantity = " + qty + ", ShipmentDate = '" + shipdate + "', CHD = '" + chd + "', SAM = " + SAMNo + ", Efficiency = " + eff + ", Status = " + status + " WHERE Id = " + Convert.ToInt32(hiddenIDtextBox.Text);
+                        query = "UPDATE Order_Info SET Buyer = " + buyerName + ", Style = " + styleName + ", Size = " + sizeNo + ", Dia = " + dia + ", BodyPart = " + bodyPart + ", PurchaseOrderNo = '" + purchaseOrderNumber + "', Percentage = " + percentage + ", OriginalOrderQty = "+originalQty+",  Quantity = " + qty + ", ShipmentDate = '" + shipdate + "', CHD = '" + chd + "', SAM = " + SAMNo + ", Efficiency = " + eff + ", Status = " + status + " WHERE Id = " + Convert.ToInt32(hiddenIDtextBox.Text);
                         if (CommonFunctions.ExecutionToDB(query, 2))
                         {
+                            SqlConnection cn2 = new SqlConnection(connectionStr); SqlCommand cm2 = new SqlCommand(); cm2.Connection = cn2; cn2.Open();
+                            query = "UPDATE PlanTable SET OrderQty = " + qty + ", SAM = " + SAMNo + " WHERE OrderID = " + Id1;
+                            cm2.CommandText = query;
+                            reader = cm2.ExecuteReader();
+                            cn2.Close();
                             LoadOrderInfoGrid();
+                            
                         }
                     }
                     else
@@ -955,7 +985,7 @@ namespace PlanningBoard
                         query = "SELECT Id FROM Order_Info WHERE Buyer = " + buyerName + " AND Style = " + styleName + " AND Size = " + sizeNo + " AND Dia = " + dia + " AND BodyPart = " + bodyPart + " AND PurchaseOrderNo = '" + purchaseOrderNumber + "'";
                         if (!CommonFunctions.recordExist(query))
                         {
-                            query = "INSERT INTO Order_Info(Buyer, Style, Size, Dia, BodyPart, Quantity, ShipmentDate, CHD, SAM, Efficiency, Status, Remarks, PurchaseOrderNo) VALUES (" + buyerName + "," + styleName + "," + sizeNo + "," + dia + "," + bodyPart + "," + qty + ",'" + shipdate + "','" + chd + "'," + SAMNo + "," + eff + "," + status + ", '" + Remarks + "', '" + purchaseOrderNumber + "')";
+                            query = "INSERT INTO Order_Info(Buyer, Style, Size, Dia, BodyPart, OriginalOrderQty, ShipmentDate, CHD, SAM, Efficiency, Status, Remarks, PurchaseOrderNo, Percentage, Quantity) VALUES (" + buyerName + "," + styleName + "," + sizeNo + "," + dia + "," + bodyPart + "," + originalQty + ",'" + shipdate + "','" + chd + "'," + SAMNo + "," + eff + "," + status + ", '" + Remarks + "', '" + purchaseOrderNumber + "', " + percentage + ", " + qty + ")";
                             if (CommonFunctions.ExecutionToDB(query, 1))
                             {
                                 LoadOrderInfoGrid();
@@ -973,7 +1003,7 @@ namespace PlanningBoard
                     query = "SELECT Id FROM Order_Info WHERE Buyer = " + buyerName + " AND Style = " + styleName + " AND Size = " + sizeNo + " AND Dia = " + dia + " AND BodyPart = " + bodyPart + " AND PurchaseOrderNo = '" + purchaseOrderNumber + "'";
                     if (!CommonFunctions.recordExist(query))
                     {
-                        query = "INSERT INTO Order_Info(Buyer, Style, Size, Dia, BodyPart, Quantity, ShipmentDate, CHD, SAM, Efficiency, Status, Remarks, PurchaseOrderNo) VALUES (" + buyerName + "," + styleName + "," + sizeNo + "," + dia + "," + bodyPart + "," + qty + ",'" + shipdate + "','" + chd + "'," + SAMNo + "," + eff + "," + status + ", '" + Remarks + "', '" + purchaseOrderNumber + "')";
+                        query = "INSERT INTO Order_Info(Buyer, Style, Size, Dia, BodyPart, OriginalOrderQty, ShipmentDate, CHD, SAM, Efficiency, Status, Remarks, PurchaseOrderNo, Percentage, Quantity) VALUES (" + buyerName + "," + styleName + "," + sizeNo + "," + dia + "," + bodyPart + "," + originalQty + ",'" + shipdate + "','" + chd + "'," + SAMNo + "," + eff + "," + status + ", '" + Remarks + "', '" + purchaseOrderNumber + "',  " + percentage + ", " + qty + ")";
                         if (CommonFunctions.ExecutionToDB(query, 1))
                         {
                             LoadOrderInfoGrid();
@@ -984,13 +1014,6 @@ namespace PlanningBoard
                         MessageBox.Show("Duplicate Record Exist!!!");
                         return;
                     }
-
-                    //query = " (SELECT Count(*) FROM Order_Info WHERE Buyer = " + buyerName + " AND Style = " + styleName + " AND Size = " + sizeNo + " AND Dia = " + dia + " AND BodyPart = " + bodyPart + " AND PurchaseOrderNo = '" + purchaseOrderNumber + "' )";
-
-                    //if (!CommonFunctions.GetNumberForRows(query))
-                    //{
-                    //    return;
-                    //}
                 }
 
                 if (orderWisePlandataGridView.Rows.Count > 0 && addToProductioncheckBox.Checked == true)
@@ -1086,6 +1109,7 @@ namespace PlanningBoard
                 partComboBox.Enabled = true;
                 effTextBox.ReadOnly = false;
 
+                orderQtyPercentageTextBox.Text = "";
                 pOTextBox.Text = "";
                 qtyTextBox.Text = "";
                 samTextBox.Text = "";
@@ -1127,9 +1151,10 @@ namespace PlanningBoard
             diaComboBox.Text = row.Cells[4].Value.ToString();
             partComboBox.Text = row.Cells[5].Value.ToString();
             qtyTextBox.Text = row.Cells[7].Value.ToString();
-            shipDatePicker.Value = DateTime.ParseExact(row.Cells[8].Value.ToString(), "dd/MM/yyyy", null);
-            samTextBox.Text = row.Cells[9].Value.ToString();
-            effTextBox.Text = row.Cells[10].Value.ToString();
+            orderQtyPercentageTextBox.Text = row.Cells[8].Value.ToString() == "0000" ? "0" : row.Cells[8].Value.ToString();
+            shipDatePicker.Value = DateTime.ParseExact(row.Cells[10].Value.ToString(), "dd/MM/yyyy", null);
+            samTextBox.Text = row.Cells[11].Value.ToString();
+            effTextBox.Text = row.Cells[12].Value.ToString();
 
             int buyerName = ((KeyValuePair<int, string>)buyerComboBox.SelectedItem).Key;
             int styleName = ((KeyValuePair<int, string>)styleComboBox.SelectedItem).Key;
@@ -1175,31 +1200,6 @@ namespace PlanningBoard
                 effTextBox.ReadOnly = false;
             }
             orderInfoID.Text = hiddenIDtextBox.Text;
-            //try
-            //{
-            //    string query = "SELECT Top 1* FROM Order_Info WHERE Buyer = " + buyerName + " AND Style = " + styleName + " AND Size = " + sizeNo + " AND Dia = " + dia + " AND BodyPart = " + bodyPart + "";
-            //    SqlDataReader reader = CommonFunctions.GetFromDB(query);
-            //    if (reader.HasRows)
-            //    {
-            //        while (reader.Read())
-            //        {
-            //            hiddenIDtextBox.Text = reader["Id"].ToString();
-            //        }
-            //    }
-            //}
-            //catch (Exception e)
-            //{
-            //    MessageBox.Show("" + e.ToString());
-            //}
-
-            //finally
-            //{
-            //    if (CommonFunctions.connection.State == ConnectionState.Open)
-            //    {
-            //        CommonFunctions.connection.Close();
-            //    }
-            //    orderInfoID.Text = hiddenIDtextBox.Text;
-            //}
         }
 
         private void AddBuyer_Click(object sender, EventArgs e)
@@ -1289,7 +1289,7 @@ namespace PlanningBoard
 
         private void qtyTextBox_KeyPress(object sender, KeyPressEventArgs e)
         {
-            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) && (e.KeyChar != '.'))
+            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
             {
                 e.Handled = true;
             }
@@ -1688,7 +1688,7 @@ namespace PlanningBoard
             {
                 DataGridViewRow row = orderInfoDetailsdataGridView.Rows[e.RowIndex];
 
-                int rowID = Convert.ToInt32(row.Cells[12].Value);
+                int rowID = Convert.ToInt32(row.Cells[14].Value);
 
                 if (CommonFunctions.recordExist("SELECT * FROM Order_Info WHERE Status = 2 AND Id = " + rowID))
                 {
@@ -2449,7 +2449,7 @@ namespace PlanningBoard
 
         private void newOrderQtyTextBox_KeyPress(object sender, KeyPressEventArgs e)
         {
-            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) && (e.KeyChar != '.'))
+            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
             {
                 e.Handled = true;
             }
@@ -2543,6 +2543,19 @@ namespace PlanningBoard
             //        LoadOrdeWiseGrid();
             //    }
             //}/
+        }
+
+        private void orderQtyPercentageTextBox_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar))
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void HomePanel_Paint(object sender, PaintEventArgs e)
+        {
+
         }
 
     }
